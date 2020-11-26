@@ -1,6 +1,7 @@
 ---
-docname: draft-westerlund-tsvwg-dtls-over-sctp-bis
-title: Datagram Transport Layer Security (DTLS) for Stream Control Transmission Protocol (SCTP)
+docname: draft-westerlund-tsvwg-dtls-over-sctp-bis-latest
+title: "Datagram Transport Layer Security (DTLS) for Stream Control Transmission Protocol (SCTP)"
+
 cat: std
 obsoletes: 6083
 ipr: trust200902
