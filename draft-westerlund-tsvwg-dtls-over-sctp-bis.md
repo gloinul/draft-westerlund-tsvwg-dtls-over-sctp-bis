@@ -1,12 +1,12 @@
 ---
 docname: draft-westerlund-tsvwg-dtls-over-sctp-bis-latest
 title: "Datagram Transport Layer Security (DTLS) for Stream Control Transmission Protocol (SCTP)"
-
+abbrev: DTLS for SCTP
 cat: std
 obsoletes: 6083
 ipr: trust200902
 date: 2020-11-26
-wg: TSWG
+wg: TSVWG
 area: Transport
 
 author:
@@ -21,7 +21,7 @@ informative:
   RFC3436:
   RFC5061:
   RFC6083:
-  
+
 normative:
   RFC2119:
   RFC3758:
@@ -33,10 +33,11 @@ normative:
 
 
 
---- Abstract
+--- abstract
 
-This document describes the usage of the Datagram Transport Layer Security
-(DTLS) protocol over the Stream Control Transmission Protocol (SCTP).
+This document describes a proposed update for the usage of the Datagram
+Transport Layer Security (DTLS) protocol over the Stream Control Transmission
+Protocol (SCTP).
 
 DTLS over SCTP provides communications privacy for applications that use SCTP as
 their transport protocol and allows client/server applications to communicate in
@@ -44,7 +45,10 @@ a way that is designed to prevent eavesdropping and detect tampering or message
 forgery.
 
 Applications using DTLS over SCTP can use almost all transport features provided
-by SCTP and its extensions.
+by SCTP and its extensions. This document intend to obsolete RFC 6083 and remove
+the limitation on user message size to a maximum of 16384 bytes by defining a
+secure user message fragmentation so that multiple DTLS records can be used. It
+also updates both the DTLS versions to use as well as the HMAC for SCTP-AUTH.
 
 
 --- middle
@@ -97,13 +101,26 @@ over SCTP.  In particular, DTLS/SCTP supports:
    o  the dynamic address reconfiguration extension as defined in
       {{RFC5061}}.
 
-However, the following limitations still apply:
+However, {{RFC6083}} had the following limitations:
 
    o  The maximum user message size is 2^14 bytes, which is the DTLS
       limit.
 
    o  The DTLS user cannot perform the SCTP-AUTH key management because
       this is done by the DTLS layer.
+
+This update that replaces RFC6083 defines the following changes:
+
+   * Removes the limitations on user messages sizes by defining a secure
+     fragmentation mechanis.
+
+   * Mandates that more modern DTLS version are required (DTLS 1.2 or 1.3)
+
+   * Mandates use of modern HMAC algorithms (SHA-256) in the SCTP authentication
+     extension {{RFC4895}}.
+
+   * Recommends support of {{RFC8260}} to enable interleaving of large SCTP user
+     messages to avoid scheduling issues.
 
 The method described in this document requires that the SCTP implementation
 supports the optional feature of fragmentation of SCTP user messages as defined
