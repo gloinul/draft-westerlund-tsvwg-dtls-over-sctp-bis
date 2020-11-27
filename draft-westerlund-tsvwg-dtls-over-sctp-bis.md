@@ -36,6 +36,7 @@ normative:
   RFC5705:
   RFC6347:
   RFC7540:
+  RFC8174
   RFC8260:
   I-D.ietf-tls-dtls13:
 
@@ -179,8 +180,10 @@ TLS:  Transport Layer Security
 #  Conventions
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
-   document are to be interpreted as described in {{RFC2119}}.
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all
+   capitals, as shown here.
 
 #  DTLS Considerations
 
