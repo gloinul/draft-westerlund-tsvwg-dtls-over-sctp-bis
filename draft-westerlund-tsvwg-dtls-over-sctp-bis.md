@@ -126,6 +126,26 @@ The method described in this document requires that the SCTP implementation
 supports the optional feature of fragmentation of SCTP user messages as defined
 in {{RFC4960}} and the SCTP authentication extension defined in {{RFC4895}}.
 
+## Motivation for changes
+
+This document proposes a number of changes to RFC 6083 that have
+various different motivations:
+
+Supporting Large User Messages: RFC 6083 allowed only user messages
+that could fit withint a single DTLS record . 3GPP has run into this
+limiation where they have at least 4 SCTP using protocols that can
+potentially generate messages over the size of 16384 bytes.
+
+New Versions: 10 years has passed since RFC 6083 was written, and
+significant evolution has happened in the area of DTLS and security
+algorithms. Thus DTLS 1.3 is the newest version of DTLS and also
+the SHA-1 HMAC algorithm of RFC 4895 is getting towards the end of
+usefulness. Thus, mandating relevant versions and algorithms for the
+usage this document defines.
+
+Clarfications: Some implementation experiences has been gained that
+motivates additional clarifications on the specification.
+
 ## Terminology
 
 This document uses the following terms:
