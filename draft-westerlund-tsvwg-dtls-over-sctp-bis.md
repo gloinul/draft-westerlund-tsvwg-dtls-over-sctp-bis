@@ -15,6 +15,11 @@ author:
    name: Magnus Westerlund
    org: Ericsson
    email: magnus.westerlund@ericsson.com
+  -
+   ins: J. Preuß Mattsson
+   name: John Preuß Mattsson
+   org: Ericsson
+   email: john.mattsson@ericsson.com
 
 informative:
   RFC0793:
@@ -29,9 +34,10 @@ normative:
   RFC4895:
   RFC4960:
   RFC5705:
+  RFC6347:
+  RFC7540:
   RFC8260:
-
-
+  I-D.ietf-tls-dtls13:
 
 --- abstract
 
@@ -58,7 +64,7 @@ also updates both the DTLS versions to use as well as the HMAC for SCTP-AUTH.
 ##Overview
 
 This document describes the usage of the Datagram Transport Layer Security
-(DTLS) protocol, as defined in {{RFC4347}}, over the Stream Control Transmission
+(DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}}, over the Stream Control Transmission
 Protocol (SCTP), as defined in {{RFC4960}}.
 
 DTLS over SCTP provides communications privacy for applications that use SCTP as
@@ -160,15 +166,21 @@ TLS:  Transport Layer Security
 
 ##  Version of DTLS
 
-   This document is based on {{RFC4347}}, and it is expected that DTLS/
-   SCTP as described in this document will work with future versions of
-   DTLS.
+   This document is based on DTLS 1.3 {{I-D.ietf-tls-dtls13}}, but works
+   also for DTLS 1.2 {{RFC6347}}. Earlier versions of DTLS MUST NOT be
+   used. It is expected that DTLS/SCTP as described in this document
+   will work with future versions of DTLS.
 
+##  Cipher Suites
+
+   For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
+   be used.
+   
 ## Message Sizes
 
-   DTLS limits the DTLS user message size to the current Path MTU minus
-   the header sizes.  For the purposes of running over SCTP, the DTLS
-   path MTU MUST be considered to be 2^14.
+   For DTLS over SCTP, which automatically fragment and
+   reassemble datagrams, there is no PMTU limitation.  However, DTLS/SCTP
+   MUST NOT write any record that exceeds the maximum record size of 2^14 bytes.
 
 ## Replay Detection
 
@@ -243,12 +255,13 @@ TLS:  Transport Layer Security
    and use forged FORWARD-TSN, SACK, and/or SHUTDOWN chunks to hide this
    dropping.
 
+##  SCTP-AUTH Hash Function
+
+   SHA-256 MUST be supported. SHA-1 MUST NOT be used.
+
 ##  Renegotiation
 
-   DTLS supports renegotiation, and therefore this feature is also
-   available by DTLS/SCTP.  It is up to the upper layer to use/allow it
-   or not.  Application writers should be aware that allowing
-   renegotiations may result in changes of security parameters.
+   Renegotiation MUST NOT be used.
 
 ##  Handshake
 
@@ -305,8 +318,8 @@ TLS:  Transport Layer Security
 
 #  Security Considerations
 
-   The security considerations given in {{RFC4347}}, {{RFC4895}}, and
-   {{RFC4960}} also apply to this document.
+   The security considerations given in {{I-D.ietf-tls-dtls13}}, {{RFC4895}},
+   and {{RFC4960}} also apply to this document.
 
    It is possible to authenticate DTLS endpoints based on IP addresses
    in certificates.  SCTP associations can use multiple addresses per
@@ -323,11 +336,6 @@ TLS:  Transport Layer Security
    provide privacy for the actual user message, none of these three are
    protected by DTLS.  They are sent as clear text, because they are
    part of the SCTP DATA chunk header.
-
-   DTLS supports cipher suites that contain a NULL cipher algorithm.
-   Negotiating a NULL cipher algorithm will not provide communications
-   privacy for applications and will not provide privacy for user
-   messages.
 
 #  Acknowledgments
 
