@@ -118,7 +118,7 @@ However, {{RFC6083}} had the following limitations:
 This update that replaces RFC6083 defines the following changes:
 
    * Removes the limitations on user messages sizes by defining a secure
-     fragmentation mechanis.
+     fragmentation mechanism.
 
    * Mandates that more modern DTLS version are required (DTLS 1.2 or 1.3)
 
@@ -138,8 +138,8 @@ This document proposes a number of changes to RFC 6083 that have
 various different motivations:
 
 Supporting Large User Messages: RFC 6083 allowed only user messages
-that could fit withint a single DTLS record . 3GPP has run into this
-limiation where they have at least 4 SCTP using protocols that can
+that could fit within a single DTLS record . 3GPP has run into this
+limitation where they have at least 4 SCTP using protocols that can
 potentially generate messages over the size of 16384 bytes.
 
 New Versions: 10 years has passed since RFC 6083 was written, and
@@ -149,7 +149,7 @@ the SHA-1 HMAC algorithm of RFC 4895 is getting towards the end of
 usefulness. Thus, mandating relevant versions and algorithms for the
 usage this document defines.
 
-Clarfications: Some implementation experiences has been gained that
+Clarifications: Some implementation experiences has been gained that
 motivates additional clarifications on the specification.
 
 ## Terminology
