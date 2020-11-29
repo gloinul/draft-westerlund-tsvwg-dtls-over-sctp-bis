@@ -249,7 +249,7 @@ TLS:  Transport Layer Security
    where
 
 ~~~~~~~~~~~
-	mi' = uint64(nonce) | uint64(i) | mi
+   mi' = uint64(nonce) | uint64(i) | mi
 ~~~~~~~~~~~
 
   and where nonce is has a different value for each user message (e.g. a counter). The new user_message' is the input to SCTP.
