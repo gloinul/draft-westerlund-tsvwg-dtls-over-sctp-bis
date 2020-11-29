@@ -228,13 +228,33 @@ TLS:  Transport Layer Security
 
 ##  Mapping of DTLS Records
 
-   The supported maximum length of SCTP user messages MUST be at least
-   2^14 + 2048 + 13 = 18445 bytes (2^14 + 2048 is the maximum length of
-   the DTLSCiphertext.fragment, and 13 is the size of the DTLS record
-   header).  In particular, the SCTP implementation MUST support
-   fragmentation of user messages.
+  The supported maximum length of SCTP user messages MUST be at least 
+  1024 kB. In particular, the SCTP implementation MUST support fragmentation of user messages.
 
-   Every SCTP user message MUST consist of exactly one DTLS record.
+   DTLS/SCTP works as a shim layer between the user message API and
+   SCTP. The fragmentation works similar as the DTLS fragmentation of handshake messages.
+   On the sender side a user message fragmented into fragments
+   m0, m1, m2, each smaller than 2^14 - 16 = 16368 bytes. 
+
+~~~~~~~~~~~
+   m0 | m1 | m2 | ... = uint64(length) | user_message
+~~~~~~~~~~~
+
+   The resulting fragments are protected with DTLS and the records are concatenated
+
+~~~~~~~~~~~
+   user_message' = DTLS( m0' ) | DTLS( m1' ) | DTLS( m2' ) ...
+~~~~~~~~~~~
+
+   where
+
+~~~~~~~~~~~
+	mi' = uint64(nonce) | uint64(i) | mi
+~~~~~~~~~~~
+
+  and where nonce is has a different value for each user message (e.g. a counter). The new user_message' is the input to SCTP.
+
+  On the recieving size DTLS is used to decrypt the records and the fields uint64(length), uint64(nonce), and uint64(i) are removed. The user_message is valid if all DTLS records are valid, uint64(nonce) is the same in all records, uint64(i) is a counter from 0 to the number of records, and uint64(length) is the length of the resulting user_message.
 
 ##  DTLS Connection Handling
 
