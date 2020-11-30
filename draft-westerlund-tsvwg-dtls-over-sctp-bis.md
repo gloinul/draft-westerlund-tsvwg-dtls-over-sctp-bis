@@ -358,6 +358,7 @@ TLS:  Transport Layer Security
 
    The following new OPTIONAL parameter is added to the INIT and INIT
    ACK chunks.
+   ~~~~~~~~~~~
    Parameter Name                       Status     Type Value
    -------------------------------------------------------------
    Forward-TSN-Supported               OPTIONAL    XXXXX (0x????)
@@ -373,6 +374,7 @@ TLS:  Transport Layer Security
       XXXXX, rfc6083-Supported parameter
    Length: 16 bit u_int
       Indicates the size of the parameter, i.e., 4.
+   ~~~~~~~~~~~
 
 ## rfc6083 initialization
 
