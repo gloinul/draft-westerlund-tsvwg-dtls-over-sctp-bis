@@ -354,6 +354,62 @@ TLS:  Transport Layer Security
    user messages that are buffered in the SCTP layer MUST be read and
    processed by DTLS.
 
+## New option at INIT/INIT-ACK
+
+   The following new OPTIONAL parameter is added to the INIT and INIT
+   ACK chunks.
+   ~~~~~~~~~~~
+   Parameter Name                       Status     Type Value
+   -------------------------------------------------------------
+   Forward-TSN-Supported               OPTIONAL    XXXXX (0x????)
+   At the initialization of the association, the sender of the INIT or
+   INIT ACK chunk MAY include this OPTIONAL parameter to inform its peer
+   that it is able to support rfc6083. The format of this parameter is
+   defined as follows:
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |    Parameter Type = XXXXX     |  Parameter Length = 4         |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   Type: 16 bit u_int
+      XXXXX, rfc6083-Supported parameter
+   Length: 16 bit u_int
+      Indicates the size of the parameter, i.e., 4.
+   ~~~~~~~~~~~
+
+## rfc6083 initialization
+
+   The adoption of rfc6083 mandates the adoption of DTLS encryption.
+   When both peers at INIT/INIT-ACK message have the rfc6083-Supported
+   option set, after completion of INIT/INIT-ACK, COOKIE-ECHO/COOKIE-ACK
+   the chunk authentication sequence and then the DTLS handshake sequence
+   must be started.
+   Reception of DATA chunk before DTLS handshake completion from either
+   peers will be replied with ABORT.
+   During the lifetime of the Association, only DTLS encrypted data chunks
+   are permitted.
+   Attempts to transfer plain data chunks will be replied with ABORT.
+
+## Client Use Case
+
+   When a SCTP Client initiates an Association with rfc6083-Supported
+   option set, it can receive an INIT-ACK containing rfc6083-Supported
+   option, in that case the Association will proceed as specified in the
+   previous section.
+   If the peer replies with an INIT-ACK not containing rfc6083-Supported
+   option, then the Client can decide to keep on working with plain data
+   only or to ABORT the association.
+
+## Server Use Case
+
+   When a SCTP Server supports rfc6083, when receiving an INIT chunk
+   with rfc6083-Supported option it must reply with INIT-ACK containing
+   the rfc6083-Supported option, then it must follow the sequence
+   for rfc6083 initialization and the related traffic case.
+   When a SCTP Server supports rfc6083, when receiving an INIT chunk
+   with no rfc6083-Supported option, it can decide to continue with
+   creating an Association with plain data only or to ABORT it.
+
+
 #  IANA Considerations
 
    IANA added a value to the TLS Exporter Label registry as described in
