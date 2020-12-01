@@ -19,6 +19,11 @@ author:
    name: John Preuß Mattsson
    org: Ericsson
    email: john.mattsson@ericsson.com
+  -
+   ins: C. Porfiri
+   name: Claudio Porfiri
+   org: Ericsson
+   email: claudio.porfiri@ericsson.com
 
 informative:
   RFC0793:
@@ -41,21 +46,21 @@ normative:
 
 --- abstract
 
-This document describes a proposed update for the usage of the Datagram
-Transport Layer Security (DTLS) protocol over the Stream Control Transmission
-Protocol (SCTP).
+This document describes a proposed update for the usage of the
+Datagram Transport Layer Security (DTLS) protocol over the Stream
+Control Transmission Protocol (SCTP).
 
-DTLS over SCTP provides communications privacy for applications that use SCTP as
-their transport protocol and allows client/server applications to communicate in
-a way that is designed to prevent eavesdropping and detect tampering or message
-forgery.
+DTLS over SCTP provides communications privacy for applications that
+use SCTP as their transport protocol and allows client/server
+applications to communicate in a way that is designed to prevent
+eavesdropping and detect tampering or message forgery.
 
-Applications using DTLS over SCTP can use almost all transport features provided
-by SCTP and its extensions. This document intend to obsolete RFC 6083 and remove
-the limitation on user message size to a maximum of 16384 bytes by defining a
-secure user message fragmentation so that multiple DTLS records can be used. It
-also updates both the DTLS versions to use as well as the HMAC for SCTP-AUTH.
-
+Applications using DTLS over SCTP can use almost all transport
+features provided by SCTP and its extensions. This document intend to
+obsolete RFC 6083 and remove the limitation on user message size to a
+maximum of 16384 bytes by defining a secure user message fragmentation
+so that multiple DTLS records can be used. It also updates both the
+DTLS versions to use as well as the HMAC algorithms for SCTP-AUTH.
 
 --- middle
 
@@ -63,9 +68,10 @@ also updates both the DTLS versions to use as well as the HMAC for SCTP-AUTH.
 
 ##Overview
 
-This document describes the usage of the Datagram Transport Layer Security
-(DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}}, over the Stream Control Transmission
-Protocol (SCTP), as defined in {{RFC4960}}.
+This document describes the usage of the Datagram Transport Layer
+Security (DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}}, over
+the Stream Control Transmission Protocol (SCTP), as defined in
+{{RFC4960}}.
 
 DTLS over SCTP provides communications privacy for applications that use SCTP as
 their transport protocol and allows client/server applications to communicate in
@@ -109,8 +115,8 @@ over SCTP.  In particular, DTLS/SCTP supports:
 
 However, {{RFC6083}} had the following limitations:
 
-   o  The maximum user message size is 2^14 bytes, which is the DTLS
-      limit.
+   o The maximum user message size is 2^14 bytes, which is a single
+      DTLS record limit.
 
    o  The DTLS user cannot perform the SCTP-AUTH key management because
       this is done by the DTLS layer.
@@ -138,19 +144,24 @@ This document proposes a number of changes to RFC 6083 that have
 various different motivations:
 
 Supporting Large User Messages: RFC 6083 allowed only user messages
-that could fit within a single DTLS record . 3GPP has run into this
-limitation where they have at least 4 SCTP using protocols that can
-potentially generate messages over the size of 16384 bytes.
+   that could fit within a single DTLS record . 3GPP has run into this
+   limitation where they have at least four SCTP using protocols (F1,
+   E1, Xn, NG-C) that can potentially generate messages over the size
+   of 16384 bytes.
 
-New Versions: 10 years has passed since RFC 6083 was written, and
-significant evolution has happened in the area of DTLS and security
-algorithms. Thus DTLS 1.3 is the newest version of DTLS and also
-the SHA-1 HMAC algorithm of RFC 4895 is getting towards the end of
-usefulness. Thus, mandating relevant versions and algorithms for the
-usage this document defines.
+New Versions: Almost 10 years has passed since RFC 6083 was written,
+   and significant evolution has happened in the area of DTLS and
+   security algorithms. Thus DTLS 1.3 is the newest version of DTLS
+   and also the SHA-1 HMAC algorithm of RFC 4895 is getting towards
+   the end of usefulness. Thus, this document mandates usage of
+   relevant versions and algorithms.
 
 Clarifications: Some implementation experiences has been gained that
-motivates additional clarifications on the specification.
+   motivates additional clarifications on the specification.
+
+ * Avoid unsecured message prior to DTLS handshake have completed.
+
+ * Make clear that all messages are encrypted after DTLS handshake.
 
 ## Terminology
 
@@ -304,6 +315,14 @@ TLS:  Transport Layer Security
    and use forged FORWARD-TSN, SACK, and/or SHUTDOWN chunks to hide this
    dropping.
 
+   I-DATA chunks as defined in {{RFC8260}} are RECOMMENDED to be
+   supported to avoid some of the down sides that large user messages
+   have on blocking transmission of later arriving high priority user
+   messages. However, the supporte is not mandated and negotiated
+   independently from DTLS over SCTP. If I-DATA chunks are used then
+   they MUST be sent in an authenticated way as described in
+   {{RFC4895}}.
+
 ##  SCTP-AUTH Hash Function
 
    SHA-256 MUST be supported. SHA-1 MUST NOT be used.
@@ -360,7 +379,13 @@ TLS:  Transport Layer Security
    user messages that are buffered in the SCTP layer MUST be read and
    processed by DTLS.
 
-## New option at INIT/INIT-ACK
+## Negotation of DTLS support
+
+To distunguish supporters of this specification compared to RFC 6083
+as well as enable certain improvements that simplifies implementation
+a new SCPT parameter is defined.
+
+### New option at INIT/INIT-ACK
 
    The following new OPTIONAL parameter is added to the INIT and INIT
    ACK chunks.
@@ -368,7 +393,7 @@ TLS:  Transport Layer Security
 ~~~~~~~~~~~
    Parameter Name                       Status     Type Value
    -------------------------------------------------------------
-   Forward-TSN-Supported               OPTIONAL    XXXXX (0x????)
+   DTLS-Supported                     OPTIONAL    XXXXX (0x????)
 ~~~~~~~~~~~
 
    At the initialization of the association, the sender of the INIT or
@@ -390,11 +415,11 @@ Length: 16 bit u_int
       Indicates the size of the parameter, i.e., 4.
 
 
-## DTLS over SCTP initialization {#DTLS-init}
+### DTLS over SCTP initialization {#DTLS-init}
 
-   The adoption of DTLS over SCTP mandates the adoption of DTLS encryption.
-   When both peers at INIT/INIT-ACK message have the DTLS-Supported
-   option set, after completion of INIT/INIT-ACK,
+   The adoption of DTLS over SCTP mandates the adoption of DTLS
+   encryption.  When both peers at INIT/INIT-ACK message have the
+   DTLS-Supported option set, after completion of INIT/INIT-ACK,
    COOKIE-ECHO/COOKIE-ACK the chunk authentication sequence and then
    the DTLS handshake sequence must be started.  Reception of DATA
    chunk before DTLS handshake completion from either peers will be
@@ -402,7 +427,7 @@ Length: 16 bit u_int
    DTLS encrypted data chunks are permitted.  Attempts to transfer
    plain data chunks will be replied with ABORT.
 
-## Client Use Case
+### Client Use Case
 
    When a SCTP Client initiates an Association with DTLS-Supported
    option set, it can receive an INIT-ACK containing DTLS-Supported
@@ -411,7 +436,7 @@ Length: 16 bit u_int
    containing DTLS-Supported option, then the Client can decide to
    keep on working with plain data only or to ABORT the association.
 
-## Server Use Case
+### Server Use Case
 
    When a SCTP Server supports DTLS, when receiving an INIT chunk
    with DTLS-Supported option it must reply with INIT-ACK containing
@@ -424,8 +449,16 @@ Length: 16 bit u_int
 
 #  IANA Considerations
 
-   IANA added a value to the TLS Exporter Label registry as described in
-   {{RFC5705}}.  The label is "EXPORTER_DTLS_OVER_SCTP".
+## TLS Exporter Label
+
+RFC 6083 defined a TLS Exporter Label registry as described in
+{{RFC5705}}. IANA is requested to update the reference for the label
+"EXPORTER_DTLS_OVER_SCTP" to this specification.
+
+## SCTP Parameter
+
+IANA is requested to register a new SCTP parameter "DTLS-support".
+
 
 #  Security Considerations
 
@@ -448,6 +481,8 @@ Length: 16 bit u_int
    protected by DTLS.  They are sent as clear text, because they are
    part of the SCTP DATA chunk header.
 
+   Downgrade discussion to be added.
+
 # Changes from RFC 6083
 
 This specification of DTLS over SCTP has the following changes
@@ -467,9 +502,10 @@ compared to the DTLS over SCTP that defined in {{RFC6083}}.
 
 #  Acknowledgments
 
+   The authors of RFC 6083 which this document was based on are
+   Michael Tüxen, Eric Rescorla, and Robin Seggelmann.
+
    The authors wish to thank Anna Brunstrom, Lars Eggert, Gorry
    Fairhurst, Ian Goldberg, Alfred Hoenes, Carsten Hohendorf, Stefan
    Lindskog, Daniel Mentz, and Sean Turner for their invaluable
    comments.
-
-
