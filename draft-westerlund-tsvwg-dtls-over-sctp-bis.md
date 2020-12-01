@@ -5,7 +5,6 @@ abbrev: DTLS over SCTP
 cat: std
 obsoletes: 6083
 ipr: trust200902
-date: 2020-11-26
 wg: TSVWG
 area: Transport
 
@@ -198,7 +197,7 @@ TLS:  Transport Layer Security
 
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
    be used.
-   
+
 ## Message Sizes
 
    For DTLS over SCTP, which automatically fragment and
@@ -228,13 +227,14 @@ TLS:  Transport Layer Security
 
 ##  Mapping of DTLS Records
 
-  The supported maximum length of SCTP user messages MUST be at least 
-  1024 kB. In particular, the SCTP implementation MUST support fragmentation of user messages.
+   The supported maximum length of SCTP user messages MUST be at least
+   1024 kB. In particular, the SCTP implementation MUST support
+   fragmentation of user messages.
 
    DTLS/SCTP works as a shim layer between the user message API and
    SCTP. The fragmentation works similar as the DTLS fragmentation of handshake messages.
    On the sender side a user message fragmented into fragments
-   m0, m1, m2, each smaller than 2^14 - 16 = 16368 bytes. 
+   m0, m1, m2, each smaller than 2^14 - 16 = 16368 bytes.
 
 ~~~~~~~~~~~
    m0 | m1 | m2 | ... = uint64(length) | user_message
@@ -252,9 +252,15 @@ TLS:  Transport Layer Security
    mi' = uint64(nonce) | uint64(i) | mi
 ~~~~~~~~~~~
 
-  and where nonce is has a different value for each user message (e.g. a counter). The new user_message' is the input to SCTP.
+   and where nonce is has a different value for each user message (e.g. a
+   counter). The new user_message' is the input to SCTP.
 
-  On the recieving size DTLS is used to decrypt the records and the fields uint64(length), uint64(nonce), and uint64(i) are removed. The user_message is valid if all DTLS records are valid, uint64(nonce) is the same in all records, uint64(i) is a counter from 0 to the number of records, and uint64(length) is the length of the resulting user_message.
+   On the recieving size DTLS is used to decrypt the records and the
+   fields uint64(length), uint64(nonce), and uint64(i) are
+   removed. The user_message is valid if all DTLS records are valid,
+   uint64(nonce) is the same in all records, uint64(i) is a counter
+   from 0 to the number of records, and uint64(length) is the length
+   of the resulting user_message.
 
 ##  DTLS Connection Handling
 
@@ -358,23 +364,31 @@ TLS:  Transport Layer Security
 
    The following new OPTIONAL parameter is added to the INIT and INIT
    ACK chunks.
-   ~~~~~~~~~~~
+
+~~~~~~~~~~~
    Parameter Name                       Status     Type Value
    -------------------------------------------------------------
    Forward-TSN-Supported               OPTIONAL    XXXXX (0x????)
+~~~~~~~~~~~
+
    At the initialization of the association, the sender of the INIT or
    INIT ACK chunk MAY include this OPTIONAL parameter to inform its peer
    that it is able to support rfc6083. The format of this parameter is
    defined as follows:
+
+~~~~~~~~~~~
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Parameter Type = XXXXX     |  Parameter Length = 4         |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   Type: 16 bit u_int
+~~~~~~~~~~~
+
+Type: 16 bit u_int
       XXXXX, rfc6083-Supported parameter
-   Length: 16 bit u_int
+
+Length: 16 bit u_int
       Indicates the size of the parameter, i.e., 4.
-   ~~~~~~~~~~~
+
 
 ## rfc6083 initialization
 
