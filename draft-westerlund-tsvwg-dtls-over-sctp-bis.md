@@ -366,9 +366,9 @@ TLS:  Transport Layer Security
    ACK chunks.
 
 ~~~~~~~~~~~
-   Parameter Name                       Status     Type Value
-   -------------------------------------------------------------
-   DTLS-Supported               OPTIONAL    XXXXX (0x????)
+   Parameter Name                       Status      Type Value
+   ---------------------------------------------------------------
+   DTLS-Supported                       OPTIONAL    XXXXX (0x????)
 ~~~~~~~~~~~
 
    At the initialization of the association, the sender of the INIT or
