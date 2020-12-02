@@ -360,7 +360,7 @@ TLS:  Transport Layer Security
    user messages that are buffered in the SCTP layer MUST be read and
    processed by DTLS.
 
-## New option at INIT/INIT-ACK
+## New option at INIT/INIT-ACK {#DTLS-supported}
 
    The following new OPTIONAL parameter is added to the INIT and INIT
    ACK chunks.
@@ -410,7 +410,7 @@ Length: 16 bit u_int
 
    HMAC-ALGO: defined in {{RFC4895}}
 
-   DTLS-Supported: defined in this document 
+   DTLS-Supported: defined in {{#DTLS-supported}} 
 
    When all the above options are present, the Association will
    start with support of DTLS/SCTP.
