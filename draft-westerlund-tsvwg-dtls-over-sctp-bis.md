@@ -410,7 +410,7 @@ Length: 16 bit u_int
 
    HMAC-ALGO: defined in {{RFC4895}}
 
-   DTLS-Supported: defined in {{#DTLS-supported}} 
+   DTLS-Supported: defined in {{DTLS-supported}} 
 
    When all the above options are present, the Association will
    start with support of DTLS/SCTP.
