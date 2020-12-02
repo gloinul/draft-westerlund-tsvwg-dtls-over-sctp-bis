@@ -5,7 +5,6 @@ abbrev: DTLS over SCTP
 cat: std
 obsoletes: 6083
 ipr: trust200902
-date: 2020-11-26
 wg: TSVWG
 area: Transport
 
@@ -198,7 +197,7 @@ TLS:  Transport Layer Security
 
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
    be used.
-   
+
 ## Message Sizes
 
    For DTLS over SCTP, which automatically fragment and
@@ -228,13 +227,14 @@ TLS:  Transport Layer Security
 
 ##  Mapping of DTLS Records
 
-  The supported maximum length of SCTP user messages MUST be at least 
-  1024 kB. In particular, the SCTP implementation MUST support fragmentation of user messages.
+   The supported maximum length of SCTP user messages MUST be at least
+   1024 kB. In particular, the SCTP implementation MUST support
+   fragmentation of user messages.
 
    DTLS/SCTP works as a shim layer between the user message API and
    SCTP. The fragmentation works similar as the DTLS fragmentation of handshake messages.
    On the sender side a user message fragmented into fragments
-   m0, m1, m2, each smaller than 2^14 - 16 = 16368 bytes. 
+   m0, m1, m2, each smaller than 2^14 - 16 = 16368 bytes.
 
 ~~~~~~~~~~~
    m0 | m1 | m2 | ... = uint64(length) | user_message
@@ -252,9 +252,15 @@ TLS:  Transport Layer Security
    mi' = uint64(nonce) | uint64(i) | mi
 ~~~~~~~~~~~
 
-  and where nonce is has a different value for each user message (e.g. a counter). The new user_message' is the input to SCTP.
+   and where nonce is has a different value for each user message (e.g. a
+   counter). The new user_message' is the input to SCTP.
 
-  On the recieving size DTLS is used to decrypt the records and the fields uint64(length), uint64(nonce), and uint64(i) are removed. The user_message is valid if all DTLS records are valid, uint64(nonce) is the same in all records, uint64(i) is a counter from 0 to the number of records, and uint64(length) is the length of the resulting user_message.
+   On the recieving size DTLS is used to decrypt the records and the
+   fields uint64(length), uint64(nonce), and uint64(i) are
+   removed. The user_message is valid if all DTLS records are valid,
+   uint64(nonce) is the same in all records, uint64(i) is a counter
+   from 0 to the number of records, and uint64(length) is the length
+   of the resulting user_message.
 
 ##  DTLS Connection Handling
 
@@ -358,55 +364,61 @@ TLS:  Transport Layer Security
 
    The following new OPTIONAL parameter is added to the INIT and INIT
    ACK chunks.
-   ~~~~~~~~~~~
+
+~~~~~~~~~~~
    Parameter Name                       Status     Type Value
    -------------------------------------------------------------
    Forward-TSN-Supported               OPTIONAL    XXXXX (0x????)
+~~~~~~~~~~~
+
    At the initialization of the association, the sender of the INIT or
-   INIT ACK chunk MAY include this OPTIONAL parameter to inform its peer
-   that it is able to support rfc6083. The format of this parameter is
-   defined as follows:
+   INIT ACK chunk MAY include this OPTIONAL parameter to inform its
+   peer that it is able to support DTLS over SCTP per this
+   specification. The format of this parameter is defined as follows:
+
+~~~~~~~~~~~
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
    |    Parameter Type = XXXXX     |  Parameter Length = 4         |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   Type: 16 bit u_int
-      XXXXX, rfc6083-Supported parameter
-   Length: 16 bit u_int
+~~~~~~~~~~~
+
+Type: 16 bit u_int
+      XXXXX, DTLS-Supported parameter
+
+Length: 16 bit u_int
       Indicates the size of the parameter, i.e., 4.
-   ~~~~~~~~~~~
 
-## rfc6083 initialization
 
-   The adoption of rfc6083 mandates the adoption of DTLS encryption.
-   When both peers at INIT/INIT-ACK message have the rfc6083-Supported
-   option set, after completion of INIT/INIT-ACK, COOKIE-ECHO/COOKIE-ACK
-   the chunk authentication sequence and then the DTLS handshake sequence
-   must be started.
-   Reception of DATA chunk before DTLS handshake completion from either
-   peers will be replied with ABORT.
-   During the lifetime of the Association, only DTLS encrypted data chunks
-   are permitted.
-   Attempts to transfer plain data chunks will be replied with ABORT.
+## DTLS over SCTP initialization {#DTLS-init}
+
+   The adoption of DTLS over SCTP mandates the adoption of DTLS encryption.
+   When both peers at INIT/INIT-ACK message have the DTLS-Supported
+   option set, after completion of INIT/INIT-ACK,
+   COOKIE-ECHO/COOKIE-ACK the chunk authentication sequence and then
+   the DTLS handshake sequence must be started.  Reception of DATA
+   chunk before DTLS handshake completion from either peers will be
+   replied with ABORT.  During the lifetime of the Association, only
+   DTLS encrypted data chunks are permitted.  Attempts to transfer
+   plain data chunks will be replied with ABORT.
 
 ## Client Use Case
 
-   When a SCTP Client initiates an Association with rfc6083-Supported
-   option set, it can receive an INIT-ACK containing rfc6083-Supported
-   option, in that case the Association will proceed as specified in the
-   previous section.
-   If the peer replies with an INIT-ACK not containing rfc6083-Supported
-   option, then the Client can decide to keep on working with plain data
-   only or to ABORT the association.
+   When a SCTP Client initiates an Association with DTLS-Supported
+   option set, it can receive an INIT-ACK containing DTLS-Supported
+   option, in that case the Association will proceed as specified in
+   the previous section.  If the peer replies with an INIT-ACK not
+   containing DTLS-Supported option, then the Client can decide to
+   keep on working with plain data only or to ABORT the association.
 
 ## Server Use Case
 
-   When a SCTP Server supports rfc6083, when receiving an INIT chunk
-   with rfc6083-Supported option it must reply with INIT-ACK containing
-   the rfc6083-Supported option, then it must follow the sequence
-   for rfc6083 initialization and the related traffic case.
-   When a SCTP Server supports rfc6083, when receiving an INIT chunk
-   with no rfc6083-Supported option, it can decide to continue with
+   When a SCTP Server supports DTLS, when receiving an INIT chunk
+   with DTLS-Supported option it must reply with INIT-ACK containing
+   the DTLS-Supported option, then it must follow the sequence
+   for DTLS initialization {{DTLS-init}} and the related traffic case.
+   When a SCTP Server supports DTLS, when receiving an INIT chunk
+   with no DTLS-Supported option, it can decide to continue with
    creating an Association with plain data only or to ABORT it.
 
 
@@ -435,6 +447,23 @@ TLS:  Transport Layer Security
    provide privacy for the actual user message, none of these three are
    protected by DTLS.  They are sent as clear text, because they are
    part of the SCTP DATA chunk header.
+
+# Changes from RFC 6083
+
+This specification of DTLS over SCTP has the following changes
+compared to the DTLS over SCTP that defined in {{RFC6083}}.
+
+ * Defines a mechannism to fragment user message across multiple DTLS
+   records in secure way.
+
+ * Defines a SCTP paremters to negotiate support of DTLS over SCTP.
+
+ * Clarifies that DTLS handshake needs to occurr immediately after
+   SCTP handshake when this specification is supported.
+
+ * Requires that the usage of SCTP-AUTH {{RFC4895}} uses SHA-256 and
+   not SHA-1.
+
 
 #  Acknowledgments
 
