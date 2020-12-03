@@ -202,7 +202,7 @@ TLS:  Transport Layer Security
 
    For DTLS over SCTP, which automatically fragment and
    reassemble datagrams, there is no PMTU limitation.  However, DTLS/SCTP
-   MUST NOT write any record that exceeds the maximum record size of 2^14 bytes.
+   data chunks MUST NOT exceeds the size of 2^14 bytes.
 
 ## Replay Detection
 
@@ -253,7 +253,7 @@ TLS:  Transport Layer Security
 ~~~~~~~~~~~
 
    and where nonce is has a different value for each user message (e.g. a
-   counter). The new user_message' is the input to SCTP.
+   counter). The new 'user_message' is the input to SCTP.
 
    On the recieving size DTLS is used to decrypt the records and the
    fields uint64(length), uint64(nonce), and uint64(i) are
@@ -264,9 +264,10 @@ TLS:  Transport Layer Security
 
 ##  DTLS Connection Handling
 
-   Each DTLS connection MUST be established and terminated within the
-   same SCTP association.  A DTLS connection MUST NOT span multiple SCTP
-   associations.
+   The DTLS connection MUST be established at the beginning of the SCTP
+   association and be terminated when the SCTP association is terminated,
+   (i.e. there's only one DTLS connection within one association).
+   A DTLS connection MUST NOT span multiple SCTP associations.
 
 ##  Payload Protocol Identifier Usage
 
