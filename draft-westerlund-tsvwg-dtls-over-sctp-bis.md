@@ -331,9 +331,15 @@ TLS:  Transport Layer Security
 
 ##  SCTP-AUTH Hash Function
 
-   SHA-256 MUST be supported. SHA-1 MUST NOT be used.
+   The SHA-256 Message Digest Algorithm MUST be supported in the
+   SCTP-AUTH {{RFC4895}} implementation. SHA-1 MUST NOT be used when
+   using DTLS/SCTP. {{RFC4895}} requires support and inclusion of of
+   SHA-1 in the HMAC-ALGO parameter, thus to meet both requirements
+   the HMAC-ALGO parameter will include both SHA-256 and SHA-1 with
+   SHA-256 listed prior to SHA-1 to indicate the preferrence.
 
-##  Renegotiation
+
+## Renegotiation
 
    Renegotiation MUST NOT be used.
 
