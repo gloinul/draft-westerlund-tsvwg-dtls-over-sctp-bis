@@ -392,9 +392,9 @@ a new SCPT parameter is defined.
    ACK chunks.
 
 ~~~~~~~~~~~
-   Parameter Name                       Status      Type Value
-   ---------------------------------------------------------------
-   DTLS-Supported                       OPTIONAL    XXXXX (0x????)
+   Parameter Name                      Status      Type Value
+   --------------------------------------------------------------
+   DTLS-Supported                      OPTIONAL    XXXXX (0x????)
 ~~~~~~~~~~~
 
    At the initialization of the association, the sender of the INIT or
@@ -419,16 +419,16 @@ Length: 16 bit u_int
 
    The adoption of DTLS over SCTP according to the current description
    is meant to add to SCTP the option for transferring encrypted data.
-   When DTLS-option is enabled,  all data being transferred must be 
+   When DTLS-option is enabled,  all data being transferred must be
    protected by chunk authentication and DTLS encrypted.
-   Chunks that can be transferred will be specified in the CHUNK list 
+   Chunks that can be transferred will be specified in the CHUNK list
    parameter according to {{RFC4895}}.
    Error handling for authenticated chunks is according to {{RFC4895}}.
 
 ### DTLS over SCTP initialization {#DTLS-init}
 
    Initialization of DTLS/SCTP requires all the following options to
-   be part of the INIT/INIT-ACK handshake: 
+   be part of the INIT/INIT-ACK handshake:
 
    RANDOM: defined in {{RFC4895}}
 
@@ -436,7 +436,7 @@ Length: 16 bit u_int
 
    HMAC-ALGO: defined in {{RFC4895}}
 
-   DTLS-Supported: defined in {{DTLS-supported}} 
+   DTLS-Supported: defined in {{DTLS-supported}}
 
    When all the above options are present, the Association will
    start with support of DTLS/SCTP.
@@ -446,26 +446,26 @@ Length: 16 bit u_int
    discarded.
    Chunk bundling is permitted according to {{RFC4960}}
 
-   The extension described in this document is given by the following 
+   The extension described in this document is given by the following
    message exchange.
 
 ~~~~~~~~~~~
-    -------- INIT[RANDOM; CHUNKS; HMAC-ALGO; DTLS-Supported] -------->
-    <----- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; DTLS-Supported] -------
-    -------------------------- COOKIE-ECHO -------------------------->
-    <-------------------------- COOKIE-ACK ---------------------------
-    ------------------ AUTH; DATA[DTLS Handshake] ------------------->
+    -------- INIT[RANDOM; CHUNKS; HMAC-ALGO; DTLS-Supported] ------->
+    <----- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; DTLS-Supported] ------
+    -------------------------- COOKIE-ECHO ------------------------->
+    <-------------------------- COOKIE-ACK --------------------------
+    ------------------ AUTH; DATA[DTLS Handshake] ------------------>
                                 ...
                                 ...
-    <----------------- AUTH; DATA[DTLS Handshake] --------------------
+    <----------------- AUTH; DATA[DTLS Handshake] -------------------
 ~~~~~~~~~~~
 
 ### Client Use Case
 
    When a SCTP Client initiates an Association with DTLS/SCTP Mandatory
-   Options, it can receive an INIT-ACK also containing DTLS/SCTP 
-   Mandatory Options, in that case the Association will proceed as 
-   specified in the previous {{DTLS-init}} section.  
+   Options, it can receive an INIT-ACK also containing DTLS/SCTP
+   Mandatory Options, in that case the Association will proceed as
+   specified in the previous {{DTLS-init}} section.
    If the peer replies with an INIT-ACK not
    containing all DTLS/SCTP Mandatory Options, the Client can decide to
    keep on working with plain data only or to ABORT the association.
@@ -474,10 +474,10 @@ Length: 16 bit u_int
 
    If a SCTP Server supports DTLS/SCTP, when receiving an INIT chunk
    with all DTLS/SCTP Mandatory Options it must reply with INIT-ACK also
-   containing the all DTLS/SCTP Mandatory Options, then it must follow the 
+   containing the all DTLS/SCTP Mandatory Options, then it must follow the
    sequence for DTLS initialization {{DTLS-init}} and the related traffic case.
    If a SCTP Server supports DTLS, when receiving an INIT chunk
-   with not all all DTLS/SCTP Mandatory Options, it can decide to continue 
+   with not all all DTLS/SCTP Mandatory Options, it can decide to continue
    by creating an Association with plain data only or to ABORT it.
 
 
