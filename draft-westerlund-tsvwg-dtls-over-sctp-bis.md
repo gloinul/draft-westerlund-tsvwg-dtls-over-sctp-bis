@@ -385,15 +385,16 @@ To distunguish supporters of this specification compared to RFC 6083
 as well as enable certain improvements that simplifies implementation
 a new SCPT parameter is defined.
 
-### New option at INIT/INIT-ACK
+### New option at INIT/INIT-ACK {#DTLS-supported}
+
 
    The following new OPTIONAL parameter is added to the INIT and INIT
    ACK chunks.
 
 ~~~~~~~~~~~
-   Parameter Name                       Status     Type Value
-   -------------------------------------------------------------
-   DTLS-Supported                     OPTIONAL    XXXXX (0x????)
+   Parameter Name                       Status      Type Value
+   ---------------------------------------------------------------
+   DTLS-Supported                       OPTIONAL    XXXXX (0x????)
 ~~~~~~~~~~~
 
    At the initialization of the association, the sender of the INIT or
@@ -414,37 +415,70 @@ Type: 16 bit u_int
 Length: 16 bit u_int
       Indicates the size of the parameter, i.e., 4.
 
+## DTLS over SCTP service
+
+   The adoption of DTLS over SCTP according to the current description
+   is meant to add to SCTP the option for transferring encrypted data.
+   When DTLS-option is enabled,  all data being transferred must be 
+   protected by chunk authentication and DTLS encrypted.
+   Chunks that can be transferred will be specified in the CHUNK list 
+   parameter according to {{RFC4895}}.
+   Error handling for authenticated chunks is according to {{RFC4895}}.
 
 ### DTLS over SCTP initialization {#DTLS-init}
 
-   The adoption of DTLS over SCTP mandates the adoption of DTLS
-   encryption.  When both peers at INIT/INIT-ACK message have the
-   DTLS-Supported option set, after completion of INIT/INIT-ACK,
-   COOKIE-ECHO/COOKIE-ACK the chunk authentication sequence and then
-   the DTLS handshake sequence must be started.  Reception of DATA
-   chunk before DTLS handshake completion from either peers will be
-   replied with ABORT.  During the lifetime of the Association, only
-   DTLS encrypted data chunks are permitted.  Attempts to transfer
-   plain data chunks will be replied with ABORT.
+   Initialization of DTLS/SCTP requires all the following options to
+   be part of the INIT/INIT-ACK handshake: 
+
+   RANDOM: defined in {{RFC4895}}
+
+   CHUNKS: list of permitted chunks, defined in {{RFC4895}}
+
+   HMAC-ALGO: defined in {{RFC4895}}
+
+   DTLS-Supported: defined in {{DTLS-supported}} 
+
+   When all the above options are present, the Association will
+   start with support of DTLS/SCTP.
+   The set of options indicated are the DTLS/SCTP Mandatory Options.
+   No data transfer is permitted before DTLS handshake is complete.
+   Data chunks that are received before DTLS handshake will be silently
+   discarded.
+   Chunk bundling is permitted according to {{RFC4960}}
+
+   The extension described in this document is given by the following 
+   message exchange.
+
+~~~~~~~~~~~
+    -------- INIT[RANDOM; CHUNKS; HMAC-ALGO; DTLS-Supported] -------->
+    <----- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; DTLS-Supported] -------
+    -------------------------- COOKIE-ECHO -------------------------->
+    <-------------------------- COOKIE-ACK ---------------------------
+    ------------------ AUTH; DATA[DTLS Handshake] ------------------->
+                                ...
+                                ...
+    <----------------- AUTH; DATA[DTLS Handshake] --------------------
+~~~~~~~~~~~
 
 ### Client Use Case
 
-   When a SCTP Client initiates an Association with DTLS-Supported
-   option set, it can receive an INIT-ACK containing DTLS-Supported
-   option, in that case the Association will proceed as specified in
-   the previous section.  If the peer replies with an INIT-ACK not
-   containing DTLS-Supported option, then the Client can decide to
+   When a SCTP Client initiates an Association with DTLS/SCTP Mandatory
+   Options, it can receive an INIT-ACK also containing DTLS/SCTP 
+   Mandatory Options, in that case the Association will proceed as 
+   specified in the previous {{DTLS-init}} section.  
+   If the peer replies with an INIT-ACK not
+   containing all DTLS/SCTP Mandatory Options, the Client can decide to
    keep on working with plain data only or to ABORT the association.
 
 ### Server Use Case
 
-   When a SCTP Server supports DTLS, when receiving an INIT chunk
-   with DTLS-Supported option it must reply with INIT-ACK containing
-   the DTLS-Supported option, then it must follow the sequence
-   for DTLS initialization {{DTLS-init}} and the related traffic case.
-   When a SCTP Server supports DTLS, when receiving an INIT chunk
-   with no DTLS-Supported option, it can decide to continue with
-   creating an Association with plain data only or to ABORT it.
+   If a SCTP Server supports DTLS/SCTP, when receiving an INIT chunk
+   with all DTLS/SCTP Mandatory Options it must reply with INIT-ACK also
+   containing the all DTLS/SCTP Mandatory Options, then it must follow the 
+   sequence for DTLS initialization {{DTLS-init}} and the related traffic case.
+   If a SCTP Server supports DTLS, when receiving an INIT chunk
+   with not all all DTLS/SCTP Mandatory Options, it can decide to continue 
+   by creating an Association with plain data only or to ABORT it.
 
 
 #  IANA Considerations
