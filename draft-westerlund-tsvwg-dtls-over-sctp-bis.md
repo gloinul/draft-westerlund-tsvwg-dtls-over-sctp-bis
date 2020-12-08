@@ -42,6 +42,7 @@ normative:
   RFC7540:
   RFC8174:
   RFC8260:
+  RFC8446:
   I-D.ietf-tls-dtls13:
 
 --- abstract
@@ -280,7 +281,9 @@ TLS:  Transport Layer Security
    removed. The user_message is valid if all DTLS records are valid,
    uint64(nonce) is the same in all records, uint64(i) is a counter
    from 0 to the number of records, and uint64(length) is the length
-   of the resulting user_message.
+   of the resulting user_message. If a DTLS decryption fails or
+   a user_message is not valid, the DTLS connection and the SCTP
+   association are terminated.
 
 ##  DTLS Connection Handling
 
@@ -374,7 +377,9 @@ TLS:  Transport Layer Security
    empty and MUST be used when establishing a DTLS connection.
    Whenever the master key changes, a 64-byte shared secret is derived
    from every master secret and provided as a new endpoint-pair shared
-   secret by using the exporter described in {{RFC5705}}.  The
+   secret by using the TLS-Exporter. For DTLS 1.3, the exporter is
+   described in {{RFC8446}}. For DTLS 1.2, the exporter
+   is described in {{RFC5705}}. The
    exporter MUST use the label given in Section 5 and no context.  The
    new Shared Key Identifier MUST be the old Shared Key Identifier
    incremented by 1.  If the old one is 65535, the new one MUST be 1.
