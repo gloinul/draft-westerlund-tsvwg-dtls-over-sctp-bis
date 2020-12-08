@@ -50,8 +50,8 @@ normative:
 --- abstract
 
 This document describes a proposed update for the usage of the
-Datagram Transport Layer Security (DTLS) protocol over the Stream
-Control Transmission Protocol (SCTP).
+Datagram Transport Layer Security (DTLS) protocol to protect user
+messages sent over the Stream Control Transmission Protocol (SCTP).
 
 DTLS over SCTP provides communications privacy for applications that
 use SCTP as their transport protocol and allows client/server
@@ -60,10 +60,12 @@ eavesdropping and detect tampering or message forgery.
 
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions. This document intend to
-obsolete RFC 6083 and remove the limitation on user message size to a
+obsolete RFC 6083 and removes the limitation on user message size of a
 maximum of 16384 bytes by defining a secure user message fragmentation
-so that multiple DTLS records can be used. It also updates both the
-DTLS versions to use as well as the HMAC algorithms for SCTP-AUTH.
+so that multiple DTLS records can be used to protect a single user
+message. It further updates the DTLS versions to use, as well as the
+HMAC algorithms for SCTP-AUTH, and simplifies the implementation by
+some stricter requirements on the procedures.
 
 --- middle
 
@@ -76,10 +78,13 @@ Security (DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}}, over
 the Stream Control Transmission Protocol (SCTP), as defined in
 {{RFC4960}}.
 
-DTLS over SCTP provides communications privacy for applications that
-use SCTP as their transport protocol and allows client/server
-applications to communicate in a way that is designed to prevent
-eavesdropping and detect tampering or message forgery.
+DTLS over SCTP (DTLS/SCTP) provides communications privacy for
+applications that use SCTP as their transport protocol and allows
+client/server applications to communicate in a way that is designed to
+prevent eavesdropping and detect tampering or message forgery. It also
+provides a convinient keying mechanism for SCTP-Auth {{RFC4895}} that
+prevents tampering with SCTP chunks after the DTLS handshake has
+completed.
 
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions.
@@ -122,9 +127,6 @@ However, {{RFC6083}} had the following limitations:
    o The maximum user message size is 2^14 bytes, which is a single
       DTLS record limit.
 
-   o The DTLS user cannot perform the SCTP-AUTH key management because
-      this is done by the DTLS layer.
-
 This update that replaces RFC6083 defines the following changes:
 
    * Removes the limitations on user messages sizes by defining a
@@ -138,6 +140,10 @@ This update that replaces RFC6083 defines the following changes:
 
    * Recommends support of {{RFC8260}} to enable interleaving of large
      SCTP user messages to avoid scheduling issues.
+
+   * Applies stricter requirements on always using DTLS for all user
+     messages in the SCTP association. By defining a new SCTP parameter
+     peers can determine these stricter requirements apply.
 
 The method described in this document requires that the SCTP
 implementation supports the optional feature of fragmentation of SCTP
@@ -215,16 +221,24 @@ TLS:  Transport Layer Security
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
    be used.
 
-## Message Sizes
+## Message Sizes {#Msg-size}
 
-   DTLS over SCTP, automatically fragment and reassemble user
+   DTLS/SCTP, automatically fragment and reassemble user
    messages. There are two different fragmentations mechanism, first
-   to fragment the user messages into DTLS records, which have a
-   maximum record size of 2^14 bytes. As each record result in a
-   certain overhead using records of maximum size are recommended to
-   minimize the overhead. However, any sizes are allowed to be
-   used. The sequence of DTLS records is then fragmented into DATA
-   Chunks to fit the path MTU by SCTP.
+   to fragment the user messages into DTLS records, where each DTLS
+   1.3 record allows a maximum of 2^14 protected bytes. The
+   fragmentation mechanism headers requires 16 bytes, thus limiting
+   each DTLS 1.3 record to contain a maximum of 2^14-16 = 16368 bytes
+   of user message.
+
+   Each DTLS record adds additional overhead, thus using records of
+   maximum possible size are recommended to minimize the overhead. The
+   sequence of DTLS records is then fragmented into DATA Chunks to fit
+   the path MTU by SCTP. The largest possible user messages the
+   mechanism defined in this specification can protect is 2^64-1
+   bytes.
+
+   Note: Buffering for protection operations can have practical limits.
 
 ## Replay Detection
 
@@ -236,13 +250,13 @@ TLS:  Transport Layer Security
 ##  Path MTU Discovery
 
    SCTP provides Path MTU discovery and fragmentation/reassembly for
-   user messages.  According to Section 3.2, DTLS can send maximum sized
-   messages.  Therefore, Path MTU discovery of DTLS MUST NOT be used.
+   user messages.  According to {{Msg-size}}, DTLS can send maximum sized
+   DTLS Records.  Therefore, Path MTU discovery of DTLS MUST NOT be used.
 
 ##  Retransmission of Messages
 
    SCTP provides a reliable and in-sequence transport service for DTLS
-   messages that require it.  See Section 4.4.  Therefore, DTLS
+   messages that require it.  See {{Stream-Usage}}.  Therefore, DTLS
    procedures for retransmissions MUST NOT be used.
 
 #  SCTP Considerations
@@ -305,7 +319,7 @@ TLS:  Transport Layer Security
 
    This means, in particular, that there is no specific PPID for DTLS.
 
-##  Stream Usage
+##  Stream Usage {#Stream-Usage}
 
    All DTLS messages of the ChangeCipherSpec, Alert, or Handshake
    protocol MUST be transported on stream 0 with unlimited reliability
@@ -379,7 +393,7 @@ TLS:  Transport Layer Security
    Whenever the master key changes, a 64-byte shared secret is derived
    from every master secret and provided as a new endpoint-pair shared
    secret by using the exporter described in {{RFC5705}}.  The
-   exporter MUST use the label given in Section 5 and no context.  The
+   exporter MUST use the label given in {{IANA-Consideration}} and no context.  The
    new Shared Key Identifier MUST be the old Shared Key Identifier
    incremented by 1.  If the old one is 65535, the new one MUST be 1.
 
@@ -502,7 +516,7 @@ Length: 16 bit u_int
    plain data only or to ABORT it.
 
 
-#  IANA Considerations
+#  IANA Considerations {#IANA-Consideration}
 
 ## TLS Exporter Label
 
@@ -618,11 +632,12 @@ compared to the DTLS over SCTP that defined in {{RFC6083}}.
 
  * Defines a SCTP parameters to negotiate support of DTLS over SCTP.
 
- * Clarifies that DTLS handshake needs to occur immediately after
-   SCTP handshake when this specification is supported.
+ * Requires that the DTLS handshake needs to occur immediately after
+   SCTP handshake prior to any other user messages when this
+   specification is supported.
 
- * Requires that the usage of SCTP-AUTH {{RFC4895}} uses SHA-256 and
-   not SHA-1.
+ * Requires that SHA-256 is supported in SCTP-AUTH {{RFC4895}} when
+   combined with DTLS/SCTP. Similarily SHA-1 is forbidden to be used.
 
 
 #  Acknowledgments
