@@ -30,6 +30,9 @@ informative:
   RFC3436:
   RFC5061:
   RFC6083:
+  RFC6973:
+  RFC7258:
+
 
 normative:
   RFC2119:
@@ -214,18 +217,19 @@ TLS:  Transport Layer Security
 
 ## Message Sizes
 
-   DTLS over SCTP, automatically fragment and reassemble user messages. 
-   There are two different fragmentations mechanism, first to fragment the
-   user messages into DTLS records, which have a maximum record size of 2^14
-   bytes. As each record result in a certain overhead using records of maximum
-   size are recommended to minimize the overhead. However, any sizes are allowed
-   to be used. The sequence of DTLS records is then fragmented into DATA Chunks 
-   to fit the path MTU by SCTP. 
+   DTLS over SCTP, automatically fragment and reassemble user
+   messages. There are two different fragmentations mechanism, first
+   to fragment the user messages into DTLS records, which have a
+   maximum record size of 2^14 bytes. As each record result in a
+   certain overhead using records of maximum size are recommended to
+   minimize the overhead. However, any sizes are allowed to be
+   used. The sequence of DTLS records is then fragmented into DATA
+   Chunks to fit the path MTU by SCTP.
 
 ## Replay Detection
 
    The replay detection of DTLS may result in the DTLS layer dropping
-   messages.  Since DTLS/SCTP provides a reliable service if requested
+   messages. Since DTLS/SCTP provides a reliable service if requested
    by the application, replay detection cannot be used.  Therefore,
    replay detection of DTLS MUST NOT be used.
 
@@ -517,61 +521,63 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
 
 ##  Cryptographic Considerations
 
-   When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2
-   MUST be configured to disable options known to provide
-   insufficient security. HTTP/2 {{RFC7540}} gives good minimum
-   requirements based on the attacks that where publicly known
-   in 2015. DTLS 1.3 {{I-D.ietf-tls-dtls13}} only define strong
-   algorithms without major weaknesses.
-   
+   When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2 MUST be
+   configured to disable options known to provide insufficient
+   security. HTTP/2 {{RFC7540}} gives good minimum requirements based
+   on the attacks that where publicly known in 2015. DTLS 1.3
+   {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
+   weaknesses.
+
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
    have been reached. HMAC-SHA-256 as used in SCTP-AUTH has a very
    large tag length and very good integrity properties. The SCTP-AUTH
-   key can be used until the DTLS handshake is re-run at which
-   point a new SCTP-AUTH key is derived using the TLS-Exporter.
-   
-   DTLS/SCTP is in many deployments replacing IPsec. For IPsec,
-   NIST (US), BSI (Germany), and ANSSI (France) recommends very frequent
+   key can be used until the DTLS handshake is re-run at which point a
+   new SCTP-AUTH key is derived using the TLS-Exporter.
+
+   DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
+   (US), BSI (Germany), and ANSSI (France) recommends very frequent
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
-   writes "It is recommended to force the periodic renewal of the keys,
-   e.g. every hour and every 100 GB of data, in order to limit the impact
-   of a key compromise.". This is RECOMMENDED also for DTLS/SCTP.
-   
+   writes "It is recommended to force the periodic renewal of the
+   keys, e.g. every hour and every 100 GB of data, in order to limit
+   the impact of a key compromise.". This is RECOMMENDED also for
+   DTLS/SCTP.
+
 ##  Downgrade Attacks
 
    A peer supporting DTLS/SCTP according to this specification,
-   DTLS/SCTP according to {{RFC6083}} and/or SCTP without DTLS may
-   be vulnerable to downgrade attacks where on on-path attacker
-   interferes with the protocol setup to lower or disable
-   security. If possible, it is RECOMMENDED that the peers have
-   a policy only allowing DTLS/SCTP according to this specification.
+   DTLS/SCTP according to {{RFC6083}} and/or SCTP without DTLS may be
+   vulnerable to downgrade attacks where on on-path attacker
+   interferes with the protocol setup to lower or disable security. If
+   possible, it is RECOMMENDED that the peers have a policy only
+   allowing DTLS/SCTP according to this specification.
 
 ##  Authentication and Policy Decisions
 
-   DTLS/SCTP MUST be mutually authenticated. It is RECOMMENDED
-   that DTLS/SCTP is used with certificate based authentication.
-   All security decisions MUST be based on the peer's authenticated
+   DTLS/SCTP MUST be mutually authenticated. It is RECOMMENDED that
+   DTLS/SCTP is used with certificate based authentication.  All
+   security decisions MUST be based on the peer's authenticated
    identity, not on its transport layer identity.
 
    It is possible to authenticate DTLS endpoints based on IP addresses
-   in certificates. SCTP associations can use multiple IP addresses per
-   SCTP endpoint. Therefore, it is possible that DTLS records will be
-   sent from a different source IP address or to a different destination
-   IP address than that originally authenticated. This is not a problem
-   provided that no security decisions are made based on the source or
-   destination IP addresses.
+   in certificates. SCTP associations can use multiple IP addresses
+   per SCTP endpoint. Therefore, it is possible that DTLS records will
+   be sent from a different source IP address or to a different
+   destination IP address than that originally authenticated. This is
+   not a problem provided that no security decisions are made based on
+   the source or destination IP addresses.
 
 ##  Privacy Considerations
 
-   {{RFC6973}} suggests that the privacy considerations of IETF protocols
-   be documented.
+   {{RFC6973}} suggests that the privacy considerations of IETF
+   protocols be documented.
 
-   For each SCTP user message, the user also provides a stream identifier,
-   a flag to indicate whether the message is sent ordered or
-   unordered, and a payload protocol identifier.  Although DTLS/SCTP
-   provides privacy for the actual user message, the other three
-   information fields are not confidentiality protected.  They are
-   sent as clear text, because they are part of the SCTP DATA chunk header.
+   For each SCTP user message, the user also provides a stream
+   identifier, a flag to indicate whether the message is sent ordered
+   or unordered, and a payload protocol identifier.  Although
+   DTLS/SCTP provides privacy for the actual user message, the other
+   three information fields are not confidentiality protected.  They
+   are sent as clear text, because they are part of the SCTP DATA
+   chunk header.
 
    It is RECOMMENDED that DTLS/SCTP is used with certificate based
    authentication in DTLS 1.3 {{I-D.ietf-tls-dtls13}} to provide
@@ -582,24 +588,25 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
 
 ##  Pervasive Monitoring
 
-   As required by {{RFC7258}}, work on IETF protocols needs to consider
-   the effects of pervasive monitoring and mitigate them when possible.
+   As required by {{RFC7258}}, work on IETF protocols needs to
+   consider the effects of pervasive monitoring and mitigate them when
+   possible.
 
    Pervasive Monitoring is widespread surveillance of users.  By
-   encrypting more information including user identities, DTLS
-   1.3 offers much better protection against pervasive monitoring. 
+   encrypting more information including user identities, DTLS 1.3
+   offers much better protection against pervasive monitoring.
 
-   Massive pervasive monitoring attacks relying on key
-   exchange without forward secrecy has been reported. By mandating
-   perfect forward secrecy, DTLS/SCTP effectively mitigate many forms of
+   Massive pervasive monitoring attacks relying on key exchange
+   without forward secrecy has been reported. By mandating perfect
+   forward secrecy, DTLS/SCTP effectively mitigate many forms of
    passive pervasive monitoring and limits the amount of compromised
    data due to key compromise.
 
-   In addition to the privacy attacks discussed above, surveillance on a
-   large scale may enable tracking of a user over a wider geographical
-   area and across different access networks.  Using information from
-   DTLS/SCTP together with information gathered from other protocols
-   increases the risk of identifying individual users.
+   In addition to the privacy attacks discussed above, surveillance on
+   a large scale may enable tracking of a user over a wider
+   geographical area and across different access networks.  Using
+   information from DTLS/SCTP together with information gathered from
+   other protocols increases the risk of identifying individual users.
 
 # Changes from RFC 6083
 
