@@ -123,7 +123,7 @@ limitations of TLS over SCTP.  In particular, DTLS/SCTP supports:
    o  the dynamic address reconfiguration extension as defined in
       {{RFC5061}}.
 
-However, {{RFC6083}} had the following limitations:
+However, {{RFC6083}} had the following limitation:
 
    o The maximum user message size is 2^14 bytes, which is a single
       DTLS record limit.
