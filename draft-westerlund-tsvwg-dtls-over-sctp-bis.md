@@ -303,11 +303,11 @@ TLS:  Transport Layer Security
 
 ##  Stream Usage
 
-   All DTLS messages of the ChangeCipherSpec, Alert, or Handshake
-   protocol MUST be transported on stream 0 with unlimited reliability
+   All DTLS messages of the Handshake, Alert, or ChangeCipherSpec protocol
+   (DTLS 1.2 only) MUST be transported on stream 0 with unlimited reliability
    and with the ordered delivery feature.
 
-   DTLS messages of the ApplicationData protocol SHOULD use multiple
+   DTLS messages of the record protocol SHOULD use multiple
    streams other than stream 0; they MAY use stream 0 for everything if
    they do not care about minimizing head of line blocking.
 
