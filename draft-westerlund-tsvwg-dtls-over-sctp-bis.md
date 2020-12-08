@@ -335,10 +335,11 @@ TLS:  Transport Layer Security
 ##  Chunk Handling
 
    DATA chunks of SCTP MUST be sent in an authenticated way as
-   described in {{RFC4895}}.  Other chunks MAY be sent in an
-   authenticated way.  This makes sure that an attacker cannot modify
-   the stream in which a message is sent or affect the
-   ordered/unordered delivery of the message.
+   described in {{RFC4895}}.  All other chunks that may be
+   authenticated, i.e. all chunks listed in the Chunk List Parameter
+   {{RFC4895}}, MUST also be sent in an authenticated way.  This makes
+   sure that an attacker cannot modify the stream in which a message
+   is sent or affect the ordered/unordered delivery of the message.
 
    If PR-SCTP as defined in {{RFC3758}} is used, FORWARD-TSN chunks
    MUST also be sent in an authenticated way as described in
@@ -346,11 +347,11 @@ TLS:  Transport Layer Security
    attacker to drop messages and use forged FORWARD-TSN, SACK, and/or
    SHUTDOWN chunks to hide this dropping.
 
-   I-DATA chunks as defined in {{RFC8260}} are RECOMMENDED to be
+   I-DATA chunk type as defined in {{RFC8260}} is RECOMMENDED to be
    supported to avoid some of the down sides that large user messages
    have on blocking transmission of later arriving high priority user
    messages. However, the support is not mandated and negotiated
-   independently from DTLS over SCTP. If I-DATA chunks are used then
+   independently from DTLS/SCTP. If I-DATA chunks are used then
    they MUST be sent in an authenticated way as described in
    {{RFC4895}}.
 
@@ -368,7 +369,7 @@ TLS:  Transport Layer Security
 
    Renegotiation MUST NOT be used.
 
-##  Handshake
+##  Handshake {#HANDSHAKE}
 
    A DTLS implementation discards DTLS messages from older epochs
    after some time, as described in Section 4.1 of {{RFC4347}}.  This
@@ -391,22 +392,27 @@ TLS:  Transport Layer Security
 
 ##  Handling of Endpoint-Pair Shared Secrets
 
-   The endpoint-pair shared secret for Shared Key Identifier 0 is
-   empty and MUST be used when establishing a DTLS connection.
-   Whenever the master key changes, a 64-byte shared secret is derived
-   from every master secret and provided as a new endpoint-pair shared
-   secret by using the TLS-Exporter. For DTLS 1.3, the exporter is
-   described in {{RFC8446}}. For DTLS 1.2, the exporter is described
-   in {{RFC5705}}. The exporter MUST use the label given in Section
-   {{IANA-Consideration}} and no context.  The new Shared Key
-   Identifier MUST be the old Shared Key Identifier incremented by 1.
-   If the old one is 65535, the new one MUST be 1.
+SCTP-AUTH {{RFC4895}} is keyed using Endpoint-Pair Shared Secrets. In
+SCTP associations where DTLS is used, DTLS is used to establish these
+secrets. The endpoints MUST NOT use another mechanism for establishing
+shared secrets for SCTP-AUTH.
 
-   Before sending the Finished message, the active SCTP-AUTH key MUST
-   be switched to the new one.
+The endpoint-pair shared secret for Shared Key Identifier 0 is empty
+and MUST be used when establishing a DTLS connection.  Whenever the
+master key changes, a 64-byte shared secret is derived from every
+master secret and provided as a new endpoint-pair shared secret by
+using the TLS-Exporter. For DTLS 1.3, the exporter is described in
+{{RFC8446}}. For DTLS 1.2, the exporter is described in
+{{RFC5705}}. The exporter MUST use the label given in Section
+{{IANA-Consideration}} and no context.  The new Shared Key Identifier
+MUST be the old Shared Key Identifier incremented by 1.  If the old
+one is 65535, the new one MUST be 1.
 
-   Once the corresponding Finished message from the peer has been
-   received, the old SCTP-AUTH key SHOULD be removed.
+Before sending the DTLS Finished message, the active SCTP-AUTH key
+MUST be switched to the new one.
+
+Once the corresponding Finished message from the peer has been
+received, the old SCTP-AUTH key SHOULD be removed.
 
 ##  Shutdown
 
@@ -419,7 +425,7 @@ TLS:  Transport Layer Security
    user messages that are buffered in the SCTP layer MUST be read and
    processed by DTLS.
 
-## Negotiation of DTLS support
+## Negotiation of DTLS support {#Negotiation}
 
 To distinguish supporters of this specification compared to RFC 6083
 as well as enable certain improvements that simplifies implementation
