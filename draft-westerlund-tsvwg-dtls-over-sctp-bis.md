@@ -539,10 +539,10 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    identity, not on its transport layer identity.
 
    It is possible to authenticate DTLS endpoints based on IP addresses
-   in certificates.  SCTP associations can use multiple IP addresses per
-   SCTP endpoint.  Therefore, it is possible that DTLS records will be
+   in certificates. SCTP associations can use multiple IP addresses per
+   SCTP endpoint. Therefore, it is possible that DTLS records will be
    sent from a different source IP address or to a different destination
-   IP adress than than that originally authenticated.  This is not a problem
+   IP adress than than that originally authenticated. This is not a problem
    provided that no security decisions are made based on the source or
    destination IP adresses.
 
@@ -557,10 +557,6 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    provides privacy for the actual user message, the other three
    information fields are not confidentiality protected.  They are
    sent as clear text, because they are part of the SCTP DATA chunk header.
-
-   It is RECOMMENDED that DTLS/SCTP is used with certificate based
-   authentication in DTLS 1.3 {{I-D.ietf-tls-dtls13}} to provide
-   identity protection.
 
    It is RECOMMENDED that DTLS/SCTP is used with certificate based
    authentication in DTLS 1.3 {{I-D.ietf-tls-dtls13}} to provide
@@ -580,8 +576,8 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
 
    Massive pervasive monitoring attacks relying on key
    exchange without forward secrecy has been reported. By mandating
-   perfect forward secrecy, DTLS/SCTP effectively mitigate all forms
-   of passive pervasive monitoring and limits the amount of compromised
+   perfect forward secrecy, DTLS/SCTP effectively mitigate many forms of
+   passive pervasive monitoring and limits the amount of compromised
    data due to key compromise.
 
    In addition to the privacy attacks discussed above, surveillance on a
