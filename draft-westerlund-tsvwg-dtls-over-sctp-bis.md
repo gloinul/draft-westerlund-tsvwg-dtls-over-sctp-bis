@@ -275,7 +275,7 @@ TLS:  Transport Layer Security
    and where nonce is has a different value for each user message
    (e.g. a counter). The new user_message' is the input to SCTP.
 
-   On the recieving size DTLS is used to decrypt the records and the
+   On the receiving side DTLS is used to decrypt the records and the
    fields uint64(length), uint64(nonce), and uint64(i) are
    removed. The user_message is valid if all DTLS records are valid,
    uint64(nonce) is the same in all records, uint64(i) is a counter
@@ -328,7 +328,7 @@ TLS:  Transport Layer Security
    I-DATA chunks as defined in {{RFC8260}} are RECOMMENDED to be
    supported to avoid some of the down sides that large user messages
    have on blocking transmission of later arriving high priority user
-   messages. However, the supporte is not mandated and negotiated
+   messages. However, the support is not mandated and negotiated
    independently from DTLS over SCTP. If I-DATA chunks are used then
    they MUST be sent in an authenticated way as described in
    {{RFC4895}}.
@@ -338,9 +338,9 @@ TLS:  Transport Layer Security
    The SHA-256 Message Digest Algorithm MUST be supported in the
    SCTP-AUTH {{RFC4895}} implementation. SHA-1 MUST NOT be used when
    using DTLS/SCTP. {{RFC4895}} requires support and inclusion of of
-   SHA-1 in the HMAC-ALGO parameter, thus to meet both requirements
+   SHA-1 in the HMAC-ALGO parameter, thus, to meet both requirements
    the HMAC-ALGO parameter will include both SHA-256 and SHA-1 with
-   SHA-256 listed prior to SHA-1 to indicate the preferrence.
+   SHA-256 listed prior to SHA-1 to indicate the preference.
 
 
 ## Renegotiation
@@ -396,9 +396,9 @@ TLS:  Transport Layer Security
    user messages that are buffered in the SCTP layer MUST be read and
    processed by DTLS.
 
-## Negotation of DTLS support
+## Negotiation of DTLS support
 
-To distunguish supporters of this specification compared to RFC 6083
+To distinguish supporters of this specification compared to RFC 6083
 as well as enable certain improvements that simplifies implementation
 a new SCPT parameter is defined.
 
@@ -493,7 +493,7 @@ Length: 16 bit u_int
    also containing the all DTLS/SCTP Mandatory Options, then it must
    follow the sequence for DTLS initialization {{DTLS-init}} and the
    related traffic case.  If a SCTP Server supports DTLS, when
-   receiving an INIT chunk with not all all DTLS/SCTP Mandatory
+   receiving an INIT chunk with not all DTLS/SCTP Mandatory
    Options, it can decide to continue by creating an Association with
    plain data only or to ABORT it.
 
@@ -518,16 +518,16 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2
    MUST be configured to disable options known to provide
    insufficient security. HTTP/2 {{RFC7540}} gives good minimum
-   requirements based on the attacks that where publically known
+   requirements based on the attacks that where publicly known
    in 2015. DTLS 1.3 {{I-D.ietf-tls-dtls13}} only define strong
    algorithms without major weaknesses.
 
 ##  Downgrade Attacks
 
    A peer supporting DTLS/SCTP according to this specification,
-   DTLS/SCTP accoring to {{RFC6083}} and/or SCTP without DTLS may
+   DTLS/SCTP according to {{RFC6083}} and/or SCTP without DTLS may
    be vulnerable to downgrade attacks where on on-path attacker
-   interfares with the protocol setup to lower or disable
+   interferes with the protocol setup to lower or disable
    security. If possible, it is RECOMMENDED that the peers have
    a policy only allowing DTLS/SCTP according to this specification.
 
@@ -542,9 +542,9 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    in certificates. SCTP associations can use multiple IP addresses per
    SCTP endpoint. Therefore, it is possible that DTLS records will be
    sent from a different source IP address or to a different destination
-   IP adress than than that originally authenticated. This is not a problem
+   IP address than that originally authenticated. This is not a problem
    provided that no security decisions are made based on the source or
-   destination IP adresses.
+   destination IP addresses.
 
 ##  Privacy Considerations
 
@@ -591,12 +591,12 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
 This specification of DTLS over SCTP has the following changes
 compared to the DTLS over SCTP that defined in {{RFC6083}}.
 
- * Defines a mechannism to fragment user message across multiple DTLS
+ * Defines a mechanism to fragment user message across multiple DTLS
    records in secure way.
 
- * Defines a SCTP paremters to negotiate support of DTLS over SCTP.
+ * Defines a SCTP parameters to negotiate support of DTLS over SCTP.
 
- * Clarifies that DTLS handshake needs to occurr immediately after
+ * Clarifies that DTLS handshake needs to occur immediately after
    SCTP handshake when this specification is supported.
 
  * Requires that the usage of SCTP-AUTH {{RFC4895}} uses SHA-256 and
