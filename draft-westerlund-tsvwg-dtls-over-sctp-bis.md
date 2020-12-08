@@ -515,13 +515,28 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    The security considerations given in {{I-D.ietf-tls-dtls13}},
    {{RFC4895}}, and {{RFC4960}} also apply to this document.
 
+##  Cryptographic Considerations
+
    When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2
    MUST be configured to disable options known to provide
    insufficient security. HTTP/2 {{RFC7540}} gives good minimum
    requirements based on the attacks that where publicly known
    in 2015. DTLS 1.3 {{I-D.ietf-tls-dtls13}} only define strong
    algorithms without major weaknesses.
-
+   
+   DTLS 1.3 requires rekeying before algorithm specific AEAD limits
+   have been reached. HMAC-SHA-256 as used in SCTP-AUTH has a very
+   large tag length and very good integrity properties. The SCTP-AUTH
+   key can be used until the DTLS handshake is re-run at which
+   point a new SCTP-AUTH key is derived using the TLS-Exporter.
+   
+   DTLS/SCTP is in many deployments replacing IPsec. For IPsec,
+   NIST (US), BSI (Germany), and ANSSI (France) recommends very frequent
+   re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
+   writes "It is recommended to force the periodic renewal of the keys,
+   e.g. every hour and every 100 GB of data, in order to limit the impact
+   of a key compromise.". This is RECOMMENDED also for DTLS/SCTP.
+   
 ##  Downgrade Attacks
 
    A peer supporting DTLS/SCTP according to this specification,
