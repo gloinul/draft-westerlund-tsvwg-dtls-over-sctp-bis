@@ -510,29 +510,85 @@ RFC 6083 defined a TLS Exporter Label registry as described in
 
 IANA is requested to register a new SCTP parameter "DTLS-support".
 
-
 #  Security Considerations
 
    The security considerations given in {{I-D.ietf-tls-dtls13}},
    {{RFC4895}}, and {{RFC4960}} also apply to this document.
 
+   When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2
+   MUST be configured to disable options known to provide
+   insufficient security. HTTP/2 {{RFC7540}} gives good minimum
+   requirements based on the attacks that where publically known
+   in 2015. DTLS 1.3 {{I-D.ietf-tls-dtls13}} only define strong
+   algorithms without major weaknesses.
+
+##  Downgrade Attacks
+
+   A peer supporting DTLS/SCTP according to this specification,
+   DTLS/SCTP accoring to {{RFC6083}} and/or SCTP without DTLS may
+   be vulnerable to downgrade attacks where on on-path attacker
+   interfares with the protocol setup to lower or disable
+   security. If possible, it is RECOMMENDED that the peers have
+   a policy only allowing DTLS/SCTP according to this specification.
+
+##  Authentication and Policy Decisions
+
+   DTLS/SCTP MUST be mutually authenticated. It is RECOMMENDED
+   that DTLS/SCTP is used with certificate based authentication.
+   All security decisions MUST be based on the peer's authenticated
+   identity, not on its transport layer identity.
+
    It is possible to authenticate DTLS endpoints based on IP addresses
-   in certificates.  SCTP associations can use multiple addresses per
+   in certificates.  SCTP associations can use multiple IP addresses per
    SCTP endpoint.  Therefore, it is possible that DTLS records will be
-   sent from a different IP address than that originally
-   authenticated.  This is not a problem provided that no security
-   decisions are made based on that IP address.  This is a special
-   case of a general rule: all decisions should be based on the peer's
-   authenticated identity, not on its transport layer identity.
+   sent from a different source IP address or to a different destination
+   IP adress than than that originally authenticated.  This is not a problem
+   provided that no security decisions are made based on the source or
+   destination IP adresses.
 
-   For each message, the SCTP user also provides a stream identifier,
+##  Privacy Considerations
+
+   {{RFC6973}} suggests that the privacy considerations of IETF protocols
+   be documented.
+
+   For each SCTP user message, the user also provides a stream identifier,
    a flag to indicate whether the message is sent ordered or
-   unordered, and a payload protocol identifier.  Although DTLS can be
-   used to provide privacy for the actual user message, none of these
-   three are protected by DTLS.  They are sent as clear text, because
-   they are part of the SCTP DATA chunk header.
+   unordered, and a payload protocol identifier.  Although DTLS/SCTP
+   provides privacy for the actual user message, the other three
+   information fields are not confidentiality protected.  They are
+   sent as clear text, because they are part of the SCTP DATA chunk header.
 
-   Downgrade discussion to be added.
+   It is RECOMMENDED that DTLS/SCTP is used with certificate based
+   authentication in DTLS 1.3 {{I-D.ietf-tls-dtls13}} to provide
+   identity protection.
+
+   It is RECOMMENDED that DTLS/SCTP is used with certificate based
+   authentication in DTLS 1.3 {{I-D.ietf-tls-dtls13}} to provide
+   identity protection. DTLS/SCTP MUST be used with a key exchange
+   method providing Perfect Forward Secrecy. Perfect Forward Secrecy
+   significantly limits the amount of data that can be compromised due
+   to key compromise.
+
+##  Pervasive Monitoring
+
+   As required by {{RFC7258}}, work on IETF protocols needs to consider
+   the effects of pervasive monitoring and mitigate them when possible.
+
+   Pervasive Monitoring is widespread surveillance of users.  By
+   encrypting more information including user identities, DTLS
+   1.3 offers much better protection against pervasive monitoring. 
+
+   Massive pervasive monitoring attacks relying on key
+   exchange without forward secrecy has been reported. By mandating
+   perfect forward secrecy, DTLS/SCTP effectively mitigate all forms
+   of passive pervasive monitoring and limits the amount of compromised
+   data due to key compromise.
+
+   In addition to the privacy attacks discussed above, surveillance on a
+   large scale may enable tracking of a user over a wider geographical
+   area and across different access networks.  Using information from
+   DTLS/SCTP together with information gathered from other protocols
+   increases the risk of identifying individual users.
 
 # Changes from RFC 6083
 
