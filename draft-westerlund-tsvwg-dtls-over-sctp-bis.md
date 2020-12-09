@@ -79,10 +79,11 @@ Security (DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}}, over
 the Stream Control Transmission Protocol (SCTP), as defined in
 {{RFC4960}}.
 
-DTLS over SCTP (DTLS/SCTP) provides communications privacy for
-applications that use SCTP as their transport protocol and allows
-client/server applications to communicate in a way that is designed to
-prevent eavesdropping and detect tampering or message forgery. It also
+DTLS over SCTP provides mutual authentication, confidentiality,
+integrity protection, and replay protection for applications that
+use SCTP as their transport protocol and allows client/server
+applications to communicate in a way that is designed to give
+communications privacy and to prevent eavesdropping and detect tampering or message forgery. It also
 provides a convinient keying mechanism for SCTP-Auth {{RFC4895}} that
 prevents tampering with SCTP chunks after the DTLS handshake has
 completed.
