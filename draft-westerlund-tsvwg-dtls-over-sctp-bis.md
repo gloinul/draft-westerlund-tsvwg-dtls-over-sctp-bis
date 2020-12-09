@@ -33,6 +33,15 @@ informative:
   RFC6973:
   RFC7258:
 
+  ANSSI-DAT-NT-003:
+    target: https://www.ssi.gouv.fr/uploads/2015/09/NT_IPsec_EN.pdf
+    title: Recommendations for securing networks with IPsec
+    seriesinfo:
+      ANSSI Technical Report DAT-NT-003
+    author:
+      -
+        ins: Agence nationale de la sécurité des systèmes d'information
+    date: August 2015
 
 normative:
   RFC2119:
@@ -624,7 +633,7 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
    writes "It is recommended to force the periodic renewal of the
    keys, e.g. every hour and every 100 GB of data, in order to limit
-   the impact of a key compromise.". This is RECOMMENDED also for
+   the impact of a key compromise." {{ANSSI-DAT-NT-003}}. This is RECOMMENDED also for
    DTLS/SCTP.
 
 ##  Downgrade Attacks
