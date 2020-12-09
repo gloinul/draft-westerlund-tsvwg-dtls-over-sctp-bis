@@ -242,7 +242,7 @@ TLS:  Transport Layer Security
 
 ## Replay Detection
 
-   DTLS/SCTP does not provice replay detection.
+   DTLS/SCTP does not provide replay detection/protection.
 
    The replay detection of DTLS may result in the DTLS layer dropping
    messages. Since DTLS/SCTP provides a reliable service if requested
