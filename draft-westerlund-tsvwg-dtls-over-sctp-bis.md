@@ -368,24 +368,9 @@ DTLS optionally supports record replay detection. Such replay detection could re
 
 ##  Handshake {#HANDSHAKE}
 
-   A DTLS implementation discards DTLS messages from older epochs
-   after some time, as described in Section 4.1 of {{RFC4347}}.  This
-   is not acceptable when the DTLS user performs a reliable data
-   transfer.  To avoid discarding messages, the following procedures
-   are required.
+In general, DTLS implementations SHOULD discard records from earlier epochs, as described in Section 4.2.1 of {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the processing guidelines in Section 4.2.1 of {{I-D.ietf-tls-dtls13}} should be followed.
 
-   Before sending a ChangeCipherSpec message, all outstanding SCTP
-   user messages MUST have been acknowledged by the SCTP peer and MUST
-   NOT be revoked by the SCTP peer.
-
-   Prior to processing a received ChangeCipherSpec, all other received
-   SCTP user messages that are buffered in the SCTP layer MUST be read
-   and processed by DTLS.
-
-   User messages that arrive between ChangeCipherSpec and Finished
-   messages and use the new epoch have probably passed the Finished
-   message and MUST be buffered by DTLS until the Finished message is
-   read.
+As renegotiation is not used in DTLS 1.2, all user data is sent in epoch 1.
 
 ##  Handling of Endpoint-Pair Shared Secrets
 
