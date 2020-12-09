@@ -366,7 +366,7 @@ DTLS optionally supports record replay detection. Such replay detection could re
 
    Renegotiation MUST NOT be used.
 
-##  Handshake {#HANDSHAKE}
+##  DTLS Epochs
 
 In general, DTLS implementations SHOULD discard records from earlier epochs, as described in Section 4.2.1 of {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the processing guidelines in Section 4.2.1 of {{I-D.ietf-tls-dtls13}} should be followed.
 
