@@ -54,10 +54,11 @@ This document describes a proposed update for the usage of the
 Datagram Transport Layer Security (DTLS) protocol to protect user
 messages sent over the Stream Control Transmission Protocol (SCTP).
 
-DTLS over SCTP provides communications privacy for applications that
+DTLS over SCTP provides mutual authentication, confidentiality,
+integrity protection, and replay protection for applications that
 use SCTP as their transport protocol and allows client/server
-applications to communicate in a way that is designed to prevent
-eavesdropping and detect tampering or message forgery.
+applications to communicate in a way that is designed to give
+communications privacy and to prevent eavesdropping and detect tampering or message forgery. 
 
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions. This document intend to
