@@ -58,7 +58,7 @@ DTLS over SCTP provides mutual authentication, confidentiality,
 integrity protection, and replay protection for applications that
 use SCTP as their transport protocol and allows client/server
 applications to communicate in a way that is designed to give
-communications privacy and to prevent eavesdropping and detect tampering or message forgery. 
+communications privacy and to prevent eavesdropping and detect tampering or message forgery.
 
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions. This document intend to
@@ -224,17 +224,17 @@ TLS:  Transport Layer Security
 ## Message Sizes {#Msg-size}
 
    DTLS/SCTP, automatically fragment and reassemble user
-   messages. There are two different fragmentations mechanism, first
-   to fragment the user messages into DTLS records, where each DTLS
-   1.3 record allows a maximum of 2^14 protected bytes. The
-   fragmentation mechanism headers requires 16 bytes, thus limiting
-   each DTLS 1.3 record to contain a maximum of 2^14-16 = 16368 bytes
-   of user message.
+   messages. This specificatin defines how to fragment the user
+   messages into DTLS records, where each DTLS 1.3 record allows a
+   maximum of 2^14 protected bytes. The fragmentation mechanism
+   headers requires 16 bytes, thus limiting each DTLS 1.3 record to
+   contain a maximum of 2^14-16 = 16368 bytes of plain text user
+   message. Each DTLS record adds additional overhead, thus using
+   records of maximum possible size are recommended to minimize the
+   overhead.
 
-   Each DTLS record adds additional overhead, thus using records of
-   maximum possible size are recommended to minimize the overhead. The
-   sequence of DTLS records is then fragmented into DATA Chunks to fit
-   the path MTU by SCTP. The largest possible user messages the
+   The sequence of DTLS records is then fragmented into DATA Chunks to
+   fit the path MTU by SCTP. The largest possible user messages the
    mechanism defined in this specification can protect is 2^64-1
    bytes.
 
@@ -242,9 +242,14 @@ TLS:  Transport Layer Security
 
 ## Replay Protection
 
-As SCTP with SCTP-AUTH provides replay protection for DATA chunks, DTLS/SCTP provides replay protection for user messages.
+   As SCTP with SCTP-AUTH provides replay protection for DATA chunks,
+   DTLS/SCTP provides replay protection for user messages.
 
-DTLS optionally supports record replay detection. Such replay detection could result in the DTLS layer dropping valid messages received outside of the DTLS replay window. As DTLS/SCTP provides replay protection even without DTLS replay protection, the replay detection of DTLS MUST NOT be used.
+   DTLS optionally supports record replay detection. Such replay
+   detection could result in the DTLS layer dropping valid messages
+   received outside of the DTLS replay window. As DTLS/SCTP provides
+   replay protection even without DTLS replay protection, the replay
+   detection of DTLS MUST NOT be used.
 
 ##  Path MTU Discovery
 
@@ -355,12 +360,13 @@ DTLS optionally supports record replay detection. Such replay detection could re
 
 ##  SCTP-AUTH Hash Function
 
-   When using DTLS/SCTP, the SHA-256 Message Digest Algorithm MUST be supported in the
-   SCTP-AUTH {{RFC4895}} implementation. SHA-1 MUST NOT be used when
-   using DTLS/SCTP. {{RFC4895}} requires support and inclusion of of
-   SHA-1 in the HMAC-ALGO parameter, thus, to meet both requirements
-   the HMAC-ALGO parameter will include both SHA-256 and SHA-1 with
-   SHA-256 listed prior to SHA-1 to indicate the preference.
+   When using DTLS/SCTP, the SHA-256 Message Digest Algorithm MUST be
+   supported in the SCTP-AUTH {{RFC4895}} implementation. SHA-1 MUST
+   NOT be used when using DTLS/SCTP. {{RFC4895}} requires support and
+   inclusion of of SHA-1 in the HMAC-ALGO parameter, thus, to meet
+   both requirements the HMAC-ALGO parameter will include both SHA-256
+   and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
+   preference.
 
 ## Renegotiation
 
@@ -368,33 +374,38 @@ DTLS optionally supports record replay detection. Such replay detection could re
 
 ##  DTLS Epochs
 
-In general, DTLS implementations SHOULD discard records from earlier epochs, as described in Section 4.2.1 of {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the processing guidelines in Section 4.2.1 of {{I-D.ietf-tls-dtls13}} should be followed.
+   In general, DTLS implementations SHOULD discard records from
+   earlier epochs, as described in Section 4.2.1 of
+   {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the
+   processing guidelines in Section 4.2.1 of {{I-D.ietf-tls-dtls13}}
+   should be followed.
 
-As renegotiation is not used in DTLS 1.2, all user data is sent in epoch 1.
+   As renegotiation is not used in DTLS 1.2, all user data is sent in
+   epoch 1.
 
 ##  Handling of Endpoint-Pair Shared Secrets
 
-SCTP-AUTH {{RFC4895}} is keyed using Endpoint-Pair Shared Secrets. In
-SCTP associations where DTLS is used, DTLS is used to establish these
-secrets. The endpoints MUST NOT use another mechanism for establishing
-shared secrets for SCTP-AUTH.
+   SCTP-AUTH {{RFC4895}} is keyed using Endpoint-Pair Shared
+   Secrets. In SCTP associations where DTLS is used, DTLS is used to
+   establish these secrets. The endpoints MUST NOT use another
+   mechanism for establishing shared secrets for SCTP-AUTH.
 
-The endpoint-pair shared secret for Shared Key Identifier 0 is empty
-and MUST be used when establishing a DTLS connection.  Whenever the
-master key changes, a 64-byte shared secret is derived from every
-master secret and provided as a new endpoint-pair shared secret by
-using the TLS-Exporter. For DTLS 1.3, the exporter is described in
-{{RFC8446}}. For DTLS 1.2, the exporter is described in
-{{RFC5705}}. The exporter MUST use the label given in Section
-{{IANA-Consideration}} and no context.  The new Shared Key Identifier
-MUST be the old Shared Key Identifier incremented by 1.  If the old
-one is 65535, the new one MUST be 1.
+   The endpoint-pair shared secret for Shared Key Identifier 0 is
+   empty and MUST be used when establishing a DTLS connection.
+   Whenever the master key changes, a 64-byte shared secret is derived
+   from every master secret and provided as a new endpoint-pair shared
+   secret by using the TLS-Exporter. For DTLS 1.3, the exporter is
+   described in {{RFC8446}}. For DTLS 1.2, the exporter is described
+   in {{RFC5705}}. The exporter MUST use the label given in Section
+   {{IANA-Consideration}} and no context.  The new Shared Key
+   Identifier MUST be the old Shared Key Identifier incremented by 1.
+   If the old one is 65535, the new one MUST be 1.
 
-Before sending the DTLS Finished message, the active SCTP-AUTH key
-MUST be switched to the new one.
+   Before sending the DTLS Finished message, the active SCTP-AUTH key
+   MUST be switched to the new one.
 
-Once the corresponding Finished message from the peer has been
-received, the old SCTP-AUTH key SHOULD be removed.
+   Once the corresponding Finished message from the peer has been
+   received, the old SCTP-AUTH key SHOULD be removed.
 
 ##  Shutdown
 
@@ -409,9 +420,9 @@ received, the old SCTP-AUTH key SHOULD be removed.
 
 ## Negotiation of DTLS support {#Negotiation}
 
-To distinguish supporters of this specification compared to RFC 6083
-as well as enable certain improvements that simplifies implementation
-a new SCPT parameter is defined.
+   To distinguish supporters of this specification compared to RFC
+   6083 as well as enable certain improvements that simplifies
+   implementation a new SCPT parameter is defined.
 
 ### New option at INIT/INIT-ACK {#DTLS-supported}
 
