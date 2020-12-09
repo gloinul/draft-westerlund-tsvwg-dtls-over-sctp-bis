@@ -61,8 +61,7 @@ eavesdropping and detect tampering or message forgery.
 
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions. This document intend to
-obsolete RFC 6083 and removes the limitation on user message size of a
-maximum of 16384 bytes by defining a secure user message fragmentation
+obsolete RFC 6083 and removes the 16 kB limitation on user message size by defining a secure user message fragmentation
 so that multiple DTLS records can be used to protect a single user
 message. It further updates the DTLS versions to use, as well as the
 HMAC algorithms for SCTP-AUTH, and simplifies the implementation by
@@ -172,7 +171,7 @@ New Versions: Almost 10 years has passed since RFC 6083 was written,
 Clarifications: Some implementation experiences has been gained that
    motivates additional clarifications on the specification.
 
- * Avoid unsecured message prior to DTLS handshake have completed.
+ * Avoid unsecured messages prior to DTLS handshake have completed.
 
  * Make clear that all messages are encrypted after DTLS handshake.
 
