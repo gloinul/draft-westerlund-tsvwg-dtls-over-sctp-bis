@@ -93,10 +93,8 @@ features provided by SCTP and its extensions.
 
 TLS, from which DTLS was derived, is designed to run on top of a
 byte-stream-oriented transport protocol providing a reliable, in-
-sequence delivery.  Thus, TLS is currently mainly being used on top of
-the Transmission Control Protocol (TCP), as defined in {{RFC0793}}.
-
-TLS over SCTP as described in {{RFC3436}} has some serious limitations:
+sequence delivery.TLS over SCTP as described in {{RFC3436}} has
+some serious limitations:
 
    o It does not support the unordered delivery of SCTP user messages.
 
