@@ -296,7 +296,7 @@ TLS:  Transport Layer Security
    On the receiving side DTLS is used to decrypt the records and the
    fields uint64(length), uint64(nonce), and uint64(i) are
    removed. The user_message is valid if all DTLS records are valid,
-   uint64(nonce) is the same in all records, uint64(i) is a counter
+   uint64(nonce) is the same in all records, numbers uint64(i) is an ordered sequence
    from 0 to the number of records, and uint64(length) is the length
    of the resulting user_message. If a DTLS decryption fails or
    a user_message is not valid, the DTLS connection and the SCTP
@@ -335,7 +335,7 @@ TLS:  Transport Layer Security
 
    DATA chunks of SCTP MUST be sent in an authenticated way as
    described in {{RFC4895}}.  All other chunks that may be
-   authenticated, i.e. all chunks listed in the Chunk List Parameter
+   authenticated, i.e. all chunks that can be listed in the Chunk List Parameter
    {{RFC4895}}, MUST also be sent in an authenticated way.  This makes
    sure that an attacker cannot modify the stream in which a message
    is sent or affect the ordered/unordered delivery of the message.
@@ -356,13 +356,12 @@ TLS:  Transport Layer Security
 
 ##  SCTP-AUTH Hash Function
 
-   The SHA-256 Message Digest Algorithm MUST be supported in the
+   When using DTLS/SCTP, the SHA-256 Message Digest Algorithm MUST be supported in the
    SCTP-AUTH {{RFC4895}} implementation. SHA-1 MUST NOT be used when
    using DTLS/SCTP. {{RFC4895}} requires support and inclusion of of
    SHA-1 in the HMAC-ALGO parameter, thus, to meet both requirements
    the HMAC-ALGO parameter will include both SHA-256 and SHA-1 with
    SHA-256 listed prior to SHA-1 to indicate the preference.
-
 
 ## Renegotiation
 
