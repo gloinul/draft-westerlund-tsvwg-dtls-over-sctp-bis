@@ -33,6 +33,15 @@ informative:
   RFC6973:
   RFC7258:
 
+  ANSSI-DAT-NT-003:
+    target: https://www.ssi.gouv.fr/uploads/2015/09/NT_IPsec_EN.pdf
+    title: Recommendations for securing networks with IPsec
+    seriesinfo:
+      ANSSI Technical Report DAT-NT-003
+    author:
+      -
+        ins: Agence nationale de la sécurité des systèmes d'information
+    date: August 2015
 
 normative:
   RFC2119:
@@ -54,15 +63,15 @@ This document describes a proposed update for the usage of the
 Datagram Transport Layer Security (DTLS) protocol to protect user
 messages sent over the Stream Control Transmission Protocol (SCTP).
 
-DTLS over SCTP provides communications privacy for applications that
+DTLS over SCTP provides mutual authentication, confidentiality,
+integrity protection, and replay protection for applications that
 use SCTP as their transport protocol and allows client/server
-applications to communicate in a way that is designed to prevent
-eavesdropping and detect tampering or message forgery.
+applications to communicate in a way that is designed to give
+communications privacy and to prevent eavesdropping and detect tampering or message forgery. 
 
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions. This document intend to
-obsolete RFC 6083 and removes the limitation on user message size of a
-maximum of 16384 bytes by defining a secure user message fragmentation
+obsolete RFC 6083 and removes the 16 kB limitation on user message size by defining a secure user message fragmentation
 so that multiple DTLS records can be used to protect a single user
 message. It further updates the DTLS versions to use, as well as the
 HMAC algorithms for SCTP-AUTH, and simplifies the implementation by
@@ -79,10 +88,11 @@ Security (DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}}, over
 the Stream Control Transmission Protocol (SCTP), as defined in
 {{RFC4960}}.
 
-DTLS over SCTP (DTLS/SCTP) provides communications privacy for
-applications that use SCTP as their transport protocol and allows
-client/server applications to communicate in a way that is designed to
-prevent eavesdropping and detect tampering or message forgery. It also
+DTLS over SCTP provides mutual authentication, confidentiality,
+integrity protection, and replay protection for applications that
+use SCTP as their transport protocol and allows client/server
+applications to communicate in a way that is designed to give
+communications privacy and to prevent eavesdropping and detect tampering or message forgery. It also
 provides a convinient keying mechanism for SCTP-Auth {{RFC4895}} that
 prevents tampering with SCTP chunks after the DTLS handshake has
 completed.
@@ -92,10 +102,8 @@ features provided by SCTP and its extensions.
 
 TLS, from which DTLS was derived, is designed to run on top of a
 byte-stream-oriented transport protocol providing a reliable, in-
-sequence delivery.  Thus, TLS is currently mainly being used on top of
-the Transmission Control Protocol (TCP), as defined in {{RFC0793}}.
-
-TLS over SCTP as described in {{RFC3436}} has some serious limitations:
+sequence delivery.TLS over SCTP as described in {{RFC3436}} has
+some serious limitations:
 
    o It does not support the unordered delivery of SCTP user messages.
 
@@ -172,7 +180,7 @@ New Versions: Almost 10 years has passed since RFC 6083 was written,
 Clarifications: Some implementation experiences has been gained that
    motivates additional clarifications on the specification.
 
- * Avoid unsecured message prior to DTLS handshake have completed.
+ * Avoid unsecured messages prior to DTLS handshake have completed.
 
  * Make clear that all messages are encrypted after DTLS handshake.
 
@@ -220,7 +228,7 @@ TLS:  Transport Layer Security
 ##  Cipher Suites
 
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
-   be used.
+   be used. Cipher suites without encryption MUST NOT be used.
 
 ## Message Sizes {#Msg-size}
 
@@ -241,12 +249,11 @@ TLS:  Transport Layer Security
 
    Note: Buffering for protection operations can have practical limits.
 
-## Replay Detection
+## Replay Protection
 
-   The replay detection of DTLS may result in the DTLS layer dropping
-   messages. Since DTLS/SCTP provides a reliable service if requested
-   by the application, replay detection cannot be used.  Therefore,
-   replay detection of DTLS MUST NOT be used.
+As SCTP with SCTP-AUTH provides replay protection for DATA chunks, DTLS/SCTP provides replay protection for user messages.
+
+DTLS optionally supports record replay detection. Such replay detection could result in the DTLS layer dropping valid messages received outside of the DTLS replay window. As DTLS/SCTP provides replay protection even without DTLS replay protection, the replay detection of DTLS MUST NOT be used.
 
 ##  Path MTU Discovery
 
@@ -297,7 +304,7 @@ TLS:  Transport Layer Security
    On the receiving side DTLS is used to decrypt the records and the
    fields uint64(length), uint64(nonce), and uint64(i) are
    removed. The user_message is valid if all DTLS records are valid,
-   uint64(nonce) is the same in all records, uint64(i) is a counter
+   uint64(nonce) is the same in all records, numbers uint64(i) is an ordered sequence
    from 0 to the number of records, and uint64(length) is the length
    of the resulting user_message. If a DTLS decryption fails or
    a user_message is not valid, the DTLS connection and the SCTP
@@ -336,7 +343,7 @@ TLS:  Transport Layer Security
 
    DATA chunks of SCTP MUST be sent in an authenticated way as
    described in {{RFC4895}}.  All other chunks that may be
-   authenticated, i.e. all chunks listed in the Chunk List Parameter
+   authenticated, i.e. all chunks that can be listed in the Chunk List Parameter
    {{RFC4895}}, MUST also be sent in an authenticated way.  This makes
    sure that an attacker cannot modify the stream in which a message
    is sent or affect the ordered/unordered delivery of the message.
@@ -357,38 +364,22 @@ TLS:  Transport Layer Security
 
 ##  SCTP-AUTH Hash Function
 
-   The SHA-256 Message Digest Algorithm MUST be supported in the
+   When using DTLS/SCTP, the SHA-256 Message Digest Algorithm MUST be supported in the
    SCTP-AUTH {{RFC4895}} implementation. SHA-1 MUST NOT be used when
    using DTLS/SCTP. {{RFC4895}} requires support and inclusion of of
    SHA-1 in the HMAC-ALGO parameter, thus, to meet both requirements
    the HMAC-ALGO parameter will include both SHA-256 and SHA-1 with
    SHA-256 listed prior to SHA-1 to indicate the preference.
 
-
 ## Renegotiation
 
    Renegotiation MUST NOT be used.
 
-##  Handshake {#HANDSHAKE}
+##  DTLS Epochs
 
-   A DTLS implementation discards DTLS messages from older epochs
-   after some time, as described in Section 4.1 of {{RFC4347}}.  This
-   is not acceptable when the DTLS user performs a reliable data
-   transfer.  To avoid discarding messages, the following procedures
-   are required.
+In general, DTLS implementations SHOULD discard records from earlier epochs, as described in Section 4.2.1 of {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the processing guidelines in Section 4.2.1 of {{I-D.ietf-tls-dtls13}} should be followed.
 
-   Before sending a ChangeCipherSpec message, all outstanding SCTP
-   user messages MUST have been acknowledged by the SCTP peer and MUST
-   NOT be revoked by the SCTP peer.
-
-   Prior to processing a received ChangeCipherSpec, all other received
-   SCTP user messages that are buffered in the SCTP layer MUST be read
-   and processed by DTLS.
-
-   User messages that arrive between ChangeCipherSpec and Finished
-   messages and use the new epoch have probably passed the Finished
-   message and MUST be buffered by DTLS until the Finished message is
-   read.
+As renegotiation is not used in DTLS 1.2, all user data is sent in epoch 1.
 
 ##  Handling of Endpoint-Pair Shared Secrets
 
@@ -564,7 +555,7 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
    writes "It is recommended to force the periodic renewal of the
    keys, e.g. every hour and every 100 GB of data, in order to limit
-   the impact of a key compromise.". This is RECOMMENDED also for
+   the impact of a key compromise." {{ANSSI-DAT-NT-003}}. This is RECOMMENDED also for
    DTLS/SCTP.
 
 ##  Downgrade Attacks
