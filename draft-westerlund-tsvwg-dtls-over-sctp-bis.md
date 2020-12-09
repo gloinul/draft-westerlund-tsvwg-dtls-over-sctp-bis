@@ -26,10 +26,10 @@ author:
    email: claudio.porfiri@ericsson.com
 
 informative:
-  RFC0793:
   RFC3436:
   RFC5061:
   RFC6083:
+  RFC6458:
   RFC6973:
   RFC7258:
 
@@ -37,7 +37,6 @@ informative:
 normative:
   RFC2119:
   RFC3758:
-  RFC4347:
   RFC4895:
   RFC4960:
   RFC5705:
@@ -238,7 +237,62 @@ TLS:  Transport Layer Security
    mechanism defined in this specification can protect is 2^64-1
    bytes.
 
-   Note: Buffering for protection operations can have practical limits.
+   The security operations and reassembly process requires that the
+   protected user message, i.e. with the fragmentation mechanism and
+   DTLS record overhead is buffered in the receiver. This buffer space
+   will thus put a limit on the largest size of plain text user message
+   that can be transferred securly.
+
+   A receiver that doesn't support partial delivery of user messages
+   from SCTP {{RFC6458}} will advertise its largest supported
+   protected message using SCTP's mechanism for Advertised Receiver
+   Window Credit (a_rwnd) as specified in Section 3.3.2 of
+   {{RFC4960}}. Note that the a_rwnd value is across all user messages
+   being delivered.
+
+   For receiver supporting partial delivery of user messages a_rwnd
+   will not limit the maximum size of the DTLS protected user message.
+   This as the receiver can move parts of the DTLS protected user message
+   from the SCTP receiver buffer into a buffer for DTLS processing.
+   Thus the limit of the largest user message is dependent on buffering
+   allocated for DTLS processing.
+
+   SCTP can transfer multiple user messages at the same time, thus the
+   buffering requirement for the DTLS protected messages will be the
+   sum of all DTLS protected messages not yet fully delivered. This is
+   similarly to the SCTP receiver window that also is the sum across
+   all streams and user messages in the association. The sender will
+   have to use the acknowledgments to determine when all data for each
+   DTLS protected user message has been delivered and thus freeing up
+   buffer space in the receiver.
+
+   This is based on the assumption that when all parts of a DTLS
+   protected user messages has been delivered it will be processed and
+   delivered to the upper layer protocol, thus freeing the DTLS level
+   buffer. A receiver that has not yet finished processing a delivered
+   DTLS protected user messages that lack additional buffering space
+   for a new protected user messages will apply back pressure to the
+   sender by not accepting the message from SCTP until it has the
+   necessary buffering.
+
+   The avialable buffering space for DTLS protected user messages
+   (DTLS-Msg-Size) is signalled in the DTLS-Supported SCTP parameter
+   {{DTLS-supported}} used to negotiate support for this
+   specification. It includes a value in bytes of supported buffer
+   space for the receiver. The actual buffering space available in the
+   receiver at any point in the life-time of the association is
+   calculated as:
+
+~~~
+   Buffering space = MAX(18445, a_rwnd, DTLS-Msg-Size)
+~~~
+
+   Where 18845 bytes is the buffering space required in RFC 6083. By
+   requiring this amount of space in this document, we ensure
+   compatibility with existing usage of RFC 6083, not requiring the
+   upper layer protocol to implement additional features or
+   requirements.
+
 
 ## Replay Protection
 
@@ -265,7 +319,7 @@ TLS:  Transport Layer Security
 
 #  SCTP Considerations
 
-##  Mapping of DTLS Records
+##  Mapping of DTLS Records {#Mapping-DTLS}
 
    The supported maximum length of SCTP user messages MUST be at least
    1024 kB. In particular, the SCTP implementation MUST support
@@ -442,17 +496,30 @@ TLS:  Transport Layer Security
    specification. The format of this parameter is defined as follows:
 
 ~~~~~~~~~~~
+    0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |    Parameter Type = XXXXX     |  Parameter Length = 4         |
+   |    Parameter Type = XXXXX     |  Parameter Length = 12        |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                DTLS Buffer Size (DTLS_buf_size)               |
+   +                            64-bit                             +
+   |                                                               |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
 ~~~~~~~~~~~
 
 Type: 16 bit u_int
       XXXXX, DTLS-Supported parameter
 
 Length: 16 bit u_int
-      Indicates the size of the parameter, i.e., 4.
+      Indicates the size of the parameter, i.e., 12.
+
+DTLS Buffer Size: 64 bit u_int
+      The DTLS buffer size in bytes the endpoint support.  The size is
+      the maximum total sum of all DTLS protected user messages,
+      i.e. user-message' specified in {{Mapping-DTLS}}, that might be
+      under simultanous delivery in SCTP. See {{Msg-size}} for details
+      on usage.
 
 ## DTLS over SCTP service
 
@@ -635,6 +702,9 @@ compared to the DTLS over SCTP that defined in {{RFC6083}}.
    records in secure way.
 
  * Defines a SCTP parameters to negotiate support of DTLS over SCTP.
+
+ * Defines a method for determing available buffering for the total
+   size of all DTLS protected user messages under delivery.
 
  * Requires that the DTLS handshake needs to occur immediately after
    SCTP handshake prior to any other user messages when this
