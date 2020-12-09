@@ -240,14 +240,11 @@ TLS:  Transport Layer Security
 
    Note: Buffering for protection operations can have practical limits.
 
-## Replay Detection
+## Replay Protection
 
-   DTLS/SCTP does not provide replay detection/protection.
+As SCTP with SCTP-AUTH provides replay protection for DATA chunks, DTLS/SCTP provides replay protection for user messages.
 
-   The replay detection of DTLS may result in the DTLS layer dropping
-   messages. Since DTLS/SCTP provides a reliable service if requested
-   by the application, replay detection cannot be used.  Therefore,
-   replay detection of DTLS MUST NOT be used.
+DTLS optionally supports record replay detection. Such replay detection could result in the DTLS layer dropping valid messages received outside of the DTLS replay window. As DTLS/SCTP provides replay protection even without DTLS replay protection, the replay detection of DTLS MUST NOT be used.
 
 ##  Path MTU Discovery
 
