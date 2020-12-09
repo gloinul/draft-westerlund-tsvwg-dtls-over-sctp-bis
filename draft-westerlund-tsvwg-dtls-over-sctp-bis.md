@@ -219,7 +219,7 @@ TLS:  Transport Layer Security
 ##  Cipher Suites
 
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
-   be used.
+   be used. Cipher suites without encryption MUST NOT be used.
 
 ## Message Sizes {#Msg-size}
 
@@ -241,6 +241,8 @@ TLS:  Transport Layer Security
    Note: Buffering for protection operations can have practical limits.
 
 ## Replay Detection
+
+   DTLS/SCTP does not provice replay detection.
 
    The replay detection of DTLS may result in the DTLS layer dropping
    messages. Since DTLS/SCTP provides a reliable service if requested
