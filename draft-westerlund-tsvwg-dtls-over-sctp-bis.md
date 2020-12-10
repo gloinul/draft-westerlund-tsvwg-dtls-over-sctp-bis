@@ -306,9 +306,7 @@ TLS:  Transport Layer Security
    SCTP has a congestion avoidance algorithm based on the concept of slow
    start and fast drop in case of detected congestion.
    When choosing the rx buffer size it needs to be taken into account that
-   when no partial data delivery is implemented in SCTP according to {{rfc6458}}
-   the whole ecnrypted message needs to fit in SCTP rx buffer before being
-   kept and further processed.
+   when no partial data delivery is implemented in SCTP the whole ecnrypted message needs to fit in SCTP rx buffer before being kept and further processed.
    Assuming that the maximum message size is known, the rx buffer can be 
    dimensioned to be right for allocating that size, but his would trigger
    a corner case that happens when a series of maximum size messages are sent
