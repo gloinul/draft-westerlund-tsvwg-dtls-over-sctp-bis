@@ -55,6 +55,7 @@ normative:
   RFC8174:
   RFC8260:
   RFC8446:
+  RFC8447:
   I-D.ietf-tls-dtls13:
 
 --- abstract
