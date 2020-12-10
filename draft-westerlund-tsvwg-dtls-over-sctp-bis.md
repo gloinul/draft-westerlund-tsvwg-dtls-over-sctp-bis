@@ -48,6 +48,7 @@ normative:
   RFC3758:
   RFC4895:
   RFC4960:
+  RFC5246:
   RFC5705:
   RFC6347:
   RFC7540:
@@ -527,6 +528,25 @@ DTLS Buffer Size: 64 bit u_int
       under simultanous delivery in SCTP. See {{Msg-size}} for details
       on usage.
 
+
+## DTLS/SCTP "dtls_over_sctp_buffer_size_limit" Extension
+
+The maximum DTLS/SCTP buffers size is negotiated in the "dtls_over_sctp_buffer_size_limit" TLS extension. The ExtensionData of the extension is BufferSizeLimit:
+
+~~~~~~~~~~~
+   uint64 BufferSizeLimit;
+~~~~~~~~~~~
+
+The value of BufferSizeLimit is the maximum buffer size in octets that the endpoint is willing to handle. 
+
+The "dtls_over_sctp_buffer_size_limit" MUST be used to negotiate maximum buffer size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat the omission of "dtls_over_sctp_buffer_size_limit" as a fatal error, and it SHOULD generate an "illegal_parameter" alert.
+
+Endpoints MUST NOT send a "buffer_size_limit" extension with a value smaller than XXX?.  An endpoint MUST treat receipt of a smaller value as a fatal error and generate an "illegal_parameter" alert.
+
+The "dtls_over_sctp_buffer_size_limit" MUST NOT be send in TLS or in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends the "dtls_over_sctp_buffer_size_limit" extension in the EncryptedExtensions message.
+
+During resumption, the buffer size limit is renegotiated.
+
 ## DTLS over SCTP service
 
    The adoption of DTLS over SCTP according to the current description
@@ -601,6 +621,10 @@ RFC 6083 defined a TLS Exporter Label registry as described in
 {{RFC5705}}. IANA is requested to update the reference for the label
 "EXPORTER_DTLS_OVER_SCTP" to this specification.
 
+# DTLS "dtls_over_sctp_buffer_size_limit" Extension
+
+This document registers the "dtls_over_sctp_buffer_size_limit" extension in the TLS "ExtensionType Values" registry established in {{RFC5246}}.  The "dtls_over_sctp_buffer_size_limit" extension has been assigned a code point of TBD. This entry [[will be|is]] marked as recommended ([TLS-REGISTRY] and marked as "Encrypted" in (D)TLS 1.3 [TLS]. The IANA registry {{RFC8447}} [[will list|lists]] this extension as "Recommended" (i.e., "Y") and indicates that it may appear in the ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3 {{I-D.ietf-tls-dtls13}}.
+
 ## SCTP Parameter
 
 IANA is requested to register a new SCTP parameter "DTLS-support".
@@ -641,6 +665,10 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    interferes with the protocol setup to lower or disable security. If
    possible, it is RECOMMENDED that the peers have a policy only
    allowing DTLS/SCTP according to this specification.
+
+##  DTLS/SCTP buffers size
+
+The buffer size extension enables secure negation of DTLS/SCTP buffer size which improves security and availability. Very small buffer sizes might generate additional work for senders and receivers, limiting throughput and increasing exposure to denial of service.
 
 ##  Authentication and Policy Decisions
 
