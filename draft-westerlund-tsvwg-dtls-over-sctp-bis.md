@@ -530,23 +530,23 @@ DTLS Buffer Size: 64 bit u_int
       on usage.
 
 
-## DTLS/SCTP "dtls_over_sctp_buffer_size_limit" Extension
+## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension
 
-The maximum DTLS/SCTP buffers size is negotiated in the "dtls_over_sctp_buffer_size_limit" TLS extension. The ExtensionData of the extension is BufferSizeLimit:
+The DTLS/SCTP maximum message size is negotiated in the "dtls_over_sctp_maximum_message_size" TLS extension. The ExtensionData of the extension is DTLSSOverSCTPMaximumMessageSize:
 
 ~~~~~~~~~~~
-   uint64 BufferSizeLimit;
+   uint64 DTLSOverSCTPMaximumMessageSize;
 ~~~~~~~~~~~
 
-The value of BufferSizeLimit is the maximum buffer size in octets that the endpoint is willing to handle. 
+The value of DTLSOverSCTPMaximumMessageSize is the maximum SCTP message size in octets that the endpoint is willing to recieve. 
 
-The "dtls_over_sctp_buffer_size_limit" MUST be used to negotiate maximum buffer size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat the omission of "dtls_over_sctp_buffer_size_limit" as a fatal error, and it SHOULD generate an "illegal_parameter" alert.
+The "dtls_over_sctp_maximum_message_size" MUST be used to negotiate maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat the omission of "dtls_over_sctp_maximum_message_size" as a fatal error, and it SHOULD generate an "illegal_parameter" alert.
 
-Endpoints MUST NOT send a "buffer_size_limit" extension with a value smaller than XXX?.  An endpoint MUST treat receipt of a smaller value as a fatal error and generate an "illegal_parameter" alert.
+Endpoints MUST NOT send a "dtls_over_sctp_maximum_message_size" extension with a value smaller than XXX?.  An endpoint MUST treat receipt of a smaller value as a fatal error and generate an "illegal_parameter" alert.
 
-The "dtls_over_sctp_buffer_size_limit" MUST NOT be send in TLS or in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends the "dtls_over_sctp_buffer_size_limit" extension in the EncryptedExtensions message.
+The "dtls_over_sctp_maximum_message_size" MUST NOT be send in TLS or in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends the "dtls_over_sctp_maximum_message_size" extension in the EncryptedExtensions message.
 
-During resumption, the buffer size limit is renegotiated.
+During resumption, the maximum message size is renegotiated.
 
 ## DTLS over SCTP service
 
@@ -624,7 +624,7 @@ RFC 6083 defined a TLS Exporter Label registry as described in
 
 # DTLS "dtls_over_sctp_buffer_size_limit" Extension
 
-This document registers the "dtls_over_sctp_buffer_size_limit" extension in the TLS "ExtensionType Values" registry established in {{RFC5246}}.  The "dtls_over_sctp_buffer_size_limit" extension has been assigned a code point of TBD. This entry \[\[will be\|is\]\] marked as recommended ({{RFC8447}} and marked as "Encrypted" in (D)TLS 1.3  {{I-D.ietf-tls-dtls13}}. The IANA registry {{RFC8447}} \[\[will list\|lists\]\] this extension as "Recommended" (i.e., "Y") and indicates that it may appear in the ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3 {{I-D.ietf-tls-dtls13}}.
+This document registers the "dtls_over_sctp_maximum_message_size" extension in the TLS "ExtensionType Values" registry established in {{RFC5246}}.  The "dtls_over_sctp_maximum_message_size" extension has been assigned a code point of TBD. This entry \[\[will be\|is\]\] marked as recommended ({{RFC8447}} and marked as "Encrypted" in (D)TLS 1.3  {{I-D.ietf-tls-dtls13}}. The IANA registry {{RFC8447}} \[\[will list\|lists\]\] this extension as "Recommended" (i.e., "Y") and indicates that it may appear in the ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3 {{I-D.ietf-tls-dtls13}}.
 
 ## SCTP Parameter
 
@@ -667,9 +667,9 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    possible, it is RECOMMENDED that the peers have a policy only
    allowing DTLS/SCTP according to this specification.
 
-##  DTLS/SCTP buffers size
+##  DTLS/SCTP message sizes
 
-The buffer size extension enables secure negation of DTLS/SCTP buffer size which improves security and availability. Very small buffer sizes might generate additional work for senders and receivers, limiting throughput and increasing exposure to denial of service.
+The DTLS/SCTP maximum message size extension enables secure negation of a message sizes that fit in the DTLS/SCTP buffer, which improves security and availability. Very small message sizes might generate additional work for senders and receivers, limiting throughput and increasing exposure to denial of service.
 
 ##  Authentication and Policy Decisions
 
