@@ -624,7 +624,7 @@ RFC 6083 defined a TLS Exporter Label registry as described in
 
 # DTLS "dtls_over_sctp_buffer_size_limit" Extension
 
-This document registers the "dtls_over_sctp_buffer_size_limit" extension in the TLS "ExtensionType Values" registry established in {{RFC5246}}.  The "dtls_over_sctp_buffer_size_limit" extension has been assigned a code point of TBD. This entry [[will be|is]] marked as recommended ([TLS-REGISTRY] and marked as "Encrypted" in (D)TLS 1.3 [TLS]. The IANA registry {{RFC8447}} [[will list|lists]] this extension as "Recommended" (i.e., "Y") and indicates that it may appear in the ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3 {{I-D.ietf-tls-dtls13}}.
+This document registers the "dtls_over_sctp_buffer_size_limit" extension in the TLS "ExtensionType Values" registry established in {{RFC5246}}.  The "dtls_over_sctp_buffer_size_limit" extension has been assigned a code point of TBD. This entry \[\[will be\|is\]\] marked as recommended ({{RFC8447}} and marked as "Encrypted" in (D)TLS 1.3  {{I-D.ietf-tls-dtls13}}. The IANA registry {{RFC8447}} \[\[will list\|lists\]\] this extension as "Recommended" (i.e., "Y") and indicates that it may appear in the ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3 {{I-D.ietf-tls-dtls13}}.
 
 ## SCTP Parameter
 
