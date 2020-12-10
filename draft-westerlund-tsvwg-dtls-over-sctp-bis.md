@@ -96,6 +96,11 @@ provides a convinient keying mechanism for SCTP-Auth {{RFC4895}} that
 prevents tampering with SCTP chunks after the DTLS handshake has
 completed.
 
+DTLS/SCTP use DTLS for mutual authentication, key exchange with
+perfect forward for SCTP-AUTH, and confidentiality of user
+messages. DTLS/SCTP use SCTP and SCTP-AUTH for integrity
+protection and replay protection of user messages.
+
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions.
 
@@ -302,22 +307,6 @@ TLS:  Transport Layer Security
    upper layer protocol to implement additional features or
    requirements.
 
-## Considerations on Congestion Window
-   SCTP has a congestion avoidance algorithm based on the concept of slow
-   start and fast drop in case of detected congestion.
-   When choosing the rx buffer size it needs to be taken into account that
-   when no partial data delivery is implemented in SCTP the whole ecnrypted message needs to fit in SCTP rx buffer before being kept and further processed.
-   Assuming that the maximum message size is known, the rx buffer can be 
-   dimensioned to be right for allocating that size, but his would trigger
-   a corner case that happens when a series of maximum size messages are sent
-   in a raw, in fact each of the message would cause the SACK mechanism to
-   advertise the sender about a zero-window situation, that would cause 
-   the SCTP congestion window drop and a slow-start mechanism to begin.
-   As a side effect the available bandwidth would be dropped with no reasons.
-   A careful choice of rx buffer size needs to take into account the maximum
-   size of the messages, the possible value of the congestion window that
-   also includes the variable given by the packets in flight permitted by the
-   congestion window. 
 
 ## Replay Protection
 
@@ -354,37 +343,29 @@ TLS:  Transport Layer Security
    SCTP. The fragmentation works similar as the DTLS fragmentation of
    handshake messages.  On the sender side a user message fragmented
    into fragments m0, m1, m2, each smaller than 2^14 - 16 = 16368
-   bytes.
+   bytes. 
 
 ~~~~~~~~~~~
-   m0 | m1 | m2 | ... = uint64(length) | user_message
+   m0 | m1 | m2 | ... = user_message
 ~~~~~~~~~~~
 
    The resulting fragments are protected with DTLS and the records are
    concatenated
 
 ~~~~~~~~~~~
-   user_message' = DTLS( m0' ) | DTLS( m1' ) | DTLS( m2' ) ...
+   user_message' = DTLS( m0 ) | DTLS( m1 ) | DTLS( m2 ) ...
 ~~~~~~~~~~~
 
-   where
+   The new user_message' is the input to SCTP.
 
-~~~~~~~~~~~
-   mi' = uint64(nonce) | uint64(i) | mi
-~~~~~~~~~~~
-
-   and where nonce is has a different value for each user message
-   (e.g. a counter). The new user_message' is the input to SCTP.
-
-   On the receiving side DTLS is used to decrypt the records and the
-   fields uint64(length), uint64(nonce), and uint64(i) are
-   removed. The user_message is valid if all DTLS records are valid,
-   uint64(nonce) is the same in all records, numbers uint64(i) is an ordered sequence
-   from 0 to the number of records, and uint64(length) is the length
-   of the resulting user_message. If a DTLS decryption fails or
-   a user_message is not valid, the DTLS connection and the SCTP
+   On the receiving side DTLS is used to decrypt the records.
+   If a DTLS decryption fails, the DTLS connection and the SCTP
    association are terminated.
-
+   
+   Connection ID SHOULD NOT be negotiated. If DTLS 1.3 is used, the
+   length field MUST NOT be omitted and a 16 bit sequence number
+   SHOULD be used.      
+      
 ##  DTLS Connection Handling
 
    The DTLS connection MUST be established at the beginning of the SCTP
