@@ -302,6 +302,24 @@ TLS:  Transport Layer Security
    upper layer protocol to implement additional features or
    requirements.
 
+### Considerations on Congestion Window
+   SCTP has a congestion avoidance algorithm based on the concept of slow
+   start and fast drop in case of detected congestion.
+   When choosing the rx buffer size it needs to be taken into account that
+   when no partial data delivery is implemented in SCTP according to {{rfc6458}}
+   the whole ecnrypted message needs to fit in SCTP rx buffer before being
+   kept and further processed.
+   Assuming that the maximum message size is known, the rx buffer can be 
+   dimensioned to be right for allocating that size, but his would trigger
+   a corner case that happens when a series of maximum size messages are sent
+   in a raw, in fact each of the message would cause the SACK mechanism to
+   advertise the sender about a zero-window situation, that would cause 
+   the SCTP congestion window drop and a slow-start mechanism to begin.
+   As a side effect the available bandwidth would be dropped with no reasons.
+   A careful choice of rx buffer size needs to take into account the maximum
+   size of the messages, the possible value of the congestion window that
+   also includes the variable given by the packets in flight permitted by the
+   congestion window. 
 
 ## Replay Protection
 
