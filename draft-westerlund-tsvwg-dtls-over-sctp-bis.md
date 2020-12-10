@@ -302,7 +302,7 @@ TLS:  Transport Layer Security
    upper layer protocol to implement additional features or
    requirements.
 
-### Considerations on Congestion Window
+## Considerations on Congestion Window
    SCTP has a congestion avoidance algorithm based on the concept of slow
    start and fast drop in case of detected congestion.
    When choosing the rx buffer size it needs to be taken into account that
