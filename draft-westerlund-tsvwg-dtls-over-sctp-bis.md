@@ -510,11 +510,7 @@ TLS:  Transport Layer Security
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |    Parameter Type = XXXXX     |  Parameter Length = 12        |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |                DTLS Buffer Size (DTLS_buf_size)               |
-   +                            64-bit                             +
-   |                                                               |
+   |    Parameter Type = XXXXX     |  Parameter Length = 4         |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 ~~~~~~~~~~~
@@ -524,14 +520,6 @@ Type: 16 bit u_int
 
 Length: 16 bit u_int
       Indicates the size of the parameter, i.e., 12.
-
-DTLS Buffer Size: 64 bit u_int
-      The DTLS buffer size in bytes the endpoint support.  The size is
-      the maximum total sum of all DTLS protected user messages,
-      i.e. user-message' specified in {{Mapping-DTLS}}, that might be
-      under simultanous delivery in SCTP. See {{Msg-size}} for details
-      on usage.
-
 
 ## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension
 
@@ -558,7 +546,7 @@ maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat
 the omission of "dtls_over_sctp_maximum_message_size" as a fatal
 error, and it SHOULD generate an "illegal_parameter" alert. Endpoints
 MUST NOT send a "dtls_over_sctp_maximum_message_size" extension with a
-value smaller than XXX?.  An endpoint MUST treat receipt of a smaller
+value smaller than 18445.  An endpoint MUST treat receipt of a smaller
 value as a fatal error and generate an "illegal_parameter" alert.
 
 The "dtls_over_sctp_maximum_message_size" MUST NOT be send in TLS or
