@@ -65,18 +65,20 @@ Datagram Transport Layer Security (DTLS) protocol to protect user
 messages sent over the Stream Control Transmission Protocol (SCTP).
 
 DTLS over SCTP provides mutual authentication, confidentiality,
-integrity protection, and replay protection for applications that
-use SCTP as their transport protocol and allows client/server
-applications to communicate in a way that is designed to give
-communications privacy and to prevent eavesdropping and detect tampering or message forgery.
+integrity protection, and replay protection for applications that use
+SCTP as their transport protocol and allows client/server applications
+to communicate in a way that is designed to give communications
+privacy and to prevent eavesdropping and detect tampering or message
+forgery.
 
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions. This document intend to
-obsolete RFC 6083 and removes the 16 kB limitation on user message size by defining a secure user message fragmentation
-so that multiple DTLS records can be used to protect a single user
-message. It further updates the DTLS versions to use, as well as the
-HMAC algorithms for SCTP-AUTH, and simplifies the implementation by
-some stricter requirements on the procedures.
+obsolete RFC 6083 and removes the 16 kB limitation on user message
+size by defining a secure user message fragmentation so that multiple
+DTLS records can be used to protect a single user message. It further
+updates the DTLS versions to use, as well as the HMAC algorithms for
+SCTP-AUTH, and simplifies the implementation by some stricter
+requirements on the procedures.
 
 --- middle
 
@@ -90,13 +92,13 @@ the Stream Control Transmission Protocol (SCTP), as defined in
 {{RFC4960}}.
 
 DTLS over SCTP provides mutual authentication, confidentiality,
-integrity protection, and replay protection for applications that
-use SCTP as their transport protocol and allows client/server
-applications to communicate in a way that is designed to give
-communications privacy and to prevent eavesdropping and detect tampering or message forgery. It also
-provides a convinient keying mechanism for SCTP-Auth {{RFC4895}} that
-prevents tampering with SCTP chunks after the DTLS handshake has
-completed.
+integrity protection, and replay protection for applications that use
+SCTP as their transport protocol and allows client/server applications
+to communicate in a way that is designed to give communications
+privacy and to prevent eavesdropping and detect tampering or message
+forgery. It also provides a convinient keying mechanism for SCTP-Auth
+{{RFC4895}} that prevents tampering with SCTP chunks after the DTLS
+handshake has completed.
 
 DTLS/SCTP use DTLS for mutual authentication, key exchange with
 perfect forward for SCTP-AUTH, and confidentiality of user
@@ -345,7 +347,7 @@ TLS:  Transport Layer Security
    SCTP. The fragmentation works similar as the DTLS fragmentation of
    handshake messages.  On the sender side a user message fragmented
    into fragments m0, m1, m2, each smaller than 2^14 - 16 = 16368
-   bytes. 
+   bytes.
 
 ~~~~~~~~~~~
    m0 | m1 | m2 | ... = user_message
@@ -363,11 +365,11 @@ TLS:  Transport Layer Security
    On the receiving side DTLS is used to decrypt the records.
    If a DTLS decryption fails, the DTLS connection and the SCTP
    association are terminated.
-   
+
    Connection ID SHOULD NOT be negotiated. If DTLS 1.3 is used, the
    length field MUST NOT be omitted and a 16 bit sequence number
-   SHOULD be used.      
-      
+   SHOULD be used.
+
 ##  DTLS Connection Handling
 
    The DTLS connection MUST be established at the beginning of the SCTP
@@ -389,22 +391,23 @@ TLS:  Transport Layer Security
 
 ##  Stream Usage {#Stream-Usage}
 
-   All DTLS messages of the Handshake, Alert, or ChangeCipherSpec protocol
-   (DTLS 1.2 only) MUST be transported on stream 0 with unlimited reliability
-   and with the ordered delivery feature.
+   All DTLS messages of the Handshake, Alert, or ChangeCipherSpec
+   protocol (DTLS 1.2 only) MUST be transported on stream 0 with
+   unlimited reliability and with the ordered delivery feature.
 
-   DTLS messages of the record protocol SHOULD use multiple
-   streams other than stream 0; they MAY use stream 0 for everything if
-   they do not care about minimizing head of line blocking.
+   DTLS messages of the record protocol SHOULD use multiple streams
+   other than stream 0; they MAY use stream 0 for everything if they
+   do not care about minimizing head of line blocking.
 
 ##  Chunk Handling
 
    DATA chunks of SCTP MUST be sent in an authenticated way as
    described in {{RFC4895}}.  All other chunks that may be
-   authenticated, i.e. all chunks that can be listed in the Chunk List Parameter
-   {{RFC4895}}, MUST also be sent in an authenticated way.  This makes
-   sure that an attacker cannot modify the stream in which a message
-   is sent or affect the ordered/unordered delivery of the message.
+   authenticated, i.e. all chunks that can be listed in the Chunk List
+   Parameter {{RFC4895}}, MUST also be sent in an authenticated way.
+   This makes sure that an attacker cannot modify the stream in which
+   a message is sent or affect the ordered/unordered delivery of the
+   message.
 
    If PR-SCTP as defined in {{RFC3758}} is used, FORWARD-TSN chunks
    MUST also be sent in an authenticated way as described in
@@ -532,19 +535,36 @@ DTLS Buffer Size: 64 bit u_int
 
 ## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension
 
-The DTLS/SCTP maximum message size is negotiated in the "dtls_over_sctp_maximum_message_size" TLS extension. The ExtensionData of the extension is MessageSizeLimit:
+The DTLS/SCTP maximum message size is negotiated in the
+"dtls_over_sctp_maximum_message_size" TLS extension. The ExtensionData
+of the extension is MessageSizeLimit:
 
 ~~~~~~~~~~~
    uint64 MessageSizeLimit;
 ~~~~~~~~~~~
 
-The value of MessageSizeLimit is the maximum SCTP message size in octets that the endpoint is willing to recieve. When the "dtls_over_sctp_maximum_message_size" extension is negotiated, an endpoint MUST NOT send a user message larger than the MessageSizeLimit value it receives from its peer.
+The value of MessageSizeLimit is the maximum SCTP message size in
+octets that the endpoint is willing to recieve. When the
+"dtls_over_sctp_maximum_message_size" extension is negotiated, an
+endpoint MUST NOT send a user message larger than the MessageSizeLimit
+value it receives from its peer.
 
-This value is the length of the user message before DTLS fragmentation and protection. The value does not account for the expansion due to record protection, record padding, or the DTLS header. 
+This value is the length of the user message before DTLS fragmentation
+and protection. The value does not account for the expansion due to
+record protection, record padding, or the DTLS header.
 
-The "dtls_over_sctp_maximum_message_size" MUST be used to negotiate maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat the omission of "dtls_over_sctp_maximum_message_size" as a fatal error, and it SHOULD generate an "illegal_parameter" alert. Endpoints MUST NOT send a "dtls_over_sctp_maximum_message_size" extension with a value smaller than XXX?.  An endpoint MUST treat receipt of a smaller value as a fatal error and generate an "illegal_parameter" alert.
+The "dtls_over_sctp_maximum_message_size" MUST be used to negotiate
+maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat
+the omission of "dtls_over_sctp_maximum_message_size" as a fatal
+error, and it SHOULD generate an "illegal_parameter" alert. Endpoints
+MUST NOT send a "dtls_over_sctp_maximum_message_size" extension with a
+value smaller than XXX?.  An endpoint MUST treat receipt of a smaller
+value as a fatal error and generate an "illegal_parameter" alert.
 
-The "dtls_over_sctp_maximum_message_size" MUST NOT be send in TLS or in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends the "dtls_over_sctp_maximum_message_size" extension in the EncryptedExtensions message.
+The "dtls_over_sctp_maximum_message_size" MUST NOT be send in TLS or
+in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends the
+"dtls_over_sctp_maximum_message_size" extension in the
+EncryptedExtensions message.
 
 During resumption, the maximum message size is renegotiated.
 
@@ -624,7 +644,16 @@ RFC 6083 defined a TLS Exporter Label registry as described in
 
 # DTLS "dtls_over_sctp_buffer_size_limit" Extension
 
-This document registers the "dtls_over_sctp_maximum_message_size" extension in the TLS "ExtensionType Values" registry established in {{RFC5246}}.  The "dtls_over_sctp_maximum_message_size" extension has been assigned a code point of TBD. This entry \[\[will be\|is\]\] marked as recommended ({{RFC8447}} and marked as "Encrypted" in (D)TLS 1.3  {{I-D.ietf-tls-dtls13}}. The IANA registry {{RFC8447}} \[\[will list\|lists\]\] this extension as "Recommended" (i.e., "Y") and indicates that it may appear in the ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3 {{I-D.ietf-tls-dtls13}}.
+This document registers the "dtls_over_sctp_maximum_message_size"
+extension in the TLS "ExtensionType Values" registry established in
+{{RFC5246}}.  The "dtls_over_sctp_maximum_message_size" extension has
+been assigned a code point of TBD. This entry \[\[will be\|is\]\]
+marked as recommended ({{RFC8447}} and marked as "Encrypted" in (D)TLS
+1.3 {{I-D.ietf-tls-dtls13}}. The IANA registry {{RFC8447}} \[\[will
+list\|lists\]\] this extension as "Recommended" (i.e., "Y") and
+indicates that it may appear in the ClientHello (CH) or
+EncryptedExtensions (EE) messages in (D)TLS 1.3
+{{I-D.ietf-tls-dtls13}}.
 
 ## SCTP Parameter
 
@@ -669,7 +698,11 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
 
 ##  DTLS/SCTP message sizes
 
-The DTLS/SCTP maximum message size extension enables secure negation of a message sizes that fit in the DTLS/SCTP buffer, which improves security and availability. Very small message sizes might generate additional work for senders and receivers, limiting throughput and increasing exposure to denial of service.
+The DTLS/SCTP maximum message size extension enables secure negation
+of a message sizes that fit in the DTLS/SCTP buffer, which improves
+security and availability. Very small message sizes might generate
+additional work for senders and receivers, limiting throughput and
+increasing exposure to denial of service.
 
 ##  Authentication and Policy Decisions
 
