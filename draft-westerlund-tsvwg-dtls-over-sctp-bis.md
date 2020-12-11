@@ -532,17 +532,17 @@ DTLS Buffer Size: 64 bit u_int
 
 ## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension
 
-The DTLS/SCTP maximum message size is negotiated in the "dtls_over_sctp_maximum_message_size" TLS extension. The ExtensionData of the extension is DTLSSOverSCTPMaximumMessageSize:
+The DTLS/SCTP maximum message size is negotiated in the "dtls_over_sctp_maximum_message_size" TLS extension. The ExtensionData of the extension is MessageSizeLimit:
 
 ~~~~~~~~~~~
-   uint64 DTLSOverSCTPMaximumMessageSize;
+   uint64 MessageSizeLimit;
 ~~~~~~~~~~~
 
-The value of DTLSOverSCTPMaximumMessageSize is the maximum SCTP message size in octets that the endpoint is willing to recieve. 
+The value of MessageSizeLimit is the maximum SCTP message size in octets that the endpoint is willing to recieve. When the "dtls_over_sctp_maximum_message_size" extension is negotiated, an endpoint MUST NOT send a user message larger than the MessageSizeLimit value it receives from its peer.
 
-The "dtls_over_sctp_maximum_message_size" MUST be used to negotiate maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat the omission of "dtls_over_sctp_maximum_message_size" as a fatal error, and it SHOULD generate an "illegal_parameter" alert.
+This value is the length of the user message before DTLS fragmentation and protection. The value does not account for the expansion due to record protection, record padding, or the DTLS header. 
 
-Endpoints MUST NOT send a "dtls_over_sctp_maximum_message_size" extension with a value smaller than XXX?.  An endpoint MUST treat receipt of a smaller value as a fatal error and generate an "illegal_parameter" alert.
+The "dtls_over_sctp_maximum_message_size" MUST be used to negotiate maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat the omission of "dtls_over_sctp_maximum_message_size" as a fatal error, and it SHOULD generate an "illegal_parameter" alert. Endpoints MUST NOT send a "dtls_over_sctp_maximum_message_size" extension with a value smaller than XXX?.  An endpoint MUST treat receipt of a smaller value as a fatal error and generate an "illegal_parameter" alert.
 
 The "dtls_over_sctp_maximum_message_size" MUST NOT be send in TLS or in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends the "dtls_over_sctp_maximum_message_size" extension in the EncryptedExtensions message.
 
