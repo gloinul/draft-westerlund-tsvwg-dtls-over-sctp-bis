@@ -78,7 +78,7 @@ size by defining a secure user message fragmentation so that multiple
 DTLS records can be used to protect a single user message. It further
 updates the DTLS versions to use, as well as the HMAC algorithms for
 SCTP-AUTH, and simplifies the implementation by some stricter
-requirements on the procedures.
+requirements on the establishment procedures.
 
 --- middle
 
@@ -89,28 +89,48 @@ requirements on the procedures.
 This document describes the usage of the Datagram Transport Layer
 Security (DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}}, over
 the Stream Control Transmission Protocol (SCTP), as defined in
-{{RFC4960}}.
+{{RFC4960}} with Authenticated Chunks for SCTP (SCTP-Auth)
+{{RFC4895}}.
 
-DTLS over SCTP provides mutual authentication, confidentiality,
+This specification provides mutual authentication, confidentiality,
 integrity protection, and replay protection for applications that use
 SCTP as their transport protocol and allows client/server applications
 to communicate in a way that is designed to give communications
 privacy and to prevent eavesdropping and detect tampering or message
-forgery. It also provides a convinient keying mechanism for SCTP-Auth
-{{RFC4895}} that prevents tampering with SCTP chunks after the DTLS
-handshake has completed.
-
-DTLS/SCTP use DTLS for mutual authentication, key exchange with
+forgery. DTLS/SCTP use DTLS for mutual authentication, key exchange with
 perfect forward for SCTP-AUTH, and confidentiality of user
 messages. DTLS/SCTP use SCTP and SCTP-AUTH for integrity
 protection and replay protection of user messages.
 
 Applications using DTLS over SCTP can use almost all transport
-features provided by SCTP and its extensions.
+features provided by SCTP and its extensions.DTLS/SCTP supports:
+
+   o  preservation of message boundaries.
+
+   o  a large number of unidirectional and bidirectional streams.
+
+   o  ordered and unordered delivery of SCTP user messages.
+
+   o  the partial reliability extension as defined in {{RFC3758}}.
+
+   o  the dynamic address reconfiguration extension as defined in
+      {{RFC5061}}.
+
+   o  Very large user Messages
+
+The method described in this document requires that the SCTP
+implementation supports the optional feature of fragmentation of SCTP
+user messages as defined in {{RFC4960}}. To efficiently implement and
+support larger user messages it is also recommended that I-Data chunks
+as defined in {{RFC8260}} as well as an SCTP API that supports partial
+user message delivery as discussed in {{RFC6458}}.
+
+
+### Comparision with TLS for SCTP
 
 TLS, from which DTLS was derived, is designed to run on top of a
 byte-stream-oriented transport protocol providing a reliable, in-
-sequence delivery.TLS over SCTP as described in {{RFC3436}} has
+sequence delivery. TLS over SCTP as described in {{RFC3436}} has
 some serious limitations:
 
    o It does not support the unordered delivery of SCTP user messages.
@@ -125,21 +145,10 @@ some serious limitations:
       requires a substantial amount of resources and message exchanges
       if a large number of streams is used.
 
-DTLS over SCTP as described in this document overcomes these
-limitations of TLS over SCTP.  In particular, DTLS/SCTP supports:
+### Changes from RFC 6083
 
-   o  preservation of message boundaries.
-
-   o  a large number of unidirectional and bidirectional streams.
-
-   o  ordered and unordered delivery of SCTP user messages.
-
-   o  the partial reliability extension as defined in {{RFC3758}}.
-
-   o  the dynamic address reconfiguration extension as defined in
-      {{RFC5061}}.
-
-However, {{RFC6083}} had the following limitation:
+The DTLS over SCTP solution defined in RFC 6083 had the following
+limitation:
 
    o The maximum user message size is 2^14 bytes, which is a single
       DTLS record limit.
@@ -149,48 +158,25 @@ This update that replaces RFC6083 defines the following changes:
    * Removes the limitations on user messages sizes by defining a
      secure fragmentation mechanism.
 
+   * Defines a DTLS extension for the endpoints to declare the user
+     message size supported to be received.
+
    * Mandates that more modern DTLS version are required (DTLS 1.2 or
      1.3)
 
-   * Mandates use of modern HMAC algorithms (SHA-256) in the SCTP
+   * Mandates use of modern HMAC algorithm (SHA-256) in the SCTP
      authentication extension {{RFC4895}}.
 
    * Recommends support of {{RFC8260}} to enable interleaving of large
      SCTP user messages to avoid scheduling issues.
 
+   * Recommends support of partial message delivery API, see {{RFC6458}}
+     if larger usage messages are intended to be used.
+
    * Applies stricter requirements on always using DTLS for all user
      messages in the SCTP association. By defining a new SCTP parameter
      peers can determine these stricter requirements apply.
 
-The method described in this document requires that the SCTP
-implementation supports the optional feature of fragmentation of SCTP
-user messages as defined in {{RFC4960}} and the SCTP authentication
-extension defined in {{RFC4895}}.
-
-## Motivation for changes
-
-This document proposes a number of changes to RFC 6083 that have
-various different motivations:
-
-Supporting Large User Messages: RFC 6083 allowed only user messages
-   that could fit within a single DTLS record . 3GPP has run into this
-   limitation where they have at least four SCTP using protocols (F1,
-   E1, Xn, NG-C) that can potentially generate messages over the size
-   of 16384 bytes.
-
-New Versions: Almost 10 years has passed since RFC 6083 was written,
-   and significant evolution has happened in the area of DTLS and
-   security algorithms. Thus DTLS 1.3 is the newest version of DTLS
-   and also the SHA-1 HMAC algorithm of RFC 4895 is getting towards
-   the end of usefulness. Thus, this document mandates usage of
-   relevant versions and algorithms.
-
-Clarifications: Some implementation experiences has been gained that
-   motivates additional clarifications on the specification.
-
- * Avoid unsecured messages prior to DTLS handshake have completed.
-
- * Make clear that all messages are encrypted after DTLS handshake.
 
 ## Terminology
 
@@ -391,9 +377,9 @@ TLS:  Transport Layer Security
 
 ##  Stream Usage {#Stream-Usage}
 
-   All DTLS messages of the Handshake, Alert, or ChangeCipherSpec
-   protocol (DTLS 1.2 only) MUST be transported on stream 0 with
-   unlimited reliability and with the ordered delivery feature.
+   All DTLS Handshake, Alert, or ChangeCipherSpec (DTLS 1.2 only)
+   messages MUST be transported on stream 0 with unlimited reliability
+   and with the ordered delivery feature.
 
    DTLS messages of the record protocol SHOULD use multiple streams
    other than stream 0; they MAY use stream 0 for everything if they
@@ -749,27 +735,6 @@ increasing exposure to denial of service.
    information from DTLS/SCTP together with information gathered from
    other protocols increases the risk of identifying individual users.
 
-# Changes from RFC 6083
-
-This specification of DTLS over SCTP has the following changes
-compared to the DTLS over SCTP that defined in {{RFC6083}}.
-
- * Defines a mechanism to fragment user message across multiple DTLS
-   records in secure way.
-
- * Defines a SCTP parameters to negotiate support of DTLS over SCTP.
-
- * Defines a method for determing available buffering for the total
-   size of all DTLS protected user messages under delivery.
-
- * Requires that the DTLS handshake needs to occur immediately after
-   SCTP handshake prior to any other user messages when this
-   specification is supported.
-
- * Requires that SHA-256 is supported in SCTP-AUTH {{RFC4895}} when
-   combined with DTLS/SCTP. Similarily SHA-1 is forbidden to be used.
-
-
 #  Acknowledgments
 
    The authors of RFC 6083 which this document was based on are
@@ -779,3 +744,32 @@ compared to the DTLS over SCTP that defined in {{RFC6083}}.
    Fairhurst, Ian Goldberg, Alfred Hoenes, Carsten Hohendorf, Stefan
    Lindskog, Daniel Mentz, and Sean Turner for their invaluable
    comments.
+
+--- back
+
+# Motivation for changes
+
+This document proposes a number of changes to RFC 6083 that have
+various different motivations:
+
+Supporting Large User Messages: RFC 6083 allowed only user messages
+   that could fit within a single DTLS record . 3GPP has run into this
+   limitation where they have at least four SCTP using protocols (F1,
+   E1, Xn, NG-C) that can potentially generate messages over the size
+   of 16384 bytes.
+
+New Versions: Almost 10 years has passed since RFC 6083 was written,
+   and significant evolution has happened in the area of DTLS and
+   security algorithms. Thus DTLS 1.3 is the newest version of DTLS
+   and also the SHA-1 HMAC algorithm of RFC 4895 is getting towards
+   the end of usefulness. Thus, this document mandates usage of
+   relevant versions and algorithms.
+
+Clarifications: Some implementation experiences has been gained that
+   motivates additional clarifications on the specification.
+
+ * Avoid unsecured messages prior to DTLS handshake have completed.
+
+ * Make clear that all messages are encrypted after DTLS handshake.
+
+
