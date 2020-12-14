@@ -103,7 +103,7 @@ messages. DTLS/SCTP use SCTP and SCTP-AUTH for integrity
 protection and replay protection of user messages.
 
 Applications using DTLS over SCTP can use almost all transport
-features provided by SCTP and its extensions.DTLS/SCTP supports:
+features provided by SCTP and its extensions. DTLS/SCTP supports:
 
    o  preservation of message boundaries.
 
@@ -116,7 +116,7 @@ features provided by SCTP and its extensions.DTLS/SCTP supports:
    o  the dynamic address reconfiguration extension as defined in
       {{RFC5061}}.
 
-   o  Very large user messages
+   o  Large user messages
 
 The method described in this document requires that the SCTP
 implementation supports the optional feature of fragmentation of SCTP
@@ -329,10 +329,8 @@ TLS:  Transport Layer Security
 
 ##  Mapping of DTLS Records {#Mapping-DTLS}
 
-   The minimal supported maximum length of SCTP user messages MUST be
-   at least 18445 bytes. In particular, the SCTP implementation MUST
-   support fragmentation of user messages using DATA {{RFC4960}} or
-   I-DATA {{RFC8260}} chunks.
+   The SCTP implementation MUST support fragmentation of user messages
+   using DATA {{RFC4960}}, and optionally I-DATA {{RFC8260}} chunks.
 
    DTLS/SCTP works as a shim layer between the user message API and
    SCTP. The fragmentation works similar as the DTLS fragmentation of
@@ -390,19 +388,22 @@ TLS:  Transport Layer Security
    messages MUST be transported on stream 0 with unlimited reliability
    and with the ordered delivery feature.
 
-   DTLS messages of the record protocol SHOULD use multiple streams
-   other than stream 0; they MAY use stream 0 for everything if they
-   do not care about minimizing head of line blocking.
+   DTLS messages of the record protocol, which carries the protected
+   user messages, SHOULD use multiple streams other than stream 0;
+   they MAY use stream 0 as long as the ordered message semantics is
+   acceptable. On stream 0 protected user messages as well as any DTLS
+   messages that isn't record protocol will be mixed, thus the additional
+   head of line blocking can occurr.
 
 ##  Chunk Handling
 
    DATA chunks of SCTP MUST be sent in an authenticated way as
    described in {{RFC4895}}.  All other chunks that can be
-   authenticated, i.e. all chunks that can be listed in the Chunk List
-   Parameter {{RFC4895}}, MUST also be sent in an authenticated way.
-   This makes sure that an attacker cannot modify the stream in which
-   a message is sent or affect the ordered/unordered delivery of the
-   message.
+   authenticated, i.e. all chunk types that can be listed in the Chunk
+   List Parameter {{RFC4895}}, MUST also be sent in an authenticated
+   way.  This makes sure that an attacker cannot modify the stream in
+   which a message is sent or affect the ordered/unordered delivery of
+   the message.
 
    If PR-SCTP as defined in {{RFC3758}} is used, FORWARD-TSN chunks
    MUST also be sent in an authenticated way as described in
