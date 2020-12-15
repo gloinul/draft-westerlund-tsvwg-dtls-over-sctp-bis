@@ -97,7 +97,7 @@ integrity protection, and replay protection for applications that use
 SCTP as their transport protocol and allows client/server applications
 to communicate in a way that is designed to give communications
 privacy and to prevent eavesdropping and detect tampering or message
-forgery. DTLS/SCTP use DTLS for mutual authentication, key exchange with
+forgery. DTLS/SCTP uses DTLS for mutual authentication, key exchange with
 perfect forward for SCTP-AUTH, and confidentiality of user
 messages. DTLS/SCTP use SCTP and SCTP-AUTH for integrity
 protection and replay protection of user messages.
@@ -242,7 +242,7 @@ TLS:  Transport Layer Security
    protected user message, i.e. with DTLS record overhead, is buffered
    in the receiver. This buffer space will thus put a limit on the
    largest size of plain text user message that can be transferred
-   securly.
+   securely.
 
    A receiver that doesn't support partial delivery of user messages
    from SCTP {{RFC6458}} will advertise its largest supported
@@ -284,10 +284,10 @@ TLS:  Transport Layer Security
    dtls_over_sctp_maximum_message_size (MMS) is dependent on the
    implementation.
 
-   No partial processing. Then the message is limited by the a_rwnd
-   as this is the largest protected user message that can be received
-   and then processed by DTLS and where the plain text user message
-   is expected to be no more than the signalled MMS.
+   When no partial data delivery is supported, the message size is 
+   limited by the a_rwnd as this is the largest protected user message 
+   that can be received and then processed by DTLS and where the plain 
+   text user message is expected to be no more than the signalled MMS.
 
    With partial processing it is possible to have a receiver
    implementation that is bound to use no more buffer space than MMS
@@ -296,7 +296,7 @@ TLS:  Transport Layer Security
    DTLS record has been consumed. A more realistic implementation is
    two maximum DTLS record sizes.
 
-   If one have partial delivery in both SCTP API and the ULP API and
+   If one has partial delivery in both SCTP API and the ULP API and
    parital processing in the DTLS/SCTP implementation the buffering
    space in the DTLS/SCTP layer should be no more than two DTLS
    records. In which case the MMS to set is dependent on the ULP and
@@ -502,7 +502,7 @@ TLS:  Transport Layer Security
 ~~~~~~~~~~~
 
    At the initialization of the association, a sender of the INIT or
-   INIT ACK chunk that intended to use DTLS/SCTP MUST include this
+   INIT ACK chunk that intends to use DTLS/SCTP MUST include this
    parameter to inform its peer that it is able to support DTLS over
    SCTP per this specification. The format of this parameter is
    defined as follows:
@@ -534,7 +534,7 @@ of the extension is MessageSizeLimit:
 ~~~~~~~~~~~
 
 The value of MessageSizeLimit is the maximum plaintext user message
-size in octets that the endpoint is willing to recieve. When the
+size in octets that the endpoint is willing to receive. When the
 "dtls_over_sctp_maximum_message_size" extension is negotiated, an
 endpoint MUST NOT send a user message larger than the MessageSizeLimit
 value it receives from its peer.
@@ -637,24 +637,24 @@ indicated in the SCTP parameter if its policy accepts it.
 When performing the DTLS handshake it MUST include the TLS
 extension "dtls_over_sctp_maximum_message_size". If the server
 includes that extension in its handshake message it indicates that the
-assocaition may experience a potential attack where an on-path
+association may experience a potential attack where an on-path
 attacker has attempted to downgrade the response to RFC 6083 by
 removing the SCTP DTLS-Supported parameter. In this case the user
 message limit is per the TLS extension and the client can continue per
-this specification. Othewise the continued processing will be per
+this specification. Otherwise the continued processing will be per
 RFC 6083 and the user messages limited to 16383 bytes.
 
 A SCTP server that receives an INIT which doesn't contain the
 DTLS-supported message but do contain the three parameters for
 SCTP-AUTH, i.e. RANDOM, CHUNKS, and HMAC-ALGO, could attempt to accept
-fallback to RFC 6083 if accepted by policy. First an RFC 6083 client
+fallback to {{RFC6083}} if accepted by policy. First an RFC 6083 client
 is likely prefering SHA-1 in HMAC-ALGO parameter for SCTP-AUTH.
 
 If fallback is allowed it is possible that the client will send plain
-text user messages prior to DTLS handshake as it is allowed per RFC
-6083. So that needs to be part of the consideration for a policy
+text user messages prior to DTLS handshake as it is allowed per RFC 6083. 
+So that needs to be part of the consideration for a policy
 allowing fallback. When performing the the DTLS handshake, the server
-is required accept that lack of the TLS extension
+is required accepting that lack of the TLS extension
 "dtls_over_sctp_maximum_message_size" and can't treat it as fatal
 error. In case the "dtls_over_sctp_maximum_message_size" TLS extension
 is present in the handshake the server SHALL continue the handshake
@@ -712,8 +712,8 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
    writes "It is recommended to force the periodic renewal of the
    keys, e.g. every hour and every 100 GB of data, in order to limit
-   the impact of a key compromise." {{ANSSI-DAT-NT-003}}. This is RECOMMENDED also for
-   DTLS/SCTP.
+   the impact of a key compromise." {{ANSSI-DAT-NT-003}}. This is 
+   RECOMMENDED also for DTLS/SCTP.
 
 ##  Downgrade Attacks
 
