@@ -103,7 +103,7 @@ messages. DTLS/SCTP use SCTP and SCTP-AUTH for integrity
 protection and replay protection of user messages.
 
 Applications using DTLS over SCTP can use almost all transport
-features provided by SCTP and its extensions.DTLS/SCTP supports:
+features provided by SCTP and its extensions. DTLS/SCTP supports:
 
    o  preservation of message boundaries.
 
@@ -116,7 +116,7 @@ features provided by SCTP and its extensions.DTLS/SCTP supports:
    o  the dynamic address reconfiguration extension as defined in
       {{RFC5061}}.
 
-   o  Very large user messages
+   o  Large user messages
 
 The method described in this document requires that the SCTP
 implementation supports the optional feature of fragmentation of SCTP
@@ -329,10 +329,8 @@ TLS:  Transport Layer Security
 
 ##  Mapping of DTLS Records {#Mapping-DTLS}
 
-   The minimal supported maximum length of SCTP user messages MUST be
-   at least 18445 bytes. In particular, the SCTP implementation MUST
-   support fragmentation of user messages using DATA {{RFC4960}} or
-   I-DATA {{RFC8260}} chunks.
+   The SCTP implementation MUST support fragmentation of user messages
+   using DATA {{RFC4960}}, and optionally I-DATA {{RFC8260}} chunks.
 
    DTLS/SCTP works as a shim layer between the user message API and
    SCTP. The fragmentation works similar as the DTLS fragmentation of
@@ -390,19 +388,22 @@ TLS:  Transport Layer Security
    messages MUST be transported on stream 0 with unlimited reliability
    and with the ordered delivery feature.
 
-   DTLS messages of the record protocol SHOULD use multiple streams
-   other than stream 0; they MAY use stream 0 for everything if they
-   do not care about minimizing head of line blocking.
+   DTLS messages of the record protocol, which carries the protected
+   user messages, SHOULD use multiple streams other than stream 0;
+   they MAY use stream 0 as long as the ordered message semantics is
+   acceptable. On stream 0 protected user messages as well as any DTLS
+   messages that isn't record protocol will be mixed, thus the additional
+   head of line blocking can occurr.
 
 ##  Chunk Handling
 
    DATA chunks of SCTP MUST be sent in an authenticated way as
    described in {{RFC4895}}.  All other chunks that can be
-   authenticated, i.e. all chunks that can be listed in the Chunk List
-   Parameter {{RFC4895}}, MUST also be sent in an authenticated way.
-   This makes sure that an attacker cannot modify the stream in which
-   a message is sent or affect the ordered/unordered delivery of the
-   message.
+   authenticated, i.e. all chunk types that can be listed in the Chunk
+   List Parameter {{RFC4895}}, MUST also be sent in an authenticated
+   way.  This makes sure that an attacker cannot modify the stream in
+   which a message is sent or affect the ordered/unordered delivery of
+   the message.
 
    If PR-SCTP as defined in {{RFC3758}} is used, FORWARD-TSN chunks
    MUST also be sent in an authenticated way as described in
@@ -478,13 +479,17 @@ TLS:  Transport Layer Security
    user messages that are buffered in the SCTP layer MUST be read and
    processed by DTLS.
 
-## Negotiation of DTLS support {#Negotiation}
+# DTLS over SCTP service {#Negotation}
 
-   To distinguish supporters of this specification compared to RFC
-   6083 as well as enable certain improvements that simplifies
-   implementation a new SCPT parameter is defined.
+   The adoption of DTLS over SCTP according to the current description
+   is meant to add to SCTP the option for transferring encrypted data.
+   When DTLS-option is enabled, all data being transferred must be
+   protected by chunk authentication and DTLS encrypted.  Chunks that
+   can be transferred will be specified in the CHUNK list parameter
+   according to {{RFC4895}}.  Error handling for authenticated chunks
+   is according to {{RFC4895}}.
 
-### New option at INIT/INIT-ACK {#DTLS-supported}
+## New option at INIT/INIT-ACK {#DTLS-supported}
 
 
    The following new OPTIONAL parameter is added to the INIT and INIT
@@ -496,10 +501,11 @@ TLS:  Transport Layer Security
    DTLS-Supported                      OPTIONAL    XXXXX (0x????)
 ~~~~~~~~~~~
 
-   At the initialization of the association, the sender of the INIT or
-   INIT ACK chunk MAY include this OPTIONAL parameter to inform its
-   peer that it is able to support DTLS over SCTP per this
-   specification. The format of this parameter is defined as follows:
+   At the initialization of the association, a sender of the INIT or
+   INIT ACK chunk that intended to use DTLS/SCTP MUST include this
+   parameter to inform its peer that it is able to support DTLS over
+   SCTP per this specification. The format of this parameter is
+   defined as follows:
 
 ~~~~~~~~~~~
     0                   1                   2                   3
@@ -519,7 +525,7 @@ Length: 16 bit u_int
 
 ## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension {#TLS-Extension}
 
-The DTLS/SCTP maximum message size is negotiated in the
+The endpoint's DTLS/SCTP maximum message size is declared in the
 "dtls_over_sctp_maximum_message_size" TLS extension. The ExtensionData
 of the extension is MessageSizeLimit:
 
@@ -527,8 +533,8 @@ of the extension is MessageSizeLimit:
    uint64 MessageSizeLimit;
 ~~~~~~~~~~~
 
-The value of MessageSizeLimit is the maximum SCTP message size in
-octets that the endpoint is willing to recieve. When the
+The value of MessageSizeLimit is the maximum plaintext user message
+size in octets that the endpoint is willing to recieve. When the
 "dtls_over_sctp_maximum_message_size" extension is negotiated, an
 endpoint MUST NOT send a user message larger than the MessageSizeLimit
 value it receives from its peer.
@@ -539,11 +545,12 @@ record protection, record padding, or the DTLS header.
 
 The "dtls_over_sctp_maximum_message_size" MUST be used to negotiate
 maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat
-the omission of "dtls_over_sctp_maximum_message_size" as a fatal
-error, and it SHOULD generate an "illegal_parameter" alert. Endpoints
-MUST NOT send a "dtls_over_sctp_maximum_message_size" extension with a
-value smaller than 16383.  An endpoint MUST treat receipt of a smaller
-value as a fatal error and generate an "illegal_parameter" alert.
+the omission of "dtls_over_sctp_maximum_message_size" as a fatal error
+unless supporting RFC 6083 fallback {{Fallback}}, and it SHOULD
+generate an "illegal_parameter" alert. Endpoints MUST NOT send a
+"dtls_over_sctp_maximum_message_size" extension with a value smaller
+than 16383.  An endpoint MUST treat receipt of a smaller value as a
+fatal error and generate an "illegal_parameter" alert.
 
 The "dtls_over_sctp_maximum_message_size" MUST NOT be send in TLS or
 in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends the
@@ -552,17 +559,8 @@ EncryptedExtensions message.
 
 During resumption, the maximum message size is renegotiated.
 
-## DTLS over SCTP service
 
-   The adoption of DTLS over SCTP according to the current description
-   is meant to add to SCTP the option for transferring encrypted data.
-   When DTLS-option is enabled, all data being transferred must be
-   protected by chunk authentication and DTLS encrypted.  Chunks that
-   can be transferred will be specified in the CHUNK list parameter
-   according to {{RFC4895}}.  Error handling for authenticated chunks
-   is according to {{RFC4895}}.
-
-### DTLS over SCTP initialization {#DTLS-init}
+## DTLS over SCTP initialization {#DTLS-init}
 
    Initialization of DTLS/SCTP requires all the following options to
    be part of the INIT/INIT-ACK handshake:
@@ -598,7 +596,7 @@ During resumption, the maximum message size is renegotiated.
     <----------------- AUTH; DATA[DTLS Handshake] -------------------
 ~~~~~~~~~~~
 
-### Client Use Case
+## Client Use Case
 
    When a SCTP Client initiates an Association with DTLS/SCTP
    Mandatory Options, it can receive an INIT-ACK also containing
@@ -606,9 +604,9 @@ During resumption, the maximum message size is renegotiated.
    proceed as specified in the previous {{DTLS-init}} section.  If the
    peer replies with an INIT-ACK not containing all DTLS/SCTP
    Mandatory Options, the Client can decide to keep on working with
-   plain data only or to ABORT the association.
+   RFC 6083 fallaback, plain data only, or to ABORT the association.
 
-### Server Use Case
+## Server Use Case
 
    If a SCTP Server supports DTLS/SCTP, when receiving an INIT chunk
    with all DTLS/SCTP Mandatory Options it must reply with INIT-ACK
@@ -617,10 +615,54 @@ During resumption, the maximum message size is renegotiated.
    related traffic case.  If a SCTP Server supports DTLS, when
    receiving an INIT chunk with not all DTLS/SCTP Mandatory
    Options, it can decide to continue by creating an Association with
-   plain data only or to ABORT it.
+   RFC 6083 fallback, plain data only or to ABORT it.
 
+## RFC 6083 Fallback {#Fallback}
 
-#  IANA Considerations {#IANA-Consideration}
+This section discusses how an endpoint supporting this specification
+can fallback to follow the DTLS/SCTP behavior in RFC 6083. It is
+recommended to define a setting that represent the policy to allow
+fallback or not. However, the possibility to use fallback is based on
+the ULP can operate using user messages that are no longer than 16383
+bytes. Fallback is NOT RECOMMEND to be enabled as it enables downgrade
+to weaker algorithms and versions of DTLS.
+
+A SCTP client that receives an INIT-ACK which doesn't contain the
+DTLS-supported message but do include the SCTP-AUTH parameters can
+attempt to perform an DTLS handshake following this specification. For
+an RFC 6083 client it is likey that the prefered HMAC-ALGO indicates
+SHA-1. The client performing fallback needs to follow the capabilities
+indicated in the SCTP parameter if its policy accepts it.
+
+When performing the DTLS handshake it MUST include the TLS
+extension "dtls_over_sctp_maximum_message_size". If the server
+includes that extension in its handshake message it indicates that the
+assocaition may experience a potential attack where an on-path
+attacker has attempted to downgrade the response to RFC 6083 by
+removing the SCTP DTLS-Supported parameter. In this case the user
+message limit is per the TLS extension and the client can continue per
+this specification. Othewise the continued processing will be per
+RFC 6083 and the user messages limited to 16383 bytes.
+
+A SCTP server that receives an INIT which doesn't contain the
+DTLS-supported message but do contain the three parameters for
+SCTP-AUTH, i.e. RANDOM, CHUNKS, and HMAC-ALGO, could attempt to accept
+fallback to RFC 6083 if accepted by policy. First an RFC 6083 client
+is likely prefering SHA-1 in HMAC-ALGO parameter for SCTP-AUTH.
+
+If fallback is allowed it is possible that the client will send plain
+text user messages prior to DTLS handshake as it is allowed per RFC
+6083. So that needs to be part of the consideration for a policy
+allowing fallback. When performing the the DTLS handshake, the server
+is required accept that lack of the TLS extension
+"dtls_over_sctp_maximum_message_size" and can't treat it as fatal
+error. In case the "dtls_over_sctp_maximum_message_size" TLS extension
+is present in the handshake the server SHALL continue the handshake
+including the extension with its value also, and from that point
+follow this specification. In case the TLS option is missing RFC 6083
+applies.
+
+# IANA Considerations {#IANA-Consideration}
 
 ## TLS Exporter Label
 
@@ -628,7 +670,7 @@ RFC 6083 defined a TLS Exporter Label registry as described in
 {{RFC5705}}. IANA is requested to update the reference for the label
 "EXPORTER_DTLS_OVER_SCTP" to this specification.
 
-# DTLS "dtls_over_sctp_buffer_size_limit" Extension
+## DTLS "dtls_over_sctp_buffer_size_limit" Extension
 
 This document registers the "dtls_over_sctp_maximum_message_size"
 extension in the TLS "ExtensionType Values" registry established in
