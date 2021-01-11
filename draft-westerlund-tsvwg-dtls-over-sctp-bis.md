@@ -92,15 +92,16 @@ the Stream Control Transmission Protocol (SCTP), as defined in
 {{RFC4960}} with Authenticated Chunks for SCTP (SCTP-Auth)
 {{RFC4895}}.
 
-This specification provides mutual authentication, confidentiality,
-integrity protection, and replay protection for applications that use
-SCTP as their transport protocol and allows client/server applications
-to communicate in a way that is designed to give communications
-privacy and to prevent eavesdropping and detect tampering or message
-forgery. DTLS/SCTP uses DTLS for mutual authentication, key exchange with
-perfect forward for SCTP-AUTH, and confidentiality of user
-messages. DTLS/SCTP use SCTP and SCTP-AUTH for integrity
-protection and replay protection of user messages.
+This specification provides mutual authentication of endpoints,
+confidentiality, integrity protection, and replay protection of user
+messages for applications that use SCTP as their transport protocol.
+Thus it allows client/server applications to communicate in a way that
+is designed to give communications privacy and to prevent
+eavesdropping and detect tampering or message forgery. DTLS/SCTP uses
+DTLS for mutual authentication, key exchange with perfect forward
+secrecy for SCTP-AUTH, and confidentiality of user messages. DTLS/SCTP
+use SCTP and SCTP-AUTH for integrity protection and replay protection
+of user messages.
 
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions. DTLS/SCTP supports:
@@ -284,9 +285,9 @@ TLS:  Transport Layer Security
    dtls_over_sctp_maximum_message_size (MMS) is dependent on the
    implementation.
 
-   When no partial data delivery is supported, the message size is 
-   limited by the a_rwnd as this is the largest protected user message 
-   that can be received and then processed by DTLS and where the plain 
+   When no partial data delivery is supported, the message size is
+   limited by the a_rwnd as this is the largest protected user message
+   that can be received and then processed by DTLS and where the plain
    text user message is expected to be no more than the signalled MMS.
 
    With partial processing it is possible to have a receiver
@@ -473,7 +474,7 @@ TLS:  Transport Layer Security
    To prevent DTLS from discarding DTLS user messages while it is
    shutting down, a CloseNotify message MUST only be sent after all
    outstanding SCTP user messages have been acknowledged by the SCTP
-   peer and MUST NOT still be revoked by the SCTP peer.
+   peer and MUST NOT be revoked by the SCTP peer.
 
    Prior to processing a received CloseNotify, all other received SCTP
    user messages that are buffered in the SCTP layer MUST be read and
@@ -651,7 +652,7 @@ fallback to {{RFC6083}} if accepted by policy. First an RFC 6083 client
 is likely prefering SHA-1 in HMAC-ALGO parameter for SCTP-AUTH.
 
 If fallback is allowed it is possible that the client will send plain
-text user messages prior to DTLS handshake as it is allowed per RFC 6083. 
+text user messages prior to DTLS handshake as it is allowed per RFC 6083.
 So that needs to be part of the consideration for a policy
 allowing fallback. When performing the the DTLS handshake, the server
 is required accepting that lack of the TLS extension
@@ -699,7 +700,7 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    security. HTTP/2 {{RFC7540}} gives good minimum requirements based
    on the attacks that where publicly known in 2015. DTLS 1.3
    {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
-   weaknesses.
+   weaknesses at the time of publication.
 
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
    have been reached. HMAC-SHA-256 as used in SCTP-AUTH has a very
@@ -712,7 +713,7 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
    writes "It is recommended to force the periodic renewal of the
    keys, e.g. every hour and every 100 GB of data, in order to limit
-   the impact of a key compromise." {{ANSSI-DAT-NT-003}}. This is 
+   the impact of a key compromise." {{ANSSI-DAT-NT-003}}. This is
    RECOMMENDED also for DTLS/SCTP.
 
 ##  Downgrade Attacks
@@ -726,19 +727,20 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
 
 ##  DTLS/SCTP message sizes
 
-The DTLS/SCTP maximum message size extension enables secure negation
-of a message sizes that fit in the DTLS/SCTP buffer, which improves
-security and availability. Very small plain text user fragment sizes
-might generate additional work for senders and receivers, limiting
-throughput and increasing exposure to denial of service.
+   The DTLS/SCTP maximum message size extension enables secure
+   negation of a message sizes that fit in the DTLS/SCTP buffer, which
+   improves security and availability. Very small plain text user
+   fragment sizes might generate additional work for senders and
+   receivers, limiting throughput and increasing exposure to denial of
+   service.
 
-The maximum message size extension does not protect against peer nodes
-intending to negatively affect the peer node through flooding
-attacks. The attacking node can both send larger messages than the
-expressed capability as well as initiating a large number of
-concurrent user message transmissions that never are concluded. For
-the target of the attack it is more straight forward to determine that
-a peer is ignoring the nodes states limitation.
+   The maximum message size extension does not protect against peer
+   nodes intending to negatively affect the peer node through flooding
+   attacks. The attacking node can both send larger messages than the
+   expressed capability as well as initiating a large number of
+   concurrent user message transmissions that never are concluded. For
+   the target of the attack it is more straight forward to determine
+   that a peer is ignoring the node's stated limitation.
 
 ##  Authentication and Policy Decisions
 
@@ -802,7 +804,7 @@ a peer is ignoring the nodes states limitation.
    The authors of RFC 6083 which this document was based on are
    Michael Tüxen, Eric Rescorla, and Robin Seggelmann.
 
-   The authors wish to thank Anna Brunstrom, Lars Eggert, Gorry
+   The RFC 6083 authors thanked Anna Brunstrom, Lars Eggert, Gorry
    Fairhurst, Ian Goldberg, Alfred Hoenes, Carsten Hohendorf, Stefan
    Lindskog, Daniel Mentz, and Sean Turner for their invaluable
    comments.
@@ -815,7 +817,7 @@ This document proposes a number of changes to RFC 6083 that have
 various different motivations:
 
 Supporting Large User Messages: RFC 6083 allowed only user messages
-   that could fit within a single DTLS record . 3GPP has run into this
+   that could fit within a single DTLS record. 3GPP has run into this
    limitation where they have at least four SCTP using protocols (F1,
    E1, Xn, NG-C) that can potentially generate messages over the size
    of 16384 bytes.
