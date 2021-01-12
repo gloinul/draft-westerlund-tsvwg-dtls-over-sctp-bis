@@ -24,6 +24,17 @@ author:
    name: Claudio Porfiri
    org: Ericsson
    email: claudio.porfiri@ericsson.com
+  -
+   ins: M. Tuexen
+   name: Michael Tuexen
+   org: Muenster University of Applied Sciences
+   abbrev: Muenster Univ. of Appl. Sciences
+   street: Stegerwaldstrasse 39
+   code: 48565
+   city: Steinfurt
+   country: Germany
+   email: tuexen@fh-muenster.de
+
 
 informative:
   RFC3436:
