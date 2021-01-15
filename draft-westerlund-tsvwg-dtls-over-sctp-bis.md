@@ -812,7 +812,7 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
 
 #  Acknowledgments
 
-   The authors of RFC 6083 which this document was based on are
+   The authors of RFC 6083 which this document is based on are
    Michael Tüxen, Eric Rescorla, and Robin Seggelmann.
 
    The RFC 6083 authors thanked Anna Brunstrom, Lars Eggert, Gorry
