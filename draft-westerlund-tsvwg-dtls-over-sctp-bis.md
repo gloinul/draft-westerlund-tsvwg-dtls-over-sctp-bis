@@ -251,19 +251,18 @@ TLS:  Transport Layer Security
    {{RFC4960}}. Note that the a_rwnd value is across all user messages
    being delivered.
 
-   For receiver supporting partial delivery of user messages a_rwnd
-   will not limit the maximum size of the DTLS protected user message.
-   This as the receiver can move parts of the DTLS protected user
+   For a receiver supporting partial delivery of user messages a_rwnd
+   will not limit the maximum size of the DTLS protected user message
+   because the receiver can move parts of the DTLS protected user
    message from the SCTP receiver buffer into a buffer for DTLS
-   processing. And when each complete DTLS record have been received
-   from SCTP it can in its turn be processed and the plain text
-   fragment can in its turn be partially delivered to the user
-   application.
+   processing. When each complete DTLS record have been received
+   from SCTP, it can  be processed and the plain text fragment can,
+   in its turn, be partially delivered to the user application.
 
    Thus, the limit of the largest user message is dependent on
    buffering allocated for DTLS processing as well as the DTLS/SCTP
    API to the application. To ensure that the sender have some
-   understanding of limitation on the receiver size a TLS extension
+   understanding of the maximum receiver size a TLS extension
    "dtls_over_sctp_maximum_message_size" {{TLS-Extension}} is used to
    signal the endpoints receiver capability when it comes to user
    message size.
@@ -277,8 +276,8 @@ TLS:  Transport Layer Security
 
    Due to SCTP's capability to transmit concurrent user messages the
    total memory consumption in the receiver is not bounded. In cases
-   where one or more user messages are affected by packet loss of it's
-   DATA chunks more data may requiring buffer in the receiver.
+   where one or more user messages are affected by packet loss, the
+   DATA chunks may require more data in the receiver's buffer.
 
    The necessary buffering space for a single user message of
    dtls_over_sctp_maximum_message_size (MMS) is dependent on the
@@ -296,11 +295,11 @@ TLS:  Transport Layer Security
    DTLS record has been consumed. A more realistic implementation is
    two maximum DTLS record sizes.
 
-   If one has partial delivery in both SCTP API and the ULP API and
-   parital processing in the DTLS/SCTP implementation the buffering
-   space in the DTLS/SCTP layer should be no more than two DTLS
-   records. In which case the MMS to set is dependent on the ULP and
-   the endpoints capabilities.
+  If an implementation supports partial delivery in both the SCTP API and 
+  the ULP API, and also parital processing in the DTLS/SCTP implementation, 
+  then the buffering space in the DTLS/SCTP layer ought to be no more than
+  two DTLS records. In which case the MMS to set is dependent on the ULP and
+  the endpoints capabilities.
 
 ## Replay Protection
 
@@ -315,9 +314,10 @@ TLS:  Transport Layer Security
 
 ##  Path MTU Discovery
 
-   SCTP provides Path MTU discovery and fragmentation/reassembly for
-   user messages.  According to {{Msg-size}}, DTLS can send maximum sized
-   DTLS Records.  Therefore, Path MTU discovery of DTLS MUST NOT be used.
+   DTLS Path MTU Discovery MUST NOT be used.
+   Since SCTP provides own Path MTU discovery and fragmentation/reassembly for
+   user messages, and according to {{Msg-size}}, DTLS can send maximum sized
+   DTLS Records.
 
 ##  Retransmission of Messages
 
@@ -358,7 +358,8 @@ TLS:  Transport Layer Security
    fragments of the protected user message this should only occur in
    case of implementation errors or internal hardware failures.
 
-   Connection ID SHOULD NOT be negotiated. If DTLS 1.3 is used, the
+   The DTLS Connection ID SHOULD NOT be negotiated (Section 9 of
+   {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the
    length field MUST NOT be omitted and a 16 bit sequence number
    SHOULD be used.
 
@@ -372,6 +373,7 @@ TLS:  Transport Layer Security
 
 ##  Payload Protocol Identifier Usage
 
+   SCTP Application Protocol Identifier is assigned by IANA. 
    Application protocols using DTLS over SCTP SHOULD register and use a
    separate payload protocol identifier (PPID) and SHOULD NOT reuse the
    PPID that they registered for running directly over SCTP.
@@ -621,13 +623,13 @@ During resumption, the maximum message size is renegotiated.
 
 This section discusses how an endpoint supporting this specification
 can fallback to follow the DTLS/SCTP behavior in RFC 6083. It is
-recommended to define a setting that represent the policy to allow
+recommended to define a setting that represents the policy to allow
 fallback or not. However, the possibility to use fallback is based on
 the ULP can operate using user messages that are no longer than 16383
 bytes. Fallback is NOT RECOMMEND to be enabled as it enables downgrade
 to weaker algorithms and versions of DTLS.
 
-A SCTP client that receives an INIT-ACK which doesn't contain the
+A SCTP client that receives an INIT-ACK that doesn't contain the
 DTLS-supported message but do include the SCTP-AUTH parameters can
 attempt to perform an DTLS handshake following this specification. For
 an RFC 6083 client it is likey that the prefered HMAC-ALGO indicates
