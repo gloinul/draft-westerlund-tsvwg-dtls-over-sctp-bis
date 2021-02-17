@@ -307,16 +307,20 @@ TLS:  Transport Layer Security
    DTLS record has been consumed. A more realistic implementation is
    two maximum DTLS record sizes.
 
-  If an implementation supports partial delivery in both the SCTP API and 
-  the ULP API, and also parital processing in the DTLS/SCTP implementation, 
+  If an implementation supports partial delivery in both the SCTP API and
+  the ULP API, and also parital processing in the DTLS/SCTP implementation,
   then the buffering space in the DTLS/SCTP layer ought to be no more than
   two DTLS records. In which case the MMS to set is dependent on the ULP and
   the endpoints capabilities.
 
 ## Replay Protection
 
-   As SCTP with SCTP-AUTH provides replay protection for DATA chunks,
-   DTLS/SCTP provides replay protection for user messages.
+   SCTP-AUTH {{RFC4895}} does not have explicit replay protection. However, the
+   combination of SCTP-AUTH's protection of DATA or I-DATA chunks and SCTP user
+   message handling will prevent third party attempts to inject or replay SCTP
+   packets resulting in impact on the received protected user message. In fact
+   this document's solution is dependent on SCTP-AUTH and SCTP to prevent
+   reordering of the DTLS records witin each protected user message.
 
    DTLS optionally supports record replay detection. Such replay
    detection could result in the DTLS layer dropping valid messages
@@ -385,7 +389,7 @@ TLS:  Transport Layer Security
 
 ##  Payload Protocol Identifier Usage
 
-   SCTP Application Protocol Identifier is assigned by IANA. 
+   SCTP Application Protocol Identifier is assigned by IANA.
    Application protocols using DTLS over SCTP SHOULD register and use a
    separate payload protocol identifier (PPID) and SHOULD NOT reuse the
    PPID that they registered for running directly over SCTP.
