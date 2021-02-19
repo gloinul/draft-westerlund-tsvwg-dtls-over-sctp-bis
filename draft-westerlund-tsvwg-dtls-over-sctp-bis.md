@@ -25,10 +25,10 @@ author:
    org: Ericsson
    email: claudio.porfiri@ericsson.com
   -
-   ins: M. Tuexen
-   name: Michael Tuexen
-   org: Muenster University of Applied Sciences
-   abbrev: Muenster Univ. of Appl. Sciences
+   ins: M. Tüxen
+   name: Michael Tüxen
+   org: Münster University of Applied Sciences
+   abbrev: Münster Univ. of Appl. Sciences
    street: Stegerwaldstrasse 39
    code: 48565
    city: Steinfurt
@@ -83,7 +83,7 @@ privacy and to prevent eavesdropping and detect tampering or message
 forgery.
 
 Applications using DTLS over SCTP can use almost all transport
-features provided by SCTP and its extensions. This document intend to
+features provided by SCTP and its extensions. This document intends to
 obsolete RFC 6083 and removes the 16 kB limitation on user message
 size by defining a secure user message fragmentation so that multiple
 DTLS records can be used to protect a single user message. It further
@@ -117,43 +117,43 @@ of user messages.
 Applications using DTLS over SCTP can use almost all transport
 features provided by SCTP and its extensions. DTLS/SCTP supports:
 
-   o  preservation of message boundaries.
+   *  preservation of message boundaries.
 
-   o  a large number of unidirectional and bidirectional streams.
+   *  a large number of unidirectional and bidirectional streams.
 
-   o  ordered and unordered delivery of SCTP user messages.
+   *  ordered and unordered delivery of SCTP user messages.
 
-   o  the partial reliability extension as defined in {{RFC3758}}.
+   *  the partial reliability extension as defined in {{RFC3758}}.
 
-   o  the dynamic address reconfiguration extension as defined in
+   *  the dynamic address reconfiguration extension as defined in
       {{RFC5061}}.
 
-   o  Large user messages
+   *  large user messages.
 
 The method described in this document requires that the SCTP
 implementation supports the optional feature of fragmentation of SCTP
 user messages as defined in {{RFC4960}}. To efficiently implement and
-support larger user messages it is also recommended that I-Data chunks
+support larger user messages it is also recommended that I-DATA chunks
 as defined in {{RFC8260}} as well as an SCTP API that supports partial
 user message delivery as discussed in {{RFC6458}}.
 
 
-### Comparision with TLS for SCTP
+### Comparison with TLS for SCTP
 
 TLS, from which DTLS was derived, is designed to run on top of a
 byte-stream-oriented transport protocol providing a reliable, in-
 sequence delivery. TLS over SCTP as described in {{RFC3436}} has
 some serious limitations:
 
-   o It does not support the unordered delivery of SCTP user messages.
+   * It does not support the unordered delivery of SCTP user messages.
 
-   o It does not support partial reliability as defined in
+   * It does not support partial reliability as defined in
    {{RFC3758}}.
 
-   o It only supports the usage of the same number of streams in both
+   * It only supports the usage of the same number of streams in both
       directions.
 
-   o It uses a TLS connection for every bidirectional stream, which
+   * It uses a TLS connection for every bidirectional stream, which
       requires a substantial amount of resources and message exchanges
       if a large number of streams is used.
 
@@ -162,7 +162,7 @@ some serious limitations:
 The DTLS over SCTP solution defined in RFC 6083 had the following
 limitation:
 
-   o The maximum user message size is 2^14 bytes, which is a single
+   * The maximum user message size is 2^14 bytes, which is a single
       DTLS record limit.
 
 This update that replaces RFC6083 defines the following changes:
@@ -237,8 +237,8 @@ TLS:  Transport Layer Security
 
 ## Message Sizes {#Msg-size}
 
-   DTLS/SCTP, automatically fragment and reassemble user
-   messages. This specificatin defines how to fragment the user
+   DTLS/SCTP, automatically fragments and reassembles user
+   messages. This specification defines how to fragment the user
    messages into DTLS records, where each DTLS 1.3 record allows a
    maximum of 2^14 protected bytes. Each DTLS record adds some
    overhead, thus using records of maximum possible size are
@@ -307,7 +307,7 @@ TLS:  Transport Layer Security
    two maximum DTLS record sizes.
 
   If an implementation supports partial delivery in both the SCTP API and
-  the ULP API, and also parital processing in the DTLS/SCTP implementation,
+  the ULP API, and also partial processing in the DTLS/SCTP implementation,
   then the buffering space in the DTLS/SCTP layer ought to be no more than
   two DTLS records. In which case the MMS to set is dependent on the ULP and
   the endpoints capabilities.
@@ -388,9 +388,9 @@ TLS:  Transport Layer Security
 
 ##  Payload Protocol Identifier Usage
 
-   SCTP Application Protocol Identifier is assigned by IANA.
+   SCTP Payload Protocol Identifiers are assigned by IANA.
    Application protocols using DTLS over SCTP SHOULD register and use a
-   separate payload protocol identifier (PPID) and SHOULD NOT reuse the
+   separate Payload Protocol Identifier (PPID) and SHOULD NOT reuse the
    PPID that they registered for running directly over SCTP.
 
    Using the same PPID does not harm as long as the application can
@@ -410,7 +410,7 @@ TLS:  Transport Layer Security
    they MAY use stream 0 as long as the ordered message semantics is
    acceptable. On stream 0 protected user messages as well as any DTLS
    messages that isn't record protocol will be mixed, thus the additional
-   head of line blocking can occurr.
+   head of line blocking can occur.
 
 ##  Chunk Handling
 
@@ -569,7 +569,7 @@ During resumption, the maximum message size is renegotiated.
    DTLS/SCTP Mandatory Options.  No data transfer is permitted before
    DTLS handshake is complete.  Data chunks that are received before
    DTLS handshake will be silently discarded.  Chunk bundling is
-   permitted according to {{RFC4960}}. The DTLS handsake will
+   permitted according to {{RFC4960}}. The DTLS handshake will
    enable authentication of both the peers and also have the declare
    their support message size.
 
@@ -595,7 +595,7 @@ During resumption, the maximum message size is renegotiated.
    proceed as specified in the previous {{DTLS-init}} section.  If the
    peer replies with an INIT-ACK not containing all DTLS/SCTP
    Mandatory Options, the Client can decide to keep on working with
-   RFC 6083 fallaback, plain data only, or to ABORT the association.
+   RFC 6083 fallback, plain data only, or to ABORT the association.
 
 ## Server Use Case
 
@@ -621,7 +621,7 @@ to weaker algorithms and versions of DTLS.
 A SCTP client that receives an INIT-ACK that doesn't contain the
 DTLS-supported message but do include the SCTP-AUTH parameters can
 attempt to perform an DTLS handshake following this specification. For
-an RFC 6083 client it is likey that the prefered HMAC-ALGO indicates
+an RFC 6083 client it is likely that the preferred HMAC-ALGO indicates
 SHA-1. The client performing fallback needs to follow the capabilities
 indicated in the SCTP parameter if its policy accepts it.
 
@@ -639,7 +639,7 @@ A SCTP server that receives an INIT which doesn't contain the
 DTLS-supported message but do contain the three parameters for
 SCTP-AUTH, i.e. RANDOM, CHUNKS, and HMAC-ALGO, could attempt to accept
 fallback to {{RFC6083}} if accepted by policy. First an RFC 6083 client
-is likely prefering SHA-1 in HMAC-ALGO parameter for SCTP-AUTH.
+is likely preferring SHA-1 in HMAC-ALGO parameter for SCTP-AUTH.
 
 If fallback is allowed it is possible that the client will send plain
 text user messages prior to DTLS handshake as it is allowed per RFC 6083.
