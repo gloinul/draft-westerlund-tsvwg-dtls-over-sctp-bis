@@ -723,9 +723,9 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    security. HTTP/2 {{RFC7540}} gives good minimum requirements based
    on the attacks that where publicly known in 2015. DTLS 1.3
    {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
-   weaknesses at the time of publication. It is RECOMMENDED to not
-   not support support cipher suites, extentions, and options marked
-   as "Recommended" = N in the TLS IANA registries. 
+   weaknesses at the time of publication. Many of the TLS registries have
+   a "Recommended" column. Parameters maked as "N" are NOT RECOMMENDED
+   to support.
 
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
    have been reached. The AEAD limits equations are equally valid for
