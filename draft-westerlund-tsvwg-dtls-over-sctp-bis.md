@@ -724,7 +724,7 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    on the attacks that where publicly known in 2015. DTLS 1.3
    {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
    weaknesses at the time of publication. Many of the TLS registries have
-   a "Recommended" column. Parameters maked as "N" are NOT RECOMMENDED
+   a "Recommended" column. Parameters not maked as "Y" are NOT RECOMMENDED
    to support.
 
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
@@ -742,15 +742,15 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    keys, e.g. every hour and every 100 GB of data, in order to limit
    the impact of a key compromise." {{ANSSI-DAT-NT-003}}.
    
-   When using DTLS 1.2, AEAD limits and frequent re-run of Diffie-Hellman
-   can be achieved with frequent renegotiation. Renegotiation does
-   however have a variety of vulnerabilities by design, and is disabled
-   by default in many major DTLS libraries.  When renegotiation is used
-   both clients and servers MUST use the renegotiation_info extension
-   {{RFC5746}} and MUST follow the renegotiation guidelines in BCP 195
+   When using DTLS 1.2 {{RFC6347}}, AEAD limits and frequent re-run of
+   Diffie-Hellman can be achieved with frequent renegotiation, see TLS 1.2
+   {{RFC5246}}. Renegotiation does however have a variety of vulnerabilities
+   by design, and is disabled by default in many major DTLS libraries.  When
+   renegotiation is used both clients and servers MUST use the renegotiation_info
+   extension {{RFC5746}} and MUST follow the renegotiation guidelines in BCP 195
    {{RFC7525}}. There is no other way to rekey inside a DTLS 1.2 connection.
 
-   When using DTLS 1.3, AEAD limits and frequent rekeying can be achieved
+   When using DTLS 1.3 {{I-D.ietf-tls-dtls13}}, AEAD limits and frequent rekeying can be achieved
    by sending frequent Post-Handshake KeyUpdate messages. Symmetric
    rekeying gives less protection against key leakage than re-running Diffie-Hellman.
    After leakage of application_traffic_secret_N, A passive attacker can
