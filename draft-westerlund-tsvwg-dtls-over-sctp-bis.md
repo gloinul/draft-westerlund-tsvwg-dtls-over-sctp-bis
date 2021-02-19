@@ -43,6 +43,8 @@ informative:
   RFC6458:
   RFC6973:
   RFC7258:
+  RFC7457:
+  RFC7525:
 
   ANSSI-DAT-NT-003:
     target: https://www.ssi.gouv.fr/uploads/2015/09/NT_IPsec_EN.pdf
@@ -61,6 +63,7 @@ normative:
   RFC4960:
   RFC5246:
   RFC5705:
+  RFC5746:
   RFC6347:
   RFC7540:
   RFC8174:
@@ -720,12 +723,14 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    security. HTTP/2 {{RFC7540}} gives good minimum requirements based
    on the attacks that where publicly known in 2015. DTLS 1.3
    {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
-   weaknesses at the time of publication.
+   weaknesses at the time of publication. It is RECOMMENDED to not
+   not support support cipher suites, extentions, and options marked
+   as "Recommended" = N in the TLS IANA registries. 
 
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
-   have been reached. The AEAD limits are equally valid for DTLS 1.2
-   but are not mandated by the DTLS 1.2 specification. 
-   HMAC-SHA-256 as used in SCTP-AUTH has a very
+   have been reached. The AEAD limits equations are equally valid for
+   DTLS 1.2 and SHOULD be followed for DTLS/SCTP, but are not mandated by
+   the DTLS 1.2 specification. HMAC-SHA-256 as used in SCTP-AUTH has a very
    large tag length and very good integrity properties. The SCTP-AUTH
    key can be used until the DTLS handshake is re-run at which point a
    new SCTP-AUTH key is derived using the TLS-Exporter.
@@ -739,9 +744,11 @@ IANA is requested to register a new SCTP parameter "DTLS-support".
    
    When using DTLS 1.2, AEAD limits and frequent re-run of Diffie-Hellman
    can be achieved with frequent renegotiation. Renegotiation does
-   however have a variety of vulnerabilities by design, and is disables
-   by default in all major DTLS libraries. There is no other way to
-   rekey inside a DTLS 1.2 connection.
+   however have a variety of vulnerabilities by design, and is disabled
+   by default in many major DTLS libraries.  When renegotiation is used
+   both clients and servers MUST use the renegotiation_info extension
+   {{RFC5746}} and MUST follow the renegotiation guidelines in BCP 195
+   {{RFC7525}}. There is no other way to rekey inside a DTLS 1.2 connection.
 
    When using DTLS 1.3, AEAD limits and frequent rekeying can be achieved
    by sending frequent Post-Handshake KeyUpdate messages. Symmetric
