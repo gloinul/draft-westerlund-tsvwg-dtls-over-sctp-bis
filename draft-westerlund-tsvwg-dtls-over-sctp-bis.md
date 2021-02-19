@@ -43,6 +43,8 @@ informative:
   RFC6458:
   RFC6973:
   RFC7258:
+  RFC7457:
+  RFC7525:
 
   ANSSI-DAT-NT-003:
     target: https://www.ssi.gouv.fr/uploads/2015/09/NT_IPsec_EN.pdf
@@ -61,6 +63,7 @@ normative:
   RFC4960:
   RFC5246:
   RFC5705:
+  RFC5746:
   RFC6347:
   RFC7540:
   RFC8174:
@@ -446,20 +449,22 @@ TLS:  Transport Layer Security
    and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
    preference.
 
-## Renegotiation
+## Rekeying
 
-   Renegotiation MUST NOT be used.
-
+   Renegotiation enables rekeying inside an DTLS 1.2 connection. It is up
+   to the upper layer to use/allow it or not.  Application writers should
+   be aware that allowing renegotiations may result in changes of security
+   parameters. Renegotiation has been removed from DTLS 1.3 and replaced
+   with Post-Handshake KeyUpdate. See {{sec-Consideration}} for security
+   considerations regarding rekeying.
+      
 ##  DTLS Epochs
 
    In general, DTLS implementations SHOULD discard records from
    earlier epochs, as described in Section 4.2.1 of
    {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the
-   processing guidelines in Section 4.2.1 of {{I-D.ietf-tls-dtls13}}
-   should be followed.
-
-   As renegotiation is not used in DTLS 1.2, all user data is sent in
-   epoch 1.
+   processing guidelines in Section 4.2.1 of DTLS 1.3 {{I-D.ietf-tls-dtls13}}
+   or Section 4.1 or DTLS 1.2 {{RFC6347}} should be followed.
 
 ##  Handling of Endpoint-Pair Shared Secrets
 
@@ -470,9 +475,10 @@ TLS:  Transport Layer Security
 
    The endpoint-pair shared secret for Shared Key Identifier 0 is
    empty and MUST be used when establishing a DTLS connection.
-   Whenever the master key changes, a 64-byte shared secret is derived
+   In DTLS 1.2, whenever the master key changes, a 64-byte shared secret is derived
    from every master secret and provided as a new endpoint-pair shared
-   secret by using the TLS-Exporter. For DTLS 1.3, the exporter is
+   secret by using the TLS-Exporter. In DTLS 1.3, the
+   exporter_master_secret never change. For DTLS 1.3, the exporter is
    described in {{RFC8446}}. For DTLS 1.2, the exporter is described
    in {{RFC5705}}. The exporter MUST use the label given in Section
    {{IANA-Consideration}} and no context.  The new Shared Key
@@ -678,22 +684,33 @@ EncryptedExtensions (EE) messages in (D)TLS 1.3
 
 IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
 
-#  Security Considerations
+#  Security Considerations {#sec-Consideration}
 
    The security considerations given in {{I-D.ietf-tls-dtls13}},
    {{RFC4895}}, and {{RFC4960}} also apply to this document.
 
 ##  Cryptographic Considerations
 
+   Over the years, there have been several serious attacks on earlier
+   versions of Transport Layer Security (TLS), including attacks on its
+   most commonly used ciphers and modes of operation.  {{RFC7457}}
+   summarizes the attacks that were known at the time of publishing and
+   BCP 195 {{RFC7525}} provides recommendations for improving the security
+   of deployed services that use TLS.
+   
    When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2 MUST be
    configured to disable options known to provide insufficient
    security. HTTP/2 {{RFC7540}} gives good minimum requirements based
    on the attacks that where publicly known in 2015. DTLS 1.3
    {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
-   weaknesses at the time of publication.
+   weaknesses at the time of publication. Many of the TLS registries have
+   a "Recommended" column. Parameters not maked as "Y" are NOT RECOMMENDED
+   to support.
 
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
-   have been reached. HMAC-SHA-256 as used in SCTP-AUTH has a very
+   have been reached. The AEAD limits equations are equally valid for
+   DTLS 1.2 and SHOULD be followed for DTLS/SCTP, but are not mandated by
+   the DTLS 1.2 specification. HMAC-SHA-256 as used in SCTP-AUTH has a very
    large tag length and very good integrity properties. The SCTP-AUTH
    key can be used until the DTLS handshake is re-run at which point a
    new SCTP-AUTH key is derived using the TLS-Exporter.
@@ -703,8 +720,23 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
    writes "It is recommended to force the periodic renewal of the
    keys, e.g. every hour and every 100 GB of data, in order to limit
-   the impact of a key compromise." {{ANSSI-DAT-NT-003}}. This is
-   RECOMMENDED also for DTLS/SCTP.
+   the impact of a key compromise." {{ANSSI-DAT-NT-003}}.
+   
+   When using DTLS 1.2 {{RFC6347}}, AEAD limits and frequent re-run of
+   Diffie-Hellman can be achieved with frequent renegotiation, see TLS 1.2
+   {{RFC5246}}. Renegotiation does however have a variety of vulnerabilities
+   by design, and is disabled by default in many major DTLS libraries.  When
+   renegotiation is used both clients and servers MUST use the renegotiation_info
+   extension {{RFC5746}} and MUST follow the renegotiation guidelines in BCP 195
+   {{RFC7525}}. There is no other way to rekey inside a DTLS 1.2 connection.
+
+   When using DTLS 1.3 {{I-D.ietf-tls-dtls13}}, AEAD limits and frequent rekeying can be achieved
+   by sending frequent Post-Handshake KeyUpdate messages. Symmetric
+   rekeying gives less protection against key leakage than re-running Diffie-Hellman.
+   After leakage of application_traffic_secret_N, A passive attacker can
+   passively eavesdrop on all future application data sent on the connection
+   including application data encrypted with application_traffic_secret_N+1,
+   application_traffic_secret_N+2, etc. 
 
 ##  Downgrade Attacks
 
