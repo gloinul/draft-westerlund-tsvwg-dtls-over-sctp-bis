@@ -455,11 +455,8 @@ TLS:  Transport Layer Security
    In general, DTLS implementations SHOULD discard records from
    earlier epochs, as described in Section 4.2.1 of
    {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the
-   processing guidelines in Section 4.2.1 of {{I-D.ietf-tls-dtls13}}
-   should be followed.
-
-   As renegotiation is not used in DTLS 1.2, all user data is sent in
-   epoch 1.
+   processing guidelines in Section 4.2.1 of DTLS 1.3 {{I-D.ietf-tls-dtls13}}
+   or Section 4.1 or DTLS 1.2 {{RFC6347}} should be followed.
 
 ##  Handling of Endpoint-Pair Shared Secrets
 
