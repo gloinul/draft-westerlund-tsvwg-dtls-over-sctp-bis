@@ -502,7 +502,7 @@ TLS:  Transport Layer Security
    user messages that are buffered in the SCTP layer MUST be read and
    processed by DTLS.
 
-# DTLS over SCTP service {#Negotiation}
+# DTLS over SCTP Service {#Negotiation}
 
    The adoption of DTLS over SCTP according to the current description
    is meant to add to SCTP the option for transferring encrypted data.
@@ -573,7 +573,7 @@ During resumption, the maximum message size is renegotiated.
    When all the above options are present, the Association will start
    with support of DTLS/SCTP.  The set of options indicated are the
    DTLS/SCTP Mandatory Options.  No data transfer is permitted before
-   DTLS handshake is complete.  Data chunks that are received before
+   DTLS handshake is complete.  DATA chunks that are received before
    DTLS handshake will be silently discarded.  Chunk bundling is
    permitted according to {{RFC4960}}. The DTLS handshake will
    enable authentication of both the peers and also have the declare
