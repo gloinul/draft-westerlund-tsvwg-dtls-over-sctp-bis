@@ -446,7 +446,7 @@ TLS:  Transport Layer Security
    and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
    preference.
 
-## Renkeying
+## Rekeying
 
    Renegotiation enables rekeying inside an DTLS 1.2 connection. It is up
    to the upper layer to use/allow it or not.  Application writers should
