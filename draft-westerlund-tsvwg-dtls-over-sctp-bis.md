@@ -103,7 +103,7 @@ requirements on the establishment procedures.
 This document describes the usage of the Datagram Transport Layer
 Security (DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}}, over
 the Stream Control Transmission Protocol (SCTP), as defined in
-{{RFC4960}} with Authenticated Chunks for SCTP (SCTP-Auth)
+{{RFC4960}} with Authenticated Chunks for SCTP (SCTP-AUTH)
 {{RFC4895}}.
 
 This specification provides mutual authentication of endpoints,
@@ -322,7 +322,7 @@ TLS:  Transport Layer Security
    message handling will prevent third party attempts to inject or replay SCTP
    packets resulting in impact on the received protected user message. In fact
    this document's solution is dependent on SCTP-AUTH and SCTP to prevent
-   reordering of the DTLS records witin each protected user message.
+   reordering of the DTLS records within each protected user message.
 
    DTLS optionally supports record replay detection. Such replay
    detection could result in the DTLS layer dropping valid messages
@@ -372,7 +372,7 @@ TLS:  Transport Layer Security
 
    On the receiving side DTLS is used to decrypt the records.  If a
    DTLS decryption fails, the DTLS connection and the SCTP association
-   are terminated. Due to SCTP-Auth preventing delivery of corrupt
+   are terminated. Due to SCTP-AUTH preventing delivery of corrupt
    fragments of the protected user message this should only occur in
    case of implementation errors or internal hardware failures.
 
@@ -457,7 +457,7 @@ TLS:  Transport Layer Security
    parameters. Renegotiation has been removed from DTLS 1.3 and replaced
    with Post-Handshake KeyUpdate. See {{sec-Consideration}} for security
    considerations regarding rekeying.
-      
+
 ##  DTLS Epochs
 
    In general, DTLS implementations SHOULD discard records from
@@ -502,7 +502,7 @@ TLS:  Transport Layer Security
    user messages that are buffered in the SCTP layer MUST be read and
    processed by DTLS.
 
-# DTLS over SCTP service {#Negotation}
+# DTLS over SCTP service {#Negotiation}
 
    The adoption of DTLS over SCTP according to the current description
    is meant to add to SCTP the option for transferring encrypted data.
@@ -557,7 +557,7 @@ EncryptedExtensions message.
 During resumption, the maximum message size is renegotiated.
 
 
-## DTLS over SCTP initialization {#DTLS-init}
+## DTLS over SCTP Initialization {#DTLS-init}
 
    Initialization of DTLS/SCTP requires all the following options to
    be part of the INIT/INIT-ACK handshake:
@@ -697,14 +697,14 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    summarizes the attacks that were known at the time of publishing and
    BCP 195 {{RFC7525}} provides recommendations for improving the security
    of deployed services that use TLS.
-   
+
    When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2 MUST be
    configured to disable options known to provide insufficient
    security. HTTP/2 {{RFC7540}} gives good minimum requirements based
    on the attacks that where publicly known in 2015. DTLS 1.3
    {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
    weaknesses at the time of publication. Many of the TLS registries have
-   a "Recommended" column. Parameters not maked as "Y" are NOT RECOMMENDED
+   a "Recommended" column. Parameters not marked as "Y" are NOT RECOMMENDED
    to support.
 
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
@@ -721,7 +721,7 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    writes "It is recommended to force the periodic renewal of the
    keys, e.g. every hour and every 100 GB of data, in order to limit
    the impact of a key compromise." {{ANSSI-DAT-NT-003}}.
-   
+
    When using DTLS 1.2 {{RFC6347}}, AEAD limits and frequent re-run of
    Diffie-Hellman can be achieved with frequent renegotiation, see TLS 1.2
    {{RFC5246}}. Renegotiation does however have a variety of vulnerabilities
@@ -733,10 +733,10 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    When using DTLS 1.3 {{I-D.ietf-tls-dtls13}}, AEAD limits and frequent rekeying can be achieved
    by sending frequent Post-Handshake KeyUpdate messages. Symmetric
    rekeying gives less protection against key leakage than re-running Diffie-Hellman.
-   After leakage of application_traffic_secret_N, A passive attacker can
+   After leakage of application_traffic_secret_N, a passive attacker can
    passively eavesdrop on all future application data sent on the connection
    including application data encrypted with application_traffic_secret_N+1,
-   application_traffic_secret_N+2, etc. 
+   application_traffic_secret_N+2, etc.
 
 ##  Downgrade Attacks
 
@@ -747,7 +747,7 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    possible, it is RECOMMENDED that the peers have a policy only
    allowing DTLS/SCTP according to this specification.
 
-##  DTLS/SCTP message sizes
+##  DTLS/SCTP Message Sizes
 
    The DTLS/SCTP maximum message size extension enables secure
    negation of a message sizes that fit in the DTLS/SCTP buffer, which
@@ -833,7 +833,7 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
 
 --- back
 
-# Motivation for changes
+# Motivation for Changes
 
 This document proposes a number of changes to RFC 6083 that have
 various different motivations:
