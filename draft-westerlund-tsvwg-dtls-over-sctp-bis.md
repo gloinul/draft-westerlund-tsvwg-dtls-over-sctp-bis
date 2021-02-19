@@ -186,8 +186,7 @@ This update that replaces RFC6083 defines the following changes:
      if larger usage messages are intended to be used.
 
    * Applies stricter requirements on always using DTLS for all user
-     messages in the SCTP association. By defining a new SCTP parameter
-     peers can determine these stricter requirements apply.
+     messages in the SCTP association.
 
 
 ## Terminology
@@ -307,8 +306,8 @@ TLS:  Transport Layer Security
    DTLS record has been consumed. A more realistic implementation is
    two maximum DTLS record sizes.
 
-  If an implementation supports partial delivery in both the SCTP API and 
-  the ULP API, and also parital processing in the DTLS/SCTP implementation, 
+  If an implementation supports partial delivery in both the SCTP API and
+  the ULP API, and also parital processing in the DTLS/SCTP implementation,
   then the buffering space in the DTLS/SCTP layer ought to be no more than
   two DTLS records. In which case the MMS to set is dependent on the ULP and
   the endpoints capabilities.
@@ -385,7 +384,7 @@ TLS:  Transport Layer Security
 
 ##  Payload Protocol Identifier Usage
 
-   SCTP Application Protocol Identifier is assigned by IANA. 
+   SCTP Application Protocol Identifier is assigned by IANA.
    Application protocols using DTLS over SCTP SHOULD register and use a
    separate payload protocol identifier (PPID) and SHOULD NOT reuse the
    PPID that they registered for running directly over SCTP.
@@ -497,45 +496,19 @@ TLS:  Transport Layer Security
 
    The adoption of DTLS over SCTP according to the current description
    is meant to add to SCTP the option for transferring encrypted data.
-   When DTLS-option is enabled, all data being transferred must be
+   When DTLS over SCTP is used, all data being transferred MUST be
    protected by chunk authentication and DTLS encrypted.  Chunks that
-   can be transferred will be specified in the CHUNK list parameter
-   according to {{RFC4895}}.  Error handling for authenticated chunks
-   is according to {{RFC4895}}.
+   need to be received in an authenticated way will be specified
+   in the CHUNK list parameter according to {{RFC4895}}.
+   Error handling for authenticated chunks is according to {{RFC4895}}.
 
-## New option at INIT/INIT-ACK {#DTLS-supported}
-
-
-   The following new OPTIONAL parameter is added to the INIT and INIT
-   ACK chunks.
-
-~~~~~~~~~~~
-   Parameter Name                      Status      Type Value
-   --------------------------------------------------------------
-   DTLS-Supported                      OPTIONAL    XXXXX (0x????)
-~~~~~~~~~~~
+## Adaptation Layer Indication in INIT/INIT-ACK
 
    At the initialization of the association, a sender of the INIT or
-   INIT ACK chunk that intends to use DTLS/SCTP MUST include this
-   parameter to inform its peer that it is able to support DTLS over
-   SCTP per this specification. The format of this parameter is
-   defined as follows:
-
-~~~~~~~~~~~
-    0                   1                   2                   3
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-   |    Parameter Type = XXXXX     |  Parameter Length = 4         |
-   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-
-~~~~~~~~~~~
-
-Type: 16 bit u_int
-      XXXXX, DTLS-Supported parameter
-
-Length: 16 bit u_int
-      Indicates the size of the parameter, i.e., 4.
-
+   INIT ACK chunk that intends to use DTLS/SCTP as specified in this
+   specification MUST include an Adaptation Layer Indication Parameter
+   with the IANA assigned value TBD to inform its peer that it is
+   able to support DTLS over SCTP per this specification.
 
 ## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension {#TLS-Extension}
 
@@ -585,7 +558,7 @@ During resumption, the maximum message size is renegotiated.
 
    HMAC-ALGO: defined in {{RFC4895}}
 
-   DTLS-Supported: defined in {{DTLS-supported}}
+   ADAPTATION-LAYER-INDICATION: defined in {{RFC5061}}
 
    When all the above options are present, the Association will start
    with support of DTLS/SCTP.  The set of options indicated are the
@@ -600,14 +573,14 @@ During resumption, the maximum message size is renegotiated.
    message exchange.
 
 ~~~~~~~~~~~
-    -------- INIT[RANDOM; CHUNKS; HMAC-ALGO; DTLS-Supported] ------->
-    <----- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; DTLS-Supported] ------
-    -------------------------- COOKIE-ECHO ------------------------->
-    <-------------------------- COOKIE-ACK --------------------------
-    ------------------ AUTH; DATA[DTLS Handshake] ------------------>
+    --- INIT[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-INDICATION] --->
+    <- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-INDICATION] -
+    ---------------------------- COOKIE-ECHO --------------------------->
+    <---------------------------- COOKIE-ACK ----------------------------
+    -------------------- AUTH; DATA[DTLS Handshake] -------------------->
                                 ...
                                 ...
-    <----------------- AUTH; DATA[DTLS Handshake] -------------------
+    <------------------- AUTH; DATA[DTLS Handshake] ---------------------
 ~~~~~~~~~~~
 
 ## Client Use Case
@@ -699,7 +672,7 @@ EncryptedExtensions (EE) messages in (D)TLS 1.3
 
 ## SCTP Parameter
 
-IANA is requested to register a new SCTP parameter "DTLS-support".
+IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
 
 #  Security Considerations
 
