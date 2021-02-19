@@ -446,10 +446,15 @@ TLS:  Transport Layer Security
    and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
    preference.
 
-## Renegotiation
+## Renkeying
 
-   Renegotiation MUST NOT be used.
-
+   Renegotiation enables rekeying inside an DTLS 1.2 connection. It is up
+   to the upper layer to use/allow it or not.  Application writers should
+   be aware that allowing renegotiations may result in changes of security
+   parameters. Renegotiation has been removed from DTLS 1.3 and replaced
+   with Post-Handshake KeyUpdate. See {{sec-Consideration}} for security
+   considerations regarding rekeying.
+      
 ##  DTLS Epochs
 
    In general, DTLS implementations SHOULD discard records from
@@ -701,7 +706,7 @@ EncryptedExtensions (EE) messages in (D)TLS 1.3
 
 IANA is requested to register a new SCTP parameter "DTLS-support".
 
-#  Security Considerations
+#  Security Considerations {#sec-Consideration}
 
    The security considerations given in {{I-D.ietf-tls-dtls13}},
    {{RFC4895}}, and {{RFC4960}} also apply to this document.
