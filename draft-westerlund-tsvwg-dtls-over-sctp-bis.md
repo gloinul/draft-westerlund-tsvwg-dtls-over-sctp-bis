@@ -475,10 +475,10 @@ TLS:  Transport Layer Security
 
    The endpoint-pair shared secret for Shared Key Identifier 0 is
    empty and MUST be used when establishing a DTLS connection.
-   In DTLS 1.2, whenever the master key changes, a 64-byte shared secret is derived
-   from every master secret and provided as a new endpoint-pair shared
+   In DTLS 1.2, whenever the main secret changes, a 64-byte shared secret is derived
+   from every main secret and provided as a new endpoint-pair shared
    secret by using the TLS-Exporter. In DTLS 1.3, the
-   exporter_master_secret never change. For DTLS 1.3, the exporter is
+   exporter_secret never change. For DTLS 1.3, the exporter is
    described in {{RFC8446}}. For DTLS 1.2, the exporter is described
    in {{RFC5705}}. The exporter MUST use the label given in Section
    {{IANA-Consideration}} and no context.  The new Shared Key
