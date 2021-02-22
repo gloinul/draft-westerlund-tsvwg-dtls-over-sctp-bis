@@ -449,14 +449,14 @@ TLS:  Transport Layer Security
    and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
    preference.
 
-## Rekeying
+## Renegotiation
 
-   Renegotiation enables rekeying inside an DTLS 1.2 connection. It is up
+   Renegotiation enables rekeying and reauthentication inside an DTLS 1.2 connection. It is up
    to the upper layer to use/allow it or not.  Application writers should
    be aware that allowing renegotiations may result in changes of security
-   parameters. Renegotiation has been removed from DTLS 1.3 and replaced
-   with Post-Handshake KeyUpdate. See {{sec-Consideration}} for security
-   considerations regarding rekeying.
+   parameters. Renegotiation has been removed from DTLS 1.3 and partly
+   replaced with Post-Handshake messages such as KeyUpdate. See
+   {{sec-Consideration}} for security considerations regarding rekeying.
 
 ##  DTLS Epochs
 
@@ -720,23 +720,30 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
    writes "It is recommended to force the periodic renewal of the
    keys, e.g. every hour and every 100 GB of data, in order to limit
-   the impact of a key compromise." {{ANSSI-DAT-NT-003}}.
+   the impact of a key compromise." {{ANSSI-DAT-NT-00 3}}.
 
-   When using DTLS 1.2 {{RFC6347}}, AEAD limits and frequent re-run of
-   Diffie-Hellman can be achieved with frequent renegotiation, see TLS 1.2
-   {{RFC5246}}. Renegotiation does however have a variety of vulnerabilities
-   by design, and is disabled by default in many major DTLS libraries.  When
-   renegotiation is used both clients and servers MUST use the renegotiation_info
-   extension {{RFC5746}} and MUST follow the renegotiation guidelines in BCP 195
-   {{RFC7525}}. There is no other way to rekey inside a DTLS 1.2 connection.
+   For many DTLS/SCTP deployments the DTLS connections are expected
+   to have very long lifetimes of months or even years. For connections
+   with such long lifetimes there is a need to frequently re-authenticate
+   both client and server.
+     
+   When using DTLS 1.2 {{RFC6347}}, AEAD limits, frequant re-authentication
+   and frequent re-run of Diffie-Hellman can be achieved with frequent renegotiation,
+   see TLS 1.2 {{RFC5246}}. When renegotiation is used both clients and servers
+   MUST use the renegotiation_info extension {{RFC5746}} and MUST follow the
+   renegotiation guidelines in BCP 195 {{RFC7525}}.
 
-   When using DTLS 1.3 {{I-D.ietf-tls-dtls13}}, AEAD limits and frequent rekeying can be achieved
-   by sending frequent Post-Handshake KeyUpdate messages. Symmetric
-   rekeying gives less protection against key leakage than re-running Diffie-Hellman.
+   In DTLS 1.3 renegotiation has been removed from DTLS 1.3 and partly replaced
+   with Post-Handshake KeyUpdate. When using DTLS 1.3 {{I-D.ietf-tls-dtls13}},
+   AEAD limits and frequent rekeying can be achieved by sending frequent
+   Post-Handshake KeyUpdate messages. Symmetric rekeying gives less protection
+   against key leakage than re-running Diffie-Hellman.
    After leakage of application_traffic_secret_N, a passive attacker can
    passively eavesdrop on all future application data sent on the connection
    including application data encrypted with application_traffic_secret_N+1,
-   application_traffic_secret_N+2, etc.
+   application_traffic_secret_N+2, etc. The is no way to do Post-Handshake
+   server authentication or Ephemeral Diffie-Hellman inside a DTLS 1.3
+   connection. Note that KeyUpdate does not update the exporter_secret.
 
 ##  Downgrade Attacks
 
