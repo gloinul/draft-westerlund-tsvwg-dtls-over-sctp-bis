@@ -309,19 +309,20 @@ TLS:  Transport Layer Security
    DTLS record has been consumed. A more realistic implementation is
    two maximum DTLS record sizes.
 
-  If an implementation supports partial delivery in both the SCTP API and
-  the ULP API, and also partial processing in the DTLS/SCTP implementation,
-  then the buffering space in the DTLS/SCTP layer ought to be no more than
-  two DTLS records. In which case the MMS to set is dependent on the ULP and
-  the endpoints capabilities.
+  If an implementation supports partial delivery in both the SCTP API
+  and the ULP API, and also partial processing in the DTLS/SCTP
+  implementation, then the buffering space in the DTLS/SCTP layer
+  ought to be no more than two DTLS records. In which case the MMS to
+  set is dependent on the ULP and the endpoints capabilities.
 
 ## Replay Protection
 
-   SCTP-AUTH {{RFC4895}} does not have explicit replay protection. However, the
-   combination of SCTP-AUTH's protection of DATA or I-DATA chunks and SCTP user
-   message handling will prevent third party attempts to inject or replay SCTP
-   packets resulting in impact on the received protected user message. In fact
-   this document's solution is dependent on SCTP-AUTH and SCTP to prevent
+   SCTP-AUTH {{RFC4895}} does not have explicit replay
+   protection. However, the combination of SCTP-AUTH's protection of
+   DATA or I-DATA chunks and SCTP user message handling will prevent
+   third party attempts to inject or replay SCTP packets resulting in
+   impact on the received protected user message. In fact this
+   document's solution is dependent on SCTP-AUTH and SCTP to prevent
    reordering of the DTLS records within each protected user message.
 
    DTLS optionally supports record replay detection. Such replay
@@ -332,10 +333,10 @@ TLS:  Transport Layer Security
 
 ##  Path MTU Discovery
 
-   DTLS Path MTU Discovery MUST NOT be used.
-   Since SCTP provides own Path MTU discovery and fragmentation/reassembly for
-   user messages, and according to {{Msg-size}}, DTLS can send maximum sized
-   DTLS Records.
+   DTLS Path MTU Discovery MUST NOT be used.  Since SCTP provides own
+   Path MTU discovery and fragmentation/reassembly for user messages,
+   and according to {{Msg-size}}, DTLS can send maximum sized DTLS
+   Records.
 
 ##  Retransmission of Messages
 
@@ -392,9 +393,9 @@ TLS:  Transport Layer Security
 ##  Payload Protocol Identifier Usage
 
    SCTP Payload Protocol Identifiers are assigned by IANA.
-   Application protocols using DTLS over SCTP SHOULD register and use a
-   separate Payload Protocol Identifier (PPID) and SHOULD NOT reuse the
-   PPID that they registered for running directly over SCTP.
+   Application protocols using DTLS over SCTP SHOULD register and use
+   a separate Payload Protocol Identifier (PPID) and SHOULD NOT reuse
+   the PPID that they registered for running directly over SCTP.
 
    Using the same PPID does not harm as long as the application can
    determine whether or not DTLS is used.  However, for protocol
@@ -451,20 +452,22 @@ TLS:  Transport Layer Security
 
 ## Renegotiation
 
-   Renegotiation enables rekeying and reauthentication inside an DTLS 1.2 connection. It is up
-   to the upper layer to use/allow it or not.  Application writers should
-   be aware that allowing renegotiations may result in changes of security
-   parameters. Renegotiation has been removed from DTLS 1.3 and partly
-   replaced with Post-Handshake messages such as KeyUpdate. See
-   {{sec-Consideration}} for security considerations regarding rekeying.
+   Renegotiation enables rekeying and reauthentication inside an DTLS
+   1.2 connection. It is up to the upper layer to use/allow it or not.
+   Application writers should be aware that allowing renegotiations
+   may result in changes of security parameters. Renegotiation has
+   been removed from DTLS 1.3 and partly replaced with Post-Handshake
+   messages such as KeyUpdate. See {{sec-Consideration}} for security
+   considerations regarding rekeying.
 
 ##  DTLS Epochs
 
    In general, DTLS implementations SHOULD discard records from
    earlier epochs, as described in Section 4.2.1 of
    {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the
-   processing guidelines in Section 4.2.1 of DTLS 1.3 {{I-D.ietf-tls-dtls13}}
-   or Section 4.1 or DTLS 1.2 {{RFC6347}} should be followed.
+   processing guidelines in Section 4.2.1 of DTLS 1.3
+   {{I-D.ietf-tls-dtls13}} or Section 4.1 or DTLS 1.2 {{RFC6347}}
+   should be followed.
 
 ##  Handling of Endpoint-Pair Shared Secrets
 
@@ -474,11 +477,11 @@ TLS:  Transport Layer Security
    mechanism for establishing shared secrets for SCTP-AUTH.
 
    The endpoint-pair shared secret for Shared Key Identifier 0 is
-   empty and MUST be used when establishing a DTLS connection.
-   In DTLS 1.2, whenever the main secret changes, a 64-byte shared secret is derived
-   from every main secret and provided as a new endpoint-pair shared
-   secret by using the TLS-Exporter. In DTLS 1.3, the
-   exporter_secret never change. For DTLS 1.3, the exporter is
+   empty and MUST be used when establishing a DTLS connection.  In
+   DTLS 1.2, whenever the main secret changes, a 64-byte shared secret
+   is derived from every main secret and provided as a new
+   endpoint-pair shared secret by using the TLS-Exporter. In DTLS 1.3,
+   the exporter_secret never change. For DTLS 1.3, the exporter is
    described in {{RFC8446}}. For DTLS 1.2, the exporter is described
    in {{RFC5705}}. The exporter MUST use the label given in Section
    {{IANA-Consideration}} and no context.  The new Shared Key
@@ -522,37 +525,38 @@ TLS:  Transport Layer Security
 
 ## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension {#TLS-Extension}
 
-The endpoint's DTLS/SCTP maximum message size is declared in the
-"dtls_over_sctp_maximum_message_size" TLS extension. The ExtensionData
-of the extension is MessageSizeLimit:
+   The endpoint's DTLS/SCTP maximum message size is declared in the
+   "dtls_over_sctp_maximum_message_size" TLS extension. The
+   ExtensionData of the extension is MessageSizeLimit:
 
 ~~~~~~~~~~~
    uint64 MessageSizeLimit;
 ~~~~~~~~~~~
 
-The value of MessageSizeLimit is the maximum plaintext user message
-size in octets that the endpoint is willing to receive. When the
-"dtls_over_sctp_maximum_message_size" extension is negotiated, an
-endpoint MUST NOT send a user message larger than the MessageSizeLimit
-value it receives from its peer.
+   The value of MessageSizeLimit is the maximum plaintext user message
+   size in octets that the endpoint is willing to receive. When the
+   "dtls_over_sctp_maximum_message_size" extension is negotiated, an
+   endpoint MUST NOT send a user message larger than the
+   MessageSizeLimit value it receives from its peer.
 
-This value is the length of the user message before DTLS fragmentation
-and protection. The value does not account for the expansion due to
-record protection, record padding, or the DTLS header.
+   This value is the length of the user message before DTLS
+   fragmentation and protection. The value does not account for the
+   expansion due to record protection, record padding, or the DTLS
+   header.
 
-The "dtls_over_sctp_maximum_message_size" MUST be used to negotiate
-maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat
-the omission of "dtls_over_sctp_maximum_message_size" as a fatal error
-unless supporting RFC 6083 fallback {{Fallback}}, and it SHOULD
-generate an "illegal_parameter" alert. Endpoints MUST NOT send a
-"dtls_over_sctp_maximum_message_size" extension with a value smaller
-than 16383.  An endpoint MUST treat receipt of a smaller value as a
-fatal error and generate an "illegal_parameter" alert.
+   The "dtls_over_sctp_maximum_message_size" MUST be used to negotiate
+   maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat
+   the omission of "dtls_over_sctp_maximum_message_size" as a fatal
+   error unless supporting RFC 6083 fallback {{Fallback}}, and it
+   SHOULD generate an "illegal_parameter" alert. Endpoints MUST NOT
+   send a "dtls_over_sctp_maximum_message_size" extension with a value
+   smaller than 16383.  An endpoint MUST treat receipt of a smaller
+   value as a fatal error and generate an "illegal_parameter" alert.
 
-The "dtls_over_sctp_maximum_message_size" MUST NOT be send in TLS or
-in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends the
-"dtls_over_sctp_maximum_message_size" extension in the
-EncryptedExtensions message.
+   The "dtls_over_sctp_maximum_message_size" MUST NOT be send in TLS
+   or in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends
+   the "dtls_over_sctp_maximum_message_size" extension in the
+   EncryptedExtensions message.
 
 During resumption, the maximum message size is renegotiated.
 
@@ -575,22 +579,22 @@ During resumption, the maximum message size is renegotiated.
    DTLS/SCTP Mandatory Options.  No data transfer is permitted before
    DTLS handshake is complete.  DATA chunks that are received before
    DTLS handshake will be silently discarded.  Chunk bundling is
-   permitted according to {{RFC4960}}. The DTLS handshake will
-   enable authentication of both the peers and also have the declare
-   their support message size.
+   permitted according to {{RFC4960}}. The DTLS handshake will enable
+   authentication of both the peers and also have the declare their
+   support message size.
 
    The extension described in this document is given by the following
    message exchange.
 
 ~~~~~~~~~~~
-    --- INIT[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-INDICATION] --->
-    <- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-INDICATION] -
-    ---------------------------- COOKIE-ECHO --------------------------->
-    <---------------------------- COOKIE-ACK ----------------------------
-    -------------------- AUTH; DATA[DTLS Handshake] -------------------->
-                                ...
-                                ...
-    <------------------- AUTH; DATA[DTLS Handshake] ---------------------
+   --- INIT[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-IND] --->
+   <- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-IND] -
+   ------------------------ COOKIE-ECHO ------------------------>
+   <------------------------ COOKIE-ACK -------------------------
+   ---------------- AUTH; DATA[DTLS Handshake] ----------------->
+                               ...
+                               ...
+   <--------------- AUTH; DATA[DTLS Handshake] ------------------
 ~~~~~~~~~~~
 
 ## Client Use Case
@@ -726,7 +730,7 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    to have very long lifetimes of months or even years. For connections
    with such long lifetimes there is a need to frequently re-authenticate
    both client and server.
-     
+
    When using DTLS 1.2 {{RFC6347}}, AEAD limits, frequant re-authentication
    and frequent re-run of Diffie-Hellman can be achieved with frequent renegotiation,
    see TLS 1.2 {{RFC5246}}. When renegotiation is used both clients and servers
