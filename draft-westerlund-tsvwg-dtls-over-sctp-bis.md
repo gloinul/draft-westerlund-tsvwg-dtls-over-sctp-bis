@@ -720,7 +720,7 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
    writes "It is recommended to force the periodic renewal of the
    keys, e.g. every hour and every 100 GB of data, in order to limit
-   the impact of a key compromise." {{ANSSI-DAT-NT-00 3}}.
+   the impact of a key compromise." {{ANSSI-DAT-NT-003}}.
 
    For many DTLS/SCTP deployments the DTLS connections are expected
    to have very long lifetimes of months or even years. For connections
