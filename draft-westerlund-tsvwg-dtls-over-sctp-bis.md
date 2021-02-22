@@ -74,25 +74,26 @@ normative:
 
 --- abstract
 
-This document describes a proposed update for the usage of the
-Datagram Transport Layer Security (DTLS) protocol to protect user
-messages sent over the Stream Control Transmission Protocol (SCTP).
+   This document describes a proposed update for the usage of the
+   Datagram Transport Layer Security (DTLS) protocol to protect user
+   messages sent over the Stream Control Transmission Protocol (SCTP).
 
-DTLS over SCTP provides mutual authentication, confidentiality,
-integrity protection, and replay protection for applications that use
-SCTP as their transport protocol and allows client/server applications
-to communicate in a way that is designed to give communications
-privacy and to prevent eavesdropping and detect tampering or message
-forgery.
+   DTLS over SCTP provides mutual authentication, confidentiality,
+   integrity protection, and replay protection for applications that
+   use SCTP as their transport protocol and allows client/server
+   applications to communicate in a way that is designed to give
+   communications privacy and to prevent eavesdropping and detect
+   tampering or message forgery.
 
-Applications using DTLS over SCTP can use almost all transport
-features provided by SCTP and its extensions. This document intends to
-obsolete RFC 6083 and removes the 16 kB limitation on user message
-size by defining a secure user message fragmentation so that multiple
-DTLS records can be used to protect a single user message. It further
-updates the DTLS versions to use, as well as the HMAC algorithms for
-SCTP-AUTH, and simplifies the implementation by some stricter
-requirements on the establishment procedures.
+   Applications using DTLS over SCTP can use almost all transport
+   features provided by SCTP and its extensions. This document intends
+   to obsolete RFC 6083 and removes the 16 kB limitation on user
+   message size by defining a secure user message fragmentation so
+   that multiple DTLS records can be used to protect a single user
+   message. It further updates the DTLS versions to use, as well as
+   the HMAC algorithms for SCTP-AUTH, and simplifies the
+   implementation by some stricter requirements on the establishment
+   procedures.
 
 --- middle
 
@@ -100,25 +101,25 @@ requirements on the establishment procedures.
 
 ##Overview
 
-This document describes the usage of the Datagram Transport Layer
-Security (DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}}, over
-the Stream Control Transmission Protocol (SCTP), as defined in
-{{RFC4960}} with Authenticated Chunks for SCTP (SCTP-AUTH)
-{{RFC4895}}.
+   This document describes the usage of the Datagram Transport Layer
+   Security (DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}},
+   over the Stream Control Transmission Protocol (SCTP), as defined in
+   {{RFC4960}} with Authenticated Chunks for SCTP (SCTP-AUTH)
+   {{RFC4895}}.
 
-This specification provides mutual authentication of endpoints,
-confidentiality, integrity protection, and replay protection of user
-messages for applications that use SCTP as their transport protocol.
-Thus it allows client/server applications to communicate in a way that
-is designed to give communications privacy and to prevent
-eavesdropping and detect tampering or message forgery. DTLS/SCTP uses
-DTLS for mutual authentication, key exchange with perfect forward
-secrecy for SCTP-AUTH, and confidentiality of user messages. DTLS/SCTP
-use SCTP and SCTP-AUTH for integrity protection and replay protection
-of user messages.
+   This specification provides mutual authentication of endpoints,
+   confidentiality, integrity protection, and replay protection of
+   user messages for applications that use SCTP as their transport
+   protocol.  Thus it allows client/server applications to communicate
+   in a way that is designed to give communications privacy and to
+   prevent eavesdropping and detect tampering or message
+   forgery. DTLS/SCTP uses DTLS for mutual authentication, key
+   exchange with perfect forward secrecy for SCTP-AUTH, and
+   confidentiality of user messages. DTLS/SCTP use SCTP and SCTP-AUTH
+   for integrity protection and replay protection of user messages.
 
-Applications using DTLS over SCTP can use almost all transport
-features provided by SCTP and its extensions. DTLS/SCTP supports:
+   Applications using DTLS over SCTP can use almost all transport
+   features provided by SCTP and its extensions. DTLS/SCTP supports:
 
    *  preservation of message boundaries.
 
@@ -133,12 +134,13 @@ features provided by SCTP and its extensions. DTLS/SCTP supports:
 
    *  large user messages.
 
-The method described in this document requires that the SCTP
-implementation supports the optional feature of fragmentation of SCTP
-user messages as defined in {{RFC4960}}. To efficiently implement and
-support larger user messages it is also recommended that I-DATA chunks
-as defined in {{RFC8260}} as well as an SCTP API that supports partial
-user message delivery as discussed in {{RFC6458}}.
+   The method described in this document requires that the SCTP
+   implementation supports the optional feature of fragmentation of
+   SCTP user messages as defined in {{RFC4960}}. To efficiently
+   implement and support larger user messages it is also recommended
+   that I-DATA chunks as defined in {{RFC8260}} as well as an SCTP API
+   that supports partial user message delivery as discussed in
+   {{RFC6458}}.
 
 
 ### Comparison with TLS for SCTP
@@ -190,6 +192,9 @@ This update that replaces RFC6083 defines the following changes:
 
    * Applies stricter requirements on always using DTLS for all user
      messages in the SCTP association.
+
+   * Requires that SCTP-AUTH is applied to all SCTP Chunks that can be
+     authenticated.
 
 
 ## Terminology
@@ -390,6 +395,14 @@ TLS:  Transport Layer Security
    association).  A DTLS connection MUST NOT span multiple SCTP
    associations.
 
+   As it is required to establish the DTLS connection at the beginning
+   of the SCTP association, either of the peers should never send any
+   SCTP user messages that are not protected by DTLS. So the case that
+   an endpoint receives data that is not either DTLS messages on Strea
+   0 or protecetd user messages in the form of a sequence of DTLS
+   Records on any stream is a protocol violation. The receiver MAY
+   terminate the SCTP association due to this protocol violation.
+
 ##  Payload Protocol Identifier Usage
 
    SCTP Payload Protocol Identifiers are assigned by IANA.
@@ -577,11 +590,10 @@ During resumption, the maximum message size is renegotiated.
    When all the above options are present, the Association will start
    with support of DTLS/SCTP.  The set of options indicated are the
    DTLS/SCTP Mandatory Options.  No data transfer is permitted before
-   DTLS handshake is complete.  DATA chunks that are received before
-   DTLS handshake will be silently discarded.  Chunk bundling is
-   permitted according to {{RFC4960}}. The DTLS handshake will enable
-   authentication of both the peers and also have the declare their
-   support message size.
+   DTLS handshake is complete. Chunk bundling is permitted according
+   to {{RFC4960}}. The DTLS handshake will enable authentication of
+   both the peers and also have the declare their support message
+   size.
 
    The extension described in this document is given by the following
    message exchange.
@@ -620,62 +632,63 @@ During resumption, the maximum message size is renegotiated.
 
 ## RFC 6083 Fallback {#Fallback}
 
-This section discusses how an endpoint supporting this specification
-can fallback to follow the DTLS/SCTP behavior in RFC 6083. It is
-recommended to define a setting that represents the policy to allow
-fallback or not. However, the possibility to use fallback is based on
-the ULP can operate using user messages that are no longer than 16383
-bytes and where the security issues can be mitigated or considerd
-acceptable. Fallback is NOT RECOMMEND to be enabled as it enables
-downgrade to weaker algorithms and versions of DTLS.
+   This section discusses how an endpoint supporting this
+   specification can fallback to follow the DTLS/SCTP behavior in RFC
+   6083. It is recommended to define a setting that represents the
+   policy to allow fallback or not. However, the possibility to use
+   fallback is based on the ULP can operate using user messages that
+   are no longer than 16383 bytes and where the security issues can be
+   mitigated or considerd acceptable. Fallback is NOT RECOMMEND to be
+   enabled as it enables downgrade to weaker algorithms and versions
+   of DTLS.
 
-A SCTP client that receives an INIT-ACK that is not compliant
-according this specification may in certain cases potentially perform
-an fallback to RFC 6083 behavior. The first case is when the SCTP
-client receives an INIT-ACK doesn't contain the
-SCTP-Adaptation-Indication parameter with the DTLS/SCTP adaptation
-layer codepoint but do include the SCTP-AUTH parameters on a server
-that are expected to provide services using DTLS. The second case is
-when the INIT-ACK do contain the SCTP-Adaptation-Indication parameter
-with the correct code point, however the HMAC-ALGO or the Chunks
-parameters values are such that do not fullfil the requirement of this
-specification but do meet the requirements of RFC 6083. In either of
-these cases the client could attempt DTLS per RFC 6083 as
-fallback. However, the fallback attempt should only be performed if
-policy says that is acceptable.
+   A SCTP client that receives an INIT-ACK that is not compliant
+   according this specification may in certain cases potentially
+   perform an fallback to RFC 6083 behavior. The first case is when
+   the SCTP client receives an INIT-ACK doesn't contain the
+   SCTP-Adaptation-Indication parameter with the DTLS/SCTP adaptation
+   layer codepoint but do include the SCTP-AUTH parameters on a server
+   that are expected to provide services using DTLS. The second case
+   is when the INIT-ACK do contain the SCTP-Adaptation-Indication
+   parameter with the correct code point, however the HMAC-ALGO or the
+   Chunks parameters values are such that do not fullfil the
+   requirement of this specification but do meet the requirements of
+   RFC 6083. In either of these cases the client could attempt DTLS
+   per RFC 6083 as fallback. However, the fallback attempt should only
+   be performed if policy says that is acceptable.
 
-If fallback is allowed it is possible that the client will send plain
-text user messages prior to DTLS handshake as it is allowed per RFC
-6083.  So that needs to be part of the consideration for a policy
-allowing fallback. When performing the the DTLS handshake, the server
-is required accepting that lack of the TLS extension
-"dtls_over_sctp_maximum_message_size" and can't treat it as fatal
-error. In case the "dtls_over_sctp_maximum_message_size" TLS extension
-is present in the handshake the server SHALL continue the handshake
-including the extension with its value also, and from that point
-follow this specification. In case the TLS option is missing RFC 6083
-applies.
+   If fallback is allowed it is possible that the client will send
+   plain text user messages prior to DTLS handshake as it is allowed
+   per RFC 6083.  So that needs to be part of the consideration for a
+   policy allowing fallback. When performing the the DTLS handshake,
+   the server is required accepting that lack of the TLS extension
+   "dtls_over_sctp_maximum_message_size" and can't treat it as fatal
+   error. In case the "dtls_over_sctp_maximum_message_size" TLS
+   extension is present in the handshake the server SHALL continue the
+   handshake including the extension with its value also, and from
+   that point follow this specification. In case the TLS option is
+   missing RFC 6083 applies.
 
 # IANA Considerations {#IANA-Consideration}
 
 ## TLS Exporter Label
 
-RFC 6083 defined a TLS Exporter Label registry as described in
-{{RFC5705}}. IANA is requested to update the reference for the label
-"EXPORTER_DTLS_OVER_SCTP" to this specification.
+   RFC 6083 defined a TLS Exporter Label registry as described in
+   {{RFC5705}}. IANA is requested to update the reference for the
+   label "EXPORTER_DTLS_OVER_SCTP" to this specification.
 
 ## DTLS "dtls_over_sctp_buffer_size_limit" Extension
 
-This document registers the "dtls_over_sctp_maximum_message_size"
-extension in the TLS "ExtensionType Values" registry established in
-{{RFC5246}}.  The "dtls_over_sctp_maximum_message_size" extension has
-been assigned a code point of TBD. This entry \[\[will be\|is\]\]
-marked as recommended ({{RFC8447}} and marked as "Encrypted" in (D)TLS
-1.3 {{I-D.ietf-tls-dtls13}}. The IANA registry {{RFC8447}} \[\[will
-list\|lists\]\] this extension as "Recommended" (i.e., "Y") and
-indicates that it may appear in the ClientHello (CH) or
-EncryptedExtensions (EE) messages in (D)TLS 1.3
-{{I-D.ietf-tls-dtls13}}.
+   This document registers the "dtls_over_sctp_maximum_message_size"
+   extension in the TLS "ExtensionType Values" registry established in
+   {{RFC5246}}.  The "dtls_over_sctp_maximum_message_size" extension
+   has been assigned a code point of TBD. This entry \[\[will
+   be\|is\]\] marked as recommended ({{RFC8447}} and marked as
+   "Encrypted" in (D)TLS 1.3 {{I-D.ietf-tls-dtls13}}. The IANA
+   registry {{RFC8447}} \[\[will list\|lists\]\] this extension as
+   "Recommended" (i.e., "Y") and indicates that it may appear in the
+   ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3
+   {{I-D.ietf-tls-dtls13}}.
 
 ## SCTP Parameter
 
@@ -689,28 +702,28 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
 ##  Cryptographic Considerations
 
    Over the years, there have been several serious attacks on earlier
-   versions of Transport Layer Security (TLS), including attacks on its
-   most commonly used ciphers and modes of operation.  {{RFC7457}}
-   summarizes the attacks that were known at the time of publishing and
-   BCP 195 {{RFC7525}} provides recommendations for improving the security
-   of deployed services that use TLS.
+   versions of Transport Layer Security (TLS), including attacks on
+   its most commonly used ciphers and modes of operation.  {{RFC7457}}
+   summarizes the attacks that were known at the time of publishing
+   and BCP 195 {{RFC7525}} provides recommendations for improving the
+   security of deployed services that use TLS.
 
    When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2 MUST be
    configured to disable options known to provide insufficient
    security. HTTP/2 {{RFC7540}} gives good minimum requirements based
    on the attacks that where publicly known in 2015. DTLS 1.3
    {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
-   weaknesses at the time of publication. Many of the TLS registries have
-   a "Recommended" column. Parameters not marked as "Y" are NOT RECOMMENDED
-   to support.
+   weaknesses at the time of publication. Many of the TLS registries
+   have a "Recommended" column. Parameters not marked as "Y" are NOT
+   RECOMMENDED to support.
 
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
    have been reached. The AEAD limits equations are equally valid for
-   DTLS 1.2 and SHOULD be followed for DTLS/SCTP, but are not mandated by
-   the DTLS 1.2 specification. HMAC-SHA-256 as used in SCTP-AUTH has a very
-   large tag length and very good integrity properties. The SCTP-AUTH
-   key can be used until the DTLS handshake is re-run at which point a
-   new SCTP-AUTH key is derived using the TLS-Exporter.
+   DTLS 1.2 and SHOULD be followed for DTLS/SCTP, but are not mandated
+   by the DTLS 1.2 specification. HMAC-SHA-256 as used in SCTP-AUTH
+   has a very large tag length and very good integrity properties. The
+   SCTP-AUTH key can be used until the DTLS handshake is re-run at
+   which point a new SCTP-AUTH key is derived using the TLS-Exporter.
 
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
@@ -719,28 +732,31 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    keys, e.g. every hour and every 100 GB of data, in order to limit
    the impact of a key compromise." {{ANSSI-DAT-NT-003}}.
 
-   For many DTLS/SCTP deployments the DTLS connections are expected
-   to have very long lifetimes of months or even years. For connections
-   with such long lifetimes there is a need to frequently re-authenticate
-   both client and server.
+   For many DTLS/SCTP deployments the DTLS connections are expected to
+   have very long lifetimes of months or even years. For connections
+   with such long lifetimes there is a need to frequently
+   re-authenticate both client and server.
 
-   When using DTLS 1.2 {{RFC6347}}, AEAD limits, frequant re-authentication
-   and frequent re-run of Diffie-Hellman can be achieved with frequent renegotiation,
-   see TLS 1.2 {{RFC5246}}. When renegotiation is used both clients and servers
-   MUST use the renegotiation_info extension {{RFC5746}} and MUST follow the
+   When using DTLS 1.2 {{RFC6347}}, AEAD limits, frequant
+   re-authentication and frequent re-run of Diffie-Hellman can be
+   achieved with frequent renegotiation, see TLS 1.2 {{RFC5246}}. When
+   renegotiation is used both clients and servers MUST use the
+   renegotiation_info extension {{RFC5746}} and MUST follow the
    renegotiation guidelines in BCP 195 {{RFC7525}}.
 
-   In DTLS 1.3 renegotiation has been removed from DTLS 1.3 and partly replaced
-   with Post-Handshake KeyUpdate. When using DTLS 1.3 {{I-D.ietf-tls-dtls13}},
-   AEAD limits and frequent rekeying can be achieved by sending frequent
-   Post-Handshake KeyUpdate messages. Symmetric rekeying gives less protection
-   against key leakage than re-running Diffie-Hellman.
-   After leakage of application_traffic_secret_N, a passive attacker can
-   passively eavesdrop on all future application data sent on the connection
-   including application data encrypted with application_traffic_secret_N+1,
-   application_traffic_secret_N+2, etc. The is no way to do Post-Handshake
-   server authentication or Ephemeral Diffie-Hellman inside a DTLS 1.3
-   connection. Note that KeyUpdate does not update the exporter_secret.
+   In DTLS 1.3 renegotiation has been removed from DTLS 1.3 and partly
+   replaced with Post-Handshake KeyUpdate. When using DTLS 1.3
+   {{I-D.ietf-tls-dtls13}}, AEAD limits and frequent rekeying can be
+   achieved by sending frequent Post-Handshake KeyUpdate
+   messages. Symmetric rekeying gives less protection against key
+   leakage than re-running Diffie-Hellman.  After leakage of
+   application_traffic_secret_N, a passive attacker can passively
+   eavesdrop on all future application data sent on the connection
+   including application data encrypted with
+   application_traffic_secret_N+1, application_traffic_secret_N+2,
+   etc. The is no way to do Post-Handshake server authentication or
+   Ephemeral Diffie-Hellman inside a DTLS 1.3 connection. Note that
+   KeyUpdate does not update the exporter_secret.
 
 ##  Downgrade Attacks
 
