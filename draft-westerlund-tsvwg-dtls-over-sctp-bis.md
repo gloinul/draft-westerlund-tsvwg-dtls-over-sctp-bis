@@ -587,14 +587,14 @@ During resumption, the maximum message size is renegotiated.
    message exchange.
 
 ~~~~~~~~~~~
-    --- INIT[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-INDICATION] --->
-    <- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-INDICATION] -
-    ---------------------------- COOKIE-ECHO --------------------------->
-    <---------------------------- COOKIE-ACK ----------------------------
-    -------------------- AUTH; DATA[DTLS Handshake] -------------------->
-                                ...
-                                ...
-    <------------------- AUTH; DATA[DTLS Handshake] ---------------------
+   --- INIT[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-IND] --->
+   <- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-IND] -
+   ------------------------ COOKIE-ECHO ------------------------>
+   <------------------------ COOKIE-ACK -------------------------
+   ---------------- AUTH; DATA[DTLS Handshake] ----------------->
+                               ...
+                               ...
+   <--------------- AUTH; DATA[DTLS Handshake] ------------------
 ~~~~~~~~~~~
 
 ## Client Use Case
