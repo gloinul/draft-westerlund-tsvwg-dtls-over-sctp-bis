@@ -625,35 +625,28 @@ can fallback to follow the DTLS/SCTP behavior in RFC 6083. It is
 recommended to define a setting that represents the policy to allow
 fallback or not. However, the possibility to use fallback is based on
 the ULP can operate using user messages that are no longer than 16383
-bytes. Fallback is NOT RECOMMEND to be enabled as it enables downgrade
-to weaker algorithms and versions of DTLS.
+bytes and where the security issues can be mitigated or considerd
+acceptable. Fallback is NOT RECOMMEND to be enabled as it enables
+downgrade to weaker algorithms and versions of DTLS.
 
-A SCTP client that receives an INIT-ACK that doesn't contain the
-DTLS-supported message but do include the SCTP-AUTH parameters can
-attempt to perform an DTLS handshake following this specification. For
-an RFC 6083 client it is likely that the preferred HMAC-ALGO indicates
-SHA-1. The client performing fallback needs to follow the capabilities
-indicated in the SCTP parameter if its policy accepts it.
-
-When performing the DTLS handshake it MUST include the TLS
-extension "dtls_over_sctp_maximum_message_size". If the server
-includes that extension in its handshake message it indicates that the
-association may experience a potential attack where an on-path
-attacker has attempted to downgrade the response to RFC 6083 by
-removing the SCTP DTLS-Supported parameter. In this case the user
-message limit is per the TLS extension and the client can continue per
-this specification. Otherwise the continued processing will be per
-RFC 6083 and the user messages limited to 16383 bytes.
-
-A SCTP server that receives an INIT which doesn't contain the
-DTLS-supported message but do contain the three parameters for
-SCTP-AUTH, i.e. RANDOM, CHUNKS, and HMAC-ALGO, could attempt to accept
-fallback to {{RFC6083}} if accepted by policy. First an RFC 6083 client
-is likely preferring SHA-1 in HMAC-ALGO parameter for SCTP-AUTH.
+A SCTP client that receives an INIT-ACK that is not compliant
+according this specification may in certain cases potentially perform
+an fallback to RFC 6083 behavior. The first case is when the SCTP
+client receives an INIT-ACK doesn't contain the
+SCTP-Adaptation-Indication parameter with the DTLS/SCTP adaptation
+layer codepoint but do include the SCTP-AUTH parameters on a server
+that are expected to provide services using DTLS. The second case is
+when the INIT-ACK do contain the SCTP-Adaptation-Indication parameter
+with the correct code point, however the HMAC-ALGO or the Chunks
+parameters values are such that do not fullfil the requirement of this
+specification but do meet the requirements of RFC 6083. In either of
+these cases the client could attempt DTLS per RFC 6083 as
+fallback. However, the fallback attempt should only be performed if
+policy says that is acceptable.
 
 If fallback is allowed it is possible that the client will send plain
-text user messages prior to DTLS handshake as it is allowed per RFC 6083.
-So that needs to be part of the consideration for a policy
+text user messages prior to DTLS handshake as it is allowed per RFC
+6083.  So that needs to be part of the consideration for a policy
 allowing fallback. When performing the the DTLS handshake, the server
 is required accepting that lack of the TLS extension
 "dtls_over_sctp_maximum_message_size" and can't treat it as fatal
