@@ -629,16 +629,24 @@ bytes and where the security issues can be mitigated or considerd
 acceptable. Fallback is NOT RECOMMEND to be enabled as it enables
 downgrade to weaker algorithms and versions of DTLS.
 
-A SCTP client that receives an INIT-ACK that doesn't contain the
+A SCTP client that receives an INIT-ACK that is not compliant
+according this specification may in certain cases potentially perform
+an fallback to RFC 6083 behavior. The first case is when the SCTP
+client receives an INIT-ACK doesn't contain the
 SCTP-Adaptation-Indication parameter with the DTLS/SCTP adaptation
 layer codepoint but do include the SCTP-AUTH parameters on a server
-that are expected to provide services using DTLS could attempt DTLS
-per RFC 6083 as fallback. However, the fallback attempt should only be
-performed if policy says that is acceptable.
+that are expected to provide services using DTLS. The second case is
+when the INIT-ACK do contain the SCTP-Adaptation-Indication parameter
+with the correct code point, however the HMAC-ALGO or the Chunks
+parameters values are such that do not fullfil the requirement of this
+specification but do meet the requirements of RFC 6083. In either of
+these cases the client could attempt DTLS per RFC 6083 as
+fallback. However, the fallback attempt should only be performed if
+policy says that is acceptable.
 
 If fallback is allowed it is possible that the client will send plain
-text user messages prior to DTLS handshake as it is allowed per RFC 6083.
-So that needs to be part of the consideration for a policy
+text user messages prior to DTLS handshake as it is allowed per RFC
+6083.  So that needs to be part of the consideration for a policy
 allowing fallback. When performing the the DTLS handshake, the server
 is required accepting that lack of the TLS extension
 "dtls_over_sctp_maximum_message_size" and can't treat it as fatal
