@@ -451,20 +451,22 @@ TLS:  Transport Layer Security
 
 ## Renegotiation
 
-   Renegotiation enables rekeying and reauthentication inside an DTLS 1.2 connection. It is up
-   to the upper layer to use/allow it or not.  Application writers should
-   be aware that allowing renegotiations may result in changes of security
-   parameters. Renegotiation has been removed from DTLS 1.3 and partly
-   replaced with Post-Handshake messages such as KeyUpdate. See
-   {{sec-Consideration}} for security considerations regarding rekeying.
+   Renegotiation enables rekeying and reauthentication inside an DTLS
+   1.2 connection. It is up to the upper layer to use/allow it or not.
+   Application writers should be aware that allowing renegotiations
+   may result in changes of security parameters. Renegotiation has
+   been removed from DTLS 1.3 and partly replaced with Post-Handshake
+   messages such as KeyUpdate. See {{sec-Consideration}} for security
+   considerations regarding rekeying.
 
 ##  DTLS Epochs
 
    In general, DTLS implementations SHOULD discard records from
    earlier epochs, as described in Section 4.2.1 of
    {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the
-   processing guidelines in Section 4.2.1 of DTLS 1.3 {{I-D.ietf-tls-dtls13}}
-   or Section 4.1 or DTLS 1.2 {{RFC6347}} should be followed.
+   processing guidelines in Section 4.2.1 of DTLS 1.3
+   {{I-D.ietf-tls-dtls13}} or Section 4.1 or DTLS 1.2 {{RFC6347}}
+   should be followed.
 
 ##  Handling of Endpoint-Pair Shared Secrets
 
@@ -474,11 +476,11 @@ TLS:  Transport Layer Security
    mechanism for establishing shared secrets for SCTP-AUTH.
 
    The endpoint-pair shared secret for Shared Key Identifier 0 is
-   empty and MUST be used when establishing a DTLS connection.
-   In DTLS 1.2, whenever the main secret changes, a 64-byte shared secret is derived
-   from every main secret and provided as a new endpoint-pair shared
-   secret by using the TLS-Exporter. In DTLS 1.3, the
-   exporter_secret never change. For DTLS 1.3, the exporter is
+   empty and MUST be used when establishing a DTLS connection.  In
+   DTLS 1.2, whenever the main secret changes, a 64-byte shared secret
+   is derived from every main secret and provided as a new
+   endpoint-pair shared secret by using the TLS-Exporter. In DTLS 1.3,
+   the exporter_secret never change. For DTLS 1.3, the exporter is
    described in {{RFC8446}}. For DTLS 1.2, the exporter is described
    in {{RFC5705}}. The exporter MUST use the label given in Section
    {{IANA-Consideration}} and no context.  The new Shared Key
@@ -726,7 +728,7 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    to have very long lifetimes of months or even years. For connections
    with such long lifetimes there is a need to frequently re-authenticate
    both client and server.
-     
+
    When using DTLS 1.2 {{RFC6347}}, AEAD limits, frequant re-authentication
    and frequent re-run of Diffie-Hellman can be achieved with frequent renegotiation,
    see TLS 1.2 {{RFC5246}}. When renegotiation is used both clients and servers
