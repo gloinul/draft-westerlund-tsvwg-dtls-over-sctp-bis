@@ -328,7 +328,11 @@ TLS:  Transport Layer Security
    third party attempts to inject or replay SCTP packets resulting in
    impact on the received protected user message. In fact this
    document's solution is dependent on SCTP-AUTH and SCTP to prevent
-   reordering of the DTLS records within each protected user message.
+   reordering, duplication and removal of the DTLS records within
+   each protected user message.  This includes detection of changes to
+   what DTLS records start and end the SCTP user message, and removal of
+   DTLS records before an increment to the epoch.  Without SCTP-AUTH,
+   these would all have required explicit handling.
 
    DTLS optionally supports record replay detection. Such replay
    detection could result in the DTLS layer dropping valid messages
