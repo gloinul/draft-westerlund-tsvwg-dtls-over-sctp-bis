@@ -1,0 +1,7 @@
+| Code Point (32-bit number) | Description | Reference |
+| -------------------------- | ----------- | --------- |
+| 0 | Unassigned | [RFC5061] |
+| 0x00000001 | DDP | [RFC5043] |
+| 0x00000002 | DTLS/SCTP | [RFC6083] |
+| 0x00000003-0xffffffff | Unassigned | [RFC5061] |
+{: #stream-frame-mapping title="Adaptation Code Points"}

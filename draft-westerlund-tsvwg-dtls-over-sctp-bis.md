@@ -142,6 +142,8 @@ normative:
    that supports partial user message delivery as discussed in
    {{RFC6458}}.
 
+   The method described doesn't support STARTTLS as specified in {{RFC3788}}
+
 
 ### Comparison with TLS for SCTP
 
@@ -186,9 +188,6 @@ This update that replaces RFC6083 defines the following changes:
 
    * Recommends support of {{RFC8260}} to enable interleaving of large
      SCTP user messages to avoid scheduling issues.
-
-   * Recommends support of partial message delivery API, see {{RFC6458}}
-     if larger usage messages are intended to be used.
 
    * Applies stricter requirements on always using DTLS for all user
      messages in the SCTP association.
@@ -314,11 +313,16 @@ TLS:  Transport Layer Security
    DTLS record has been consumed. A more realistic implementation is
    two maximum DTLS record sizes.
 
-  If an implementation supports partial delivery in both the SCTP API
-  and the ULP API, and also partial processing in the DTLS/SCTP
-  implementation, then the buffering space in the DTLS/SCTP layer
-  ought to be no more than two DTLS records. In which case the MMS to
-  set is dependent on the ULP and the endpoints capabilities.
+   If an implementation supports partial delivery in both the SCTP API
+   and the ULP API, and also partial processing in the DTLS/SCTP
+   implementation, then the buffering space in the DTLS/SCTP layer
+   ought to be no more than two DTLS records. In which case the MMS to
+   set is dependent on the ULP and the endpoints capabilities.
+
+   In cases where not all DTLS records of a protected user messages is
+   delivered and partial delivery is not supported, nothing will be 
+   delivered to the ULP. If partial deliver is supported the ULP will
+   be informed that the received message is not complete.
 
 ## Replay Protection
 
