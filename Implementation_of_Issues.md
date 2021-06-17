@@ -6,7 +6,7 @@
 
 * Issue #14 - The drying game solves the issue partially. This can be improved but afaik the solution is implementation dependent. I'd drop the issue together with issue #25
 
-* Issue #15 - Was the Adaptation Layer Indication request fed to IANA?
+* Issue #15 - Was the Adaptation Layer Indication request fed to IANA? Table is ready. --> Make a pull request to Michael
 
 * Issue #16 - AUTH related SHA1/SHA256 - I think it's ok as it is
 
@@ -24,7 +24,7 @@
 
 * Issue #35 - Open: text is needed for explicitly note that STARTTLS will not work with this specification (rfc3788). *** Done ***
 
-* Issue #37 - Decision is needed if protocol violation answer with ABORT is MAY, RECOMMENDED or MUST
+* Issue #37 - Decision is needed if protocol violation answer with ABORT is MAY, RECOMMENDED or MUST. Decided for SHOULD send ABORT
 
-* Issue #38 - Should we add in rfc a method that limits the message size to the UL or shall we keep implementation specific?
+* Issue #38 - Should we add in rfc a method that limits the message size to the UL or shall we keep implementation specific? Keep implementation specific.
 

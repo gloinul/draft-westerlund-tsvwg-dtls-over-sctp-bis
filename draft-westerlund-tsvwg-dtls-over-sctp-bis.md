@@ -292,6 +292,10 @@ TLS:  Transport Layer Security
    requiring the upper layer protocol to implement additional features
    or requirements.
 
+   Message size limits due to memory limitation or other criteria 
+   and the related interaction towards the SCTP users are specific to the
+   implementations. 
+
    Due to SCTP's capability to transmit concurrent user messages the
    total memory consumption in the receiver is not bounded. In cases
    where one or more user messages are affected by packet loss, the
@@ -620,8 +624,7 @@ During resumption, the maximum message size is renegotiated.
    DTLS/SCTP Mandatory Options, in that case the Association will
    proceed as specified in the previous {{DTLS-init}} section.  If the
    peer replies with an INIT-ACK not containing all DTLS/SCTP
-   Mandatory Options, the Client can decide to keep on working with
-   RFC 6083 fallback, plain data only, or to ABORT the association.
+   Mandatory Options, the Client SHOULD reply with ABORT.
 
 ## Server Use Case
 
@@ -631,8 +634,7 @@ During resumption, the maximum message size is renegotiated.
    follow the sequence for DTLS initialization {{DTLS-init}} and the
    related traffic case.  If a SCTP Server supports DTLS, when
    receiving an INIT chunk with not all DTLS/SCTP Mandatory
-   Options, it can decide to continue by creating an Association with
-   RFC 6083 fallback, plain data only or to ABORT it.
+   Options, it SHOULD reply with ABORT.
 
 ## RFC 6083 Fallback {#Fallback}
 
