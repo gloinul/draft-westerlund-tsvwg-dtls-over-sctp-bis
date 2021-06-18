@@ -1,3 +1,5 @@
+# Adaptation Layer Indication
+
 | Code Point (32-bit number) | Description | Reference |
 | -------------------------- | ----------- | --------- |
 | 0 | Unassigned | [RFC5061] |
