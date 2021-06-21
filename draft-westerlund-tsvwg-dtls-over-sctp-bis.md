@@ -238,11 +238,12 @@ TLS:  Transport Layer Security
    NOT be used. It is expected that DTLS/SCTP as described in this
    document will work with future versions of DTLS.
 
-##  Cipher Suites
+##  Cipher Suites and Cryptographic Parameters
 
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
-   be used. Cipher suites without encryption MUST NOT be used.
-
+   be used. For all versions of DTLS, cryptographic parameters giving
+   confidentiality and Perfect Forward Secrecy (PFS) MUST be used.
+   
 ## Message Sizes {#Msg-size}
 
    DTLS/SCTP, automatically fragments and reassembles user
