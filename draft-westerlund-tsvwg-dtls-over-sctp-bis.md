@@ -136,13 +136,15 @@ normative:
 
    The method described in this document requires that the SCTP
    implementation supports the optional feature of fragmentation of
-   SCTP user messages as defined in {{RFC4960}}. To efficiently
+   SCTP user messages as defifned in {{RFC4960}}. To efficiently
    implement and support larger user messages it is also recommended
    that I-DATA chunks as defined in {{RFC8260}} as well as an SCTP API
    that supports partial user message delivery as discussed in
    {{RFC6458}}.
 
-   The method described doesn't support STARTTLS as specified in {{RFC3788}}
+To simplify implementation and reduce the risk for security holes,
+limitations have been defined such that STARTTLS as specified in
+{{RFC3788}} is no longer supported.
 
 ### Comparison with TLS for SCTP
 
