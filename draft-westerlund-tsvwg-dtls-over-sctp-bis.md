@@ -136,7 +136,7 @@ normative:
 
    The method described in this document requires that the SCTP
    implementation supports the optional feature of fragmentation of
-   SCTP user messages as defifned in {{RFC4960}}. To efficiently
+   SCTP user messages as defined in {{RFC4960}}. To efficiently
    implement and support larger user messages it is also recommended
    that I-DATA chunks as defined in {{RFC8260}} as well as an SCTP API
    that supports partial user message delivery as discussed in
@@ -173,7 +173,7 @@ limitation:
 * The maximum user message size is 2^14 bytes, which is a single
       DTLS record limit.
 
-This update that replaces RFC6083 defines the following changes:
+This update that replaces RFC 6083 defines the following changes:
 
 * Removes the limitations on user messages sizes by defining a
      secure fragmentation mechanism.
