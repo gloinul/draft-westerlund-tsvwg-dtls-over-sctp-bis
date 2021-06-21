@@ -37,6 +37,7 @@ author:
 
 informative:
   RFC3436:
+  RFC3788:
   RFC5061:
   RFC6083:
   RFC6458:
