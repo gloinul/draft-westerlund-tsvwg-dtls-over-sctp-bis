@@ -617,22 +617,24 @@ During resumption, the maximum message size is renegotiated.
 
 ## Client Use Case
 
-   When a SCTP Client initiates an Association with DTLS/SCTP
-   Mandatory Options, it can receive an INIT-ACK also containing
-   DTLS/SCTP Mandatory Options, in that case the Association will
-   proceed as specified in the previous {{DTLS-init}} section.  If the
-   peer replies with an INIT-ACK not containing all DTLS/SCTP
-   Mandatory Options, the Client SHOULD reply with ABORT.
+   When a client initiates an SCTP Association with DTLS protection,
+   i.e. the SCTP INIT contianing DTSL/SCTP Mandatory Options, it can
+   receive an INIT-ACK also containing DTLS/SCTP Mandatory Options, in
+   that case the Association will proceed as specified in the previous
+   {{DTLS-init}} section.  If the peer replies with an INIT-ACK not
+   containing all DTLS/SCTP Mandatory Options, the client SHOULD reply
+   with an SCTP ABORT.
 
 ## Server Use Case
 
-   If a SCTP Server supports DTLS/SCTP, when receiving an INIT chunk
-   with all DTLS/SCTP Mandatory Options it must reply with INIT-ACK
-   also containing the all DTLS/SCTP Mandatory Options, then it must
-   follow the sequence for DTLS initialization {{DTLS-init}} and the
-   related traffic case.  If a SCTP Server supports DTLS, when
-   receiving an INIT chunk with not all DTLS/SCTP Mandatory
-   Options, it SHOULD reply with ABORT.
+   If a SCTP Server supports DTLS/SCTP, i.e. per this specification,
+   when receiving an INIT chunk with all DTLS/SCTP Mandatory Options
+   it will reply with an INIT-ACK also containing all the DTLS/SCTP
+   Mandatory Options, following the sequence for DTLS initialization
+   {{DTLS-init}} and the related traffic case.  If a SCTP Server that
+   supports DTLS and configured to use it, receivs an INIT chunk
+   without all DTLS/SCTP Mandatory Options, it SHOULD reply with an
+   SCTP ABORT.
 
 ## RFC 6083 Fallback {#Fallback}
 
