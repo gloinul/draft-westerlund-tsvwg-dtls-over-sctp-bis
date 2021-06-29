@@ -724,10 +724,17 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
    have been reached. The AEAD limits equations are equally valid for
    DTLS 1.2 and SHOULD be followed for DTLS/SCTP, but are not mandated
-   by the DTLS 1.2 specification. HMAC-SHA-256 as used in SCTP-AUTH
-   has a very large tag length and very good integrity properties. The
-   SCTP-AUTH key can be used until the DTLS handshake is re-run at
-   which point a new SCTP-AUTH key is derived using the TLS-Exporter.
+   by the DTLS 1.2 specification.
+
+   HMAC-SHA-256 as used in SCTP-AUTH has a very large tag length and
+   very good integrity properties. The SCTP-AUTH key can be used until
+   the DTLS handshake is re-run at which point a new SCTP-AUTH key is
+   derived using the TLS-Exporter. As discussed below DTLS 1.3 does
+   not currently support renegotiation and lacks the capability of
+   updating the SCTP-AUTH key. For upper layer protocols that may
+   expire the SCTP-AUTH key life time and where creating a new SCTP
+   connection with DTLS 1.3 to replace the current is not a viable
+   option it is RECOMMENDED to use DTLS 1.2.
 
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
