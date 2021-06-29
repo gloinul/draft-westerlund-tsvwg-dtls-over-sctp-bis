@@ -6,9 +6,9 @@ TSVWG                                                      M. Westerlund
 Internet-Draft                                         J. Preuß Mattsson
 Obsoletes: 6083 (if approved)                                 C. Porfiri
 Intended status: Standards Track                                Ericsson
-Expires: 23 December 2021                                       M. Tüxen
+Expires: 31 December 2021                                       M. Tüxen
                                          Münster Univ. of Appl. Sciences
-                                                            21 June 2021
+                                                            29 June 2021
 
 
       Datagram Transport Layer Security (DTLS) over Stream Control
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 December 2021.
+   This Internet-Draft will expire on 31 December 2021.
 
 Copyright Notice
 
