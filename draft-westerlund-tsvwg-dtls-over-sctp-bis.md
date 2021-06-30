@@ -477,14 +477,15 @@ TLS:  Transport Layer Security
 
 ## Renegotiation
 
-   Renegotiation enables rekeying and reauthentication inside an DTLS
-   1.2 connection. It is up to the upper layer to use/allow it or not.
+   DTLS 1.2 renegotiation enables rekeying (with ephemeral Diffie-Hellman)
+   of both DTLS and SCTP-AUTH as well as mutual reauthentication inside an
+	DTLS 1.2 connection. It is up to the upper layer to use/allow it or not.
    Application writers should be aware that allowing renegotiations
    may result in changes of security parameters. Renegotiation has
    been removed from DTLS 1.3 and partly replaced with Post-Handshake
    messages such as KeyUpdate. See {{sec-Consideration}} for security
    considerations regarding rekeying.
-
+   
 ## DTLS Epochs
 
    In general, DTLS implementations SHOULD discard records from
