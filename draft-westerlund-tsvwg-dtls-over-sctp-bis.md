@@ -241,7 +241,7 @@ TLS:  Transport Layer Security
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
    be used. For all versions of DTLS, cryptographic parameters giving
    confidentiality and Perfect Forward Secrecy (PFS) MUST be used.
-   
+
 ## Message Sizes {#Msg-size}
 
    DTLS/SCTP, automatically fragments and reassembles user
@@ -477,15 +477,16 @@ TLS:  Transport Layer Security
 
 ## Renegotiation
 
-   DTLS 1.2 renegotiation enables rekeying (with ephemeral Diffie-Hellman)
-   of both DTLS and SCTP-AUTH as well as mutual reauthentication inside an
-	DTLS 1.2 connection. It is up to the upper layer to use/allow it or not.
-   Application writers should be aware that allowing renegotiations
-   may result in changes of security parameters. Renegotiation has
-   been removed from DTLS 1.3 and partly replaced with Post-Handshake
-   messages such as KeyUpdate. See {{sec-Consideration}} for security
-   considerations regarding rekeying.
-   
+   DTLS 1.2 renegotiation enables rekeying (with ephemeral
+   Diffie-Hellman) of both DTLS and SCTP-AUTH as well as mutual
+   reauthentication inside an DTLS 1.2 connection. It is up to the
+   upper layer to use/allow it or not.  Application writers should be
+   aware that allowing renegotiations may result in changes of
+   security parameters. Renegotiation has been removed from DTLS 1.3
+   and partly replaced with Post-Handshake messages such as
+   KeyUpdate. See {{sec-Consideration}} for security considerations
+   regarding rekeying.
+
 ## DTLS Epochs
 
    In general, DTLS implementations SHOULD discard records from
@@ -694,22 +695,21 @@ During resumption, the maximum message size is renegotiated.
 
    This document registers the "dtls_over_sctp_maximum_message_size"
    extension in the TLS "ExtensionType Values" registry {{RFC8447}}.
-	The "dtls_over_sctp_maximum_message_size" extension
-   has been assigned a code point of TBD. The IANA
-   registry {{RFC8447}} \[\[will list\|lists\]\] this extension as
-   "Recommended" (i.e., "Y"), "DLTS-Only" (i.e., "Y") and indicates
-	that it may appear in the
-   ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3
-   {{I-D.ietf-tls-dtls13}}.
+   The "dtls_over_sctp_maximum_message_size" extension has been
+   assigned a code point of TBD. The IANA registry {{RFC8447}}
+   \[\[will list\|lists\]\] this extension as "Recommended" (i.e.,
+   "Y"), "DLTS-Only" (i.e., "Y") and indicates that it may appear in
+   the ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS
+   1.3 {{I-D.ietf-tls-dtls13}}.
 
 
 
 | Value | TLS 1.3 | DTLS-Only | Recommended | Reference |
 | -------------------------- | ----------- | --------- |
-| TBD | CH, EE, | Y | Y | [RFC-TBD] |
+| TBD | CH, EE, | Y | Y | \[RFC-TBD\] |
 
-RFC-Editor Note: Please replace [RFC-TBD] with the RFC number given to
-this specification. 
+RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
+this specification.
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
@@ -723,11 +723,11 @@ this specification.
 
 | Code Point (32-bit number) | Description | Reference |
 | -------------------------- | ----------- | --------- |
-| 0x00000002 | DTLS/SCTP | [RFC-TBD] |
+| 0x00000002 | DTLS/SCTP | \[RFC-TBD\] |
 {: #iana-ACP title="Adaptation Code Point"}
 
-RFC-Editor Note: Please replace [RFC-TBD] with the RFC number given to
-this specification. 
+RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
+this specification.
 
 # Security Considerations {#sec-Consideration}
 
@@ -762,7 +762,7 @@ this specification.
    the DTLS handshake is re-run at which point a new SCTP-AUTH key is
    derived using the TLS-Exporter. As discussed below DTLS 1.3 does
    not currently support renegotiation and lacks the capability of
-   updating the SCTP-AUTH key. 
+   updating the SCTP-AUTH key.
 
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
@@ -798,9 +798,9 @@ this specification.
    etc. The is no way to do Post-Handshake server authentication or
    Ephemeral Diffie-Hellman inside a DTLS 1.3 connection. Note that
    KeyUpdate does not update the exporter_secret.
-   
+
    For upper layer protocols where frequent re-run of Diffie-Hellman,
-   rekeying of SCTP-AUTH, and server reauthentication is required and  
+   rekeying of SCTP-AUTH, and server reauthentication is required and
    creating a new SCTP connection with DTLS 1.3 to replace the current
    is not a viable option it is RECOMMENDED to use DTLS 1.2.
 
