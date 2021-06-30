@@ -774,7 +774,9 @@ this specification.
    achieved with frequent renegotiation, see TLS 1.2 {{RFC5246}}. When
    renegotiation is used both clients and servers MUST use the
    renegotiation_info extension {{RFC5746}} and MUST follow the
-   renegotiation guidelines in BCP 195 {{RFC7525}}.
+   renegotiation guidelines in BCP 195 {{RFC7525}}. In particular,
+   both clients and servers MUST NOT accept a change of identity
+   during renegotiation.
 
    In DTLS 1.3 renegotiation has been removed from DTLS 1.3 and partly
    replaced with Post-Handshake KeyUpdate. When using DTLS 1.3
