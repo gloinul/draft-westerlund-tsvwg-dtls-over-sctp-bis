@@ -708,9 +708,11 @@ During resumption, the maximum message size is renegotiated.
 
 | Code Point (32-bit number) | Description | Reference |
 | -------------------------- | ----------- | --------- |
-| 0x00000002 | DTLS/SCTP | [RFC6083] |
+| 0x00000002 | DTLS/SCTP | [RFC-TBD] |
 {: #iana-ACP title="Adaptation Code Point"}
 
+RFC-Editor Note: Please replace [RFC-TBD] with the RFC number given to
+this specification. 
 
 #  Security Considerations {#sec-Consideration}
 
