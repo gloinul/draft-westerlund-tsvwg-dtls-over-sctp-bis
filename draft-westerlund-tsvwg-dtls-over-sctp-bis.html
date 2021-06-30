@@ -2086,27 +2086,32 @@ this specification.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
 <p id="section-7.1-3">DTLS 1.3 requires rekeying before algorithm specific AEAD limits
    have been reached. The AEAD limits equations are equally valid for
    DTLS 1.2 and SHOULD be followed for DTLS/SCTP, but are not mandated
-   by the DTLS 1.2 specification. HMAC-SHA-256 as used in SCTP-AUTH
-   has a very large tag length and very good integrity properties. The
-   SCTP-AUTH key can be used until the DTLS handshake is re-run at
-   which point a new SCTP-AUTH key is derived using the TLS-Exporter.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
-<p id="section-7.1-4">DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
+   by the DTLS 1.2 specification.<a href="#section-7.1-3" class="pilcrow">¶</a></p>
+<p id="section-7.1-4">HMAC-SHA-256 as used in SCTP-AUTH has a very large tag length and
+   very good integrity properties. The SCTP-AUTH key can be used until
+   the DTLS handshake is re-run at which point a new SCTP-AUTH key is
+   derived using the TLS-Exporter. As discussed below DTLS 1.3 does
+   not currently support renegotiation and lacks the capability of
+   updating the SCTP-AUTH key. For upper layer protocols where
+   creating a new SCTP connection with DTLS1.3 to replace the current
+   is not a viable option it is RECOMMENDED to use DTLS 1.2.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
+<p id="section-7.1-5">DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
    writes "It is recommended to force the periodic renewal of the
    keys, e.g. every hour and every 100 GB of data, in order to limit
-   the impact of a key compromise." <span>[<a href="#ANSSI-DAT-NT-003" class="xref">ANSSI-DAT-NT-003</a>]</span>.<a href="#section-7.1-4" class="pilcrow">¶</a></p>
-<p id="section-7.1-5">For many DTLS/SCTP deployments the DTLS connections are expected to
+   the impact of a key compromise." <span>[<a href="#ANSSI-DAT-NT-003" class="xref">ANSSI-DAT-NT-003</a>]</span>.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
+<p id="section-7.1-6">For many DTLS/SCTP deployments the DTLS connections are expected to
    have very long lifetimes of months or even years. For connections
    with such long lifetimes there is a need to frequently
-   re-authenticate both client and server.<a href="#section-7.1-5" class="pilcrow">¶</a></p>
-<p id="section-7.1-6">When using DTLS 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span>, AEAD limits, frequant
+   re-authenticate both client and server.<a href="#section-7.1-6" class="pilcrow">¶</a></p>
+<p id="section-7.1-7">When using DTLS 1.2 <span>[<a href="#RFC6347" class="xref">RFC6347</a>]</span>, AEAD limits, frequant
    re-authentication and frequent re-run of Diffie-Hellman can be
    achieved with frequent renegotiation, see TLS 1.2 <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span>. When
    renegotiation is used both clients and servers MUST use the
    renegotiation_info extension <span>[<a href="#RFC5746" class="xref">RFC5746</a>]</span> and MUST follow the
-   renegotiation guidelines in BCP 195 <span>[<a href="#RFC7525" class="xref">RFC7525</a>]</span>.<a href="#section-7.1-6" class="pilcrow">¶</a></p>
-<p id="section-7.1-7">In DTLS 1.3 renegotiation has been removed from DTLS 1.3 and partly
+   renegotiation guidelines in BCP 195 <span>[<a href="#RFC7525" class="xref">RFC7525</a>]</span>.<a href="#section-7.1-7" class="pilcrow">¶</a></p>
+<p id="section-7.1-8">In DTLS 1.3 renegotiation has been removed from DTLS 1.3 and partly
    replaced with Post-Handshake KeyUpdate. When using DTLS 1.3
    <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>, AEAD limits and frequent rekeying can be
    achieved by sending frequent Post-Handshake KeyUpdate
@@ -2118,7 +2123,7 @@ this specification.<a href="#section-6.3-3" class="pilcrow">¶</a></p>
    application_traffic_secret_N+1, application_traffic_secret_N+2,
    etc. The is no way to do Post-Handshake server authentication or
    Ephemeral Diffie-Hellman inside a DTLS 1.3 connection. Note that
-   KeyUpdate does not update the exporter_secret.<a href="#section-7.1-7" class="pilcrow">¶</a></p>
+   KeyUpdate does not update the exporter_secret.<a href="#section-7.1-8" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="downgrade-attacks">
