@@ -538,8 +538,9 @@ TLS:  Transport Layer Security
    At the initialization of the association, a sender of the INIT or
    INIT ACK chunk that intends to use DTLS/SCTP as specified in this
    specification MUST include an Adaptation Layer Indication Parameter
-   with the IANA assigned value TBD to inform its peer that it is
-   able to support DTLS over SCTP per this specification.
+   with the IANA assigned value TBD ({{sec-IANA-ACP}}) to inform its
+   peer that it is able to support DTLS over SCTP per this
+   specification.
 
 ## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension {#TLS-Extension}
 
@@ -652,15 +653,15 @@ During resumption, the maximum message size is renegotiated.
    perform an fallback to RFC 6083 behavior. The first case is when
    the SCTP client receives an INIT-ACK doesn't contain the
    SCTP-Adaptation-Indication parameter with the DTLS/SCTP adaptation
-   layer codepoint but do include the SCTP-AUTH parameters on a server
-   that are expected to provide services using DTLS. The second case
-   is when the INIT-ACK do contain the SCTP-Adaptation-Indication
-   parameter with the correct code point, however the HMAC-ALGO or the
-   Chunks parameters values are such that do not fullfil the
-   requirement of this specification but do meet the requirements of
-   RFC 6083. In either of these cases the client could attempt DTLS
-   per RFC 6083 as fallback. However, the fallback attempt should only
-   be performed if policy says that is acceptable.
+   layer codepoint, see {{sec-IANA-ACP}}, but do include the SCTP-AUTH
+   parameters on a server that are expected to provide services using
+   DTLS. The second case is when the INIT-ACK do contain the
+   SCTP-Adaptation-Indication parameter with the correct code point,
+   however the HMAC-ALGO or the Chunks parameters values are such that
+   do not fullfil the requirement of this specification but do meet
+   the requirements of RFC 6083. In either of these cases the client
+   could attempt DTLS per RFC 6083 as fallback. However, the fallback
+   attempt should only be performed if policy says that is acceptable.
 
    If fallback is allowed it is possible that the client will send
    plain text user messages prior to DTLS handshake as it is allowed
@@ -695,9 +696,23 @@ During resumption, the maximum message size is renegotiated.
    ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3
    {{I-D.ietf-tls-dtls13}}.
 
-## SCTP Parameter
+## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
-IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
+   {{RFC5061}} defined a IANA registry for Adaptation Code Points to
+   be used in the Adaptation Layer Indication parameter. The registry
+   was at time of writing located:
+   https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-27
+   IANA is requested to assign one Adaptation Code Point for DTLS/SCTP
+   per the below proposed entry in {{iana-ACP}}.
+
+
+| Code Point (32-bit number) | Description | Reference |
+| -------------------------- | ----------- | --------- |
+| 0x00000002 | DTLS/SCTP | [RFC-TBD] |
+{: #iana-ACP title="Adaptation Code Point"}
+
+RFC-Editor Note: Please replace [RFC-TBD] with the RFC number given to
+this specification. 
 
 #  Security Considerations {#sec-Consideration}
 
