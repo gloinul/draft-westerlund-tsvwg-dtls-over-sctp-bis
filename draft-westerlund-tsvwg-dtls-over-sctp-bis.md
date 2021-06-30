@@ -754,9 +754,7 @@ this specification.
    the DTLS handshake is re-run at which point a new SCTP-AUTH key is
    derived using the TLS-Exporter. As discussed below DTLS 1.3 does
    not currently support renegotiation and lacks the capability of
-   updating the SCTP-AUTH key. For upper layer protocols where
-   creating a new SCTP connection with DTLS1.3 to replace the current
-   is not a viable option it is RECOMMENDED to use DTLS 1.2.
+   updating the SCTP-AUTH key. 
 
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
@@ -792,6 +790,11 @@ this specification.
    etc. The is no way to do Post-Handshake server authentication or
    Ephemeral Diffie-Hellman inside a DTLS 1.3 connection. Note that
    KeyUpdate does not update the exporter_secret.
+   
+   For upper layer protocols where frequent re-run of Diffie-Hellman,
+   rekeying of SCTP-AUTH, and server reauthentication is required and  
+   creating a new SCTP connection with DTLS 1.3 to replace the current
+   is not a viable option it is RECOMMENDED to use DTLS 1.2.
 
 ## Downgrade Attacks
 
