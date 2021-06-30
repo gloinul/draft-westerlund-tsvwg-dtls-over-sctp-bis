@@ -705,15 +705,24 @@ Table of Contents
 6.2.  DTLS "dtls_over_sctp_buffer_size_limit" Extension
 
    This document registers the "dtls_over_sctp_maximum_message_size"
-   extension in the TLS "ExtensionType Values" registry established in
-   [RFC5246].  The "dtls_over_sctp_maximum_message_size" extension has
-   been assigned a code point of TBD.  This entry [[will be|is]] marked
-   as recommended ([RFC8447] and marked as "Encrypted" in (D)TLS 1.3
-   [I-D.ietf-tls-dtls13].  The IANA registry [RFC8447] [[will
-   list|lists]] this extension as "Recommended" (i.e., "Y") and
-   indicates that it may appear in the ClientHello (CH) or
+   extension in the TLS "ExtensionType Values" registry [RFC8447].  The
+   "dtls_over_sctp_maximum_message_size" extension has been assigned a
+   code point of TBD.  The IANA registry [RFC8447] [[will list|lists]]
+   this extension as "Recommended" (i.e., "Y"), "DLTS-Only" (i.e., "Y")
+   and indicates that it may appear in the ClientHello (CH) or
    EncryptedExtensions (EE) messages in (D)TLS 1.3
    [I-D.ietf-tls-dtls13].
+
+         +=======+=========+===========+=============+===========+
+         | Value | TLS 1.3 | DTLS-Only | Recommended | Reference |
+         +=======+=========+===========+=============+===========+
+         | TBD   | CH, EE, | Y         | Y           | [RFC-TBD] |
+         +-------+---------+-----------+-------------+-----------+
+
+                                  Table 1
+
+   RFC-Editor Note: Please replace [RFC-TBD] with the RFC number given
+   to this specification.
 
 6.3.  SCTP Adaptation Layer Indication Code Point
 
@@ -722,7 +731,7 @@ Table of Contents
    at time of writing located: https://www.iana.org/assignments/sctp-
    parameters/sctp-parameters.xhtml#sctp-parameters-27 IANA is requested
    to assign one Adaptation Code Point for DTLS/SCTP per the below
-   proposed entry in Table 1.
+   proposed entry in Table 2.
 
          +============================+=============+===========+
          | Code Point (32-bit number) | Description | Reference |
@@ -730,7 +739,7 @@ Table of Contents
          | 0x00000002                 | DTLS/SCTP   | [RFC-TBD] |
          +----------------------------+-------------+-----------+
 
-                      Table 1: Adaptation Code Point
+                      Table 2: Adaptation Code Point
 
    RFC-Editor Note: Please replace [RFC-TBD] with the RFC number given
    to this specification.

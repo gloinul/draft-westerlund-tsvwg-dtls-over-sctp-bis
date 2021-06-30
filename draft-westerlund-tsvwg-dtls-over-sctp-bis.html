@@ -2017,15 +2017,37 @@ identified by a stream identifier.<a href="#section-1.2-3" class="pilcrow">¶</a
 <a href="#section-6.2" class="section-number selfRef">6.2. </a><a href="#name-dtls-dtls_over_sctp_buffer_" class="section-name selfRef">DTLS "dtls_over_sctp_buffer_size_limit" Extension</a>
         </h3>
 <p id="section-6.2-1">This document registers the "dtls_over_sctp_maximum_message_size"
-   extension in the TLS "ExtensionType Values" registry established in
-   <span>[<a href="#RFC5246" class="xref">RFC5246</a>]</span>.  The "dtls_over_sctp_maximum_message_size" extension
-   has been assigned a code point of TBD. This entry [[will
-   be|is]] marked as recommended (<span>[<a href="#RFC8447" class="xref">RFC8447</a>]</span> and marked as
-   "Encrypted" in (D)TLS 1.3 <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>. The IANA
+   extension in the TLS "ExtensionType Values" registry <span>[<a href="#RFC8447" class="xref">RFC8447</a>]</span>.
+        The "dtls_over_sctp_maximum_message_size" extension
+   has been assigned a code point of TBD. The IANA
    registry <span>[<a href="#RFC8447" class="xref">RFC8447</a>]</span> [[will list|lists]] this extension as
-   "Recommended" (i.e., "Y") and indicates that it may appear in the
+   "Recommended" (i.e., "Y"), "DLTS-Only" (i.e., "Y") and indicates
+        that it may appear in the
    ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3
    <span>[<a href="#I-D.ietf-tls-dtls13" class="xref">I-D.ietf-tls-dtls13</a>]</span>.<a href="#section-6.2-1" class="pilcrow">¶</a></p>
+<table class="center" id="table-1">
+          <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<thead>
+            <tr>
+              <th class="text-left" rowspan="1" colspan="1">Value</th>
+              <th class="text-left" rowspan="1" colspan="1">TLS 1.3</th>
+              <th class="text-left" rowspan="1" colspan="1">DTLS-Only</th>
+              <th class="text-left" rowspan="1" colspan="1">Recommended</th>
+              <th class="text-left" rowspan="1" colspan="1">Reference</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left" rowspan="1" colspan="1">TBD</td>
+              <td class="text-left" rowspan="1" colspan="1">CH, EE,</td>
+              <td class="text-left" rowspan="1" colspan="1">Y</td>
+              <td class="text-left" rowspan="1" colspan="1">Y</td>
+              <td class="text-left" rowspan="1" colspan="1">[RFC-TBD]</td>
+            </tr>
+          </tbody>
+        </table>
+<p id="section-6.2-3">RFC-Editor Note: Please replace [RFC-TBD] with the RFC number given to
+this specification.<a href="#section-6.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sec-IANA-ACP">
@@ -2038,11 +2060,11 @@ identified by a stream identifier.<a href="#section-1.2-3" class="pilcrow">¶</a
    was at time of writing located:
    https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-27
    IANA is requested to assign one Adaptation Code Point for DTLS/SCTP
-   per the below proposed entry in <a href="#iana-ACP" class="xref">Table 1</a>.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
+   per the below proposed entry in <a href="#iana-ACP" class="xref">Table 2</a>.<a href="#section-6.3-1" class="pilcrow">¶</a></p>
 <span id="name-adaptation-code-point"></span><div id="iana-ACP">
-<table class="center" id="table-1">
+<table class="center" id="table-2">
           <caption>
-<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#table-2" class="selfRef">Table 2</a>:
 <a href="#name-adaptation-code-point" class="selfRef">Adaptation Code Point</a>
           </caption>
 <thead>
