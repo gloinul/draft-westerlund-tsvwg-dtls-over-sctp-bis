@@ -177,9 +177,6 @@ This update that replaces RFC 6083 defines the following changes:
 * Removes the limitations on user messages sizes by defining a
      secure fragmentation mechanism.
 
-* Defines a DTLS extension for the endpoints to declare the user
-     message size supported to be received.
-
 * Mandates that more modern DTLS version are required (DTLS 1.2 or
      1.3)
 
@@ -194,6 +191,8 @@ This update that replaces RFC 6083 defines the following changes:
 
 * Requires that SCTP-AUTH is applied to all SCTP Chunks that can be
      authenticated.
+
+* Require support of partial delivery of user messages {{RFC6458}}.
 
 ## Terminology
 
@@ -217,6 +216,8 @@ SCTP:  Stream Control Transmission Protocol
 TCP:  Transmission Control Protocol
 
 TLS:  Transport Layer Security
+
+ULP:  Upper Layer Protocol
 
 # Conventions
 
@@ -259,74 +260,21 @@ TLS:  Transport Layer Security
    protected user message, i.e. with DTLS record overhead, is buffered
    in the receiver. This buffer space will thus put a limit on the
    largest size of plain text user message that can be transferred
-   securely.
+   securely. However, by requiring the use of the partial delivery of
+   user messages from SCTP {{RFC6458}} the required buffering prior to
+   DTLS processing can be limited to a single DTLS record per user
+   message (unreliable streams) and used streams (ordered
+   delivery). This enables the DTLS/SCTP implementation to provide the
+   Upper Layer Protocol (ULP) with each DTLS record's content when it
+   has been decrypted and its integrity been verified enabling partial
+   user message delivery to the ULP.
 
-   A receiver that doesn't support partial delivery of user messages
-   from SCTP {{RFC6458}} will advertise its largest supported
-   protected message using SCTP's mechanism for Advertised Receiver
-   Window Credit (a_rwnd) as specified in Section 3.3.2 of
-   {{RFC4960}}. Note that the a_rwnd value is across all user messages
-   being delivered.
-
-   For a receiver supporting partial delivery of user messages a_rwnd
-   will not limit the maximum size of the DTLS protected user message
-   because the receiver can move parts of the DTLS protected user
-   message from the SCTP receiver buffer into a buffer for DTLS
-   processing. When each complete DTLS record have been received
-   from SCTP, it can  be processed and the plain text fragment can,
-   in its turn, be partially delivered to the user application.
-
-   Thus, the limit of the largest user message is dependent on
-   buffering allocated for DTLS processing as well as the DTLS/SCTP
-   API to the application. To ensure that the sender have some
-   understanding of the maximum receiver size a TLS extension
-   "dtls_over_sctp_maximum_message_size" {{TLS-Extension}} is used to
-   signal the endpoints receiver capability when it comes to user
-   message size.
-
-   All implementors of this specification MUST support user messages
-   of at least 16383 bytes. Where 16383 bytes is the supported message
-   size in RFC 6083. By requiring this message size in this document,
-   we ensure compatibility with existing usage of RFC 6083, not
-   requiring the upper layer protocol to implement additional features
-   or requirements.
-
-   Message size limits due to memory limitation or other criteria
-   and the related interaction towards the SCTP users are specific to the
-   implementations.
-
-   Due to SCTP's capability to transmit concurrent user messages the
-   total memory consumption in the receiver is not bounded. In cases
-   where one or more user messages are affected by packet loss, the
-   DATA chunks may require more data in the receiver's buffer.
-
-   The necessary buffering space for a single user message of
-   dtls_over_sctp_maximum_message_size (MMS) is dependent on the
-   implementation.
-
-   When no partial data delivery is supported, the message size is
-   limited by the a_rwnd as this is the largest protected user message
-   that can be received and then processed by DTLS and where the plain
-   text user message is expected to be no more than the signalled MMS.
-
-   With partial processing it is possible to have a receiver
-   implementation that is bound to use no more buffer space than MMS
-   (for the plaintext) plus one maximum size DTLS record. The later
-   assumes that one can realign the start of the buffer after each
-   DTLS record has been consumed. A more realistic implementation is
-   two maximum DTLS record sizes.
-
-   If an implementation supports partial delivery in both the SCTP API
-   and the ULP API, and also partial processing in the DTLS/SCTP
-   implementation, then the buffering space in the DTLS/SCTP layer
-   ought to be no more than two DTLS records. In which case the MMS to
-   set is dependent on the ULP and the endpoints capabilities.
-
-   In cases where not all DTLS records of a protected user messages is
-   delivered and partial delivery is not supported, nothing will be
-   delivered to the ULP. If partial deliver is supported the ULP will
-   be informed that the received message is not complete.
-
+   The DTLS/SCTP implementation is expected to behave very similar to
+   just SCTP when it comes to handling of user messages and dealing
+   with large user messages and their reassembly and
+   processing. Making it the ULP responsible for handling any resource
+   contention related to large user messages.
+   
 ## Replay Protection
 
    SCTP-AUTH {{RFC4895}} does not have explicit replay
@@ -550,42 +498,6 @@ TLS:  Transport Layer Security
    peer that it is able to support DTLS over SCTP per this
    specification.
 
-## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension {#TLS-Extension}
-
-   The endpoint's DTLS/SCTP maximum message size is declared in the
-   "dtls_over_sctp_maximum_message_size" TLS extension. The
-   ExtensionData of the extension is MessageSizeLimit:
-
-~~~~~~~~~~~
-   uint64 MessageSizeLimit;
-~~~~~~~~~~~
-
-   The value of MessageSizeLimit is the maximum plaintext user message
-   size in octets that the endpoint is willing to receive. When the
-   "dtls_over_sctp_maximum_message_size" extension is negotiated, an
-   endpoint MUST NOT send a user message larger than the
-   MessageSizeLimit value it receives from its peer.
-
-   This value is the length of the user message before DTLS
-   fragmentation and protection. The value does not account for the
-   expansion due to record protection, record padding, or the DTLS
-   header.
-
-   The "dtls_over_sctp_maximum_message_size" MUST be used to negotiate
-   maximum message size for DTLS/SCTP. A DTLS/SCTP endpoint MUST treat
-   the omission of "dtls_over_sctp_maximum_message_size" as a fatal
-   error unless supporting RFC 6083 fallback {{Fallback}}, and it
-   SHOULD generate an "illegal_parameter" alert. Endpoints MUST NOT
-   send a "dtls_over_sctp_maximum_message_size" extension with a value
-   smaller than 16383.  An endpoint MUST treat receipt of a smaller
-   value as a fatal error and generate an "illegal_parameter" alert.
-
-   The "dtls_over_sctp_maximum_message_size" MUST NOT be send in TLS
-   or in DTLS versions earlier than 1.2. In DTLS 1.3, the server sends
-   the "dtls_over_sctp_maximum_message_size" extension in the
-   EncryptedExtensions message.
-
-During resumption, the maximum message size is renegotiated.
 
 ## DTLS over SCTP Initialization {#DTLS-init}
 
@@ -673,14 +585,7 @@ During resumption, the maximum message size is renegotiated.
    If fallback is allowed it is possible that the client will send
    plain text user messages prior to DTLS handshake as it is allowed
    per RFC 6083.  So that needs to be part of the consideration for a
-   policy allowing fallback. When performing the the DTLS handshake,
-   the server is required accepting that lack of the TLS extension
-   "dtls_over_sctp_maximum_message_size" and can't treat it as fatal
-   error. In case the "dtls_over_sctp_maximum_message_size" TLS
-   extension is present in the handshake the server SHALL continue the
-   handshake including the extension with its value also, and from
-   that point follow this specification. In case the TLS option is
-   missing RFC 6083 applies.
+   policy allowing fallback. 
 
 # IANA Considerations {#IANA-Consideration}
 
@@ -689,26 +594,6 @@ During resumption, the maximum message size is renegotiated.
    RFC 6083 defined a TLS Exporter Label registry as described in
    {{RFC5705}}. IANA is requested to update the reference for the
    label "EXPORTER_DTLS_OVER_SCTP" to this specification.
-
-## DTLS "dtls_over_sctp_buffer_size_limit" Extension
-
-   This document registers the "dtls_over_sctp_maximum_message_size"
-   extension in the TLS "ExtensionType Values" registry {{RFC8447}}.
-   The "dtls_over_sctp_maximum_message_size" extension has been
-   assigned a code point of TBD. The IANA registry {{RFC8447}}
-   \[\[will list\|lists\]\] this extension as "Recommended" (i.e.,
-   "Y"), "DLTS-Only" (i.e., "Y") and indicates that it may appear in
-   the ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS
-   1.3 {{I-D.ietf-tls-dtls13}}.
-
-
-
-| Value | TLS 1.3 | DTLS-Only | Recommended | Reference |
-| -------------------------- | ----------- | --------- |
-| TBD | CH, EE, | Y | Y | \[RFC-TBD\] |
-
-RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
-this specification.
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
@@ -811,23 +696,6 @@ this specification.
    interferes with the protocol setup to lower or disable security. If
    possible, it is RECOMMENDED that the peers have a policy only
    allowing DTLS/SCTP according to this specification.
-
-## DTLS/SCTP Message Sizes
-
-   The DTLS/SCTP maximum message size extension enables secure
-   negation of a message sizes that fit in the DTLS/SCTP buffer, which
-   improves security and availability. Very small plain text user
-   fragment sizes might generate additional work for senders and
-   receivers, limiting throughput and increasing exposure to denial of
-   service.
-
-   The maximum message size extension does not protect against peer
-   nodes intending to negatively affect the peer node through flooding
-   attacks. The attacking node can both send larger messages than the
-   expressed capability as well as initiating a large number of
-   concurrent user message transmissions that never are concluded. For
-   the target of the attack it is more straight forward to determine
-   that a peer is ignoring the node's stated limitation.
 
 ## Authentication and Policy Decisions
 
