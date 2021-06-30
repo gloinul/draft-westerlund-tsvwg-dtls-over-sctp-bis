@@ -102,10 +102,10 @@ normative:
 ## Overview
 
    This document describes the usage of the Datagram Transport Layer
-   Security (DTLS) protocol, as defined in {{I-D.ietf-tls-dtls13}},
-   over the Stream Control Transmission Protocol (SCTP), as defined in
-   {{RFC4960}} with Authenticated Chunks for SCTP (SCTP-AUTH)
-   {{RFC4895}}.
+   Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
+   DTLS 1.3{{I-D.ietf-tls-dtls13}}, over the Stream Control
+   Transmission Protocol (SCTP), as defined in {{RFC4960}} with
+   Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
 
    This specification provides mutual authentication of endpoints,
    confidentiality, integrity protection, and replay protection of
@@ -134,13 +134,12 @@ normative:
 
 * large user messages.
 
-   The method described in this document requires that the SCTP
-   implementation supports the optional feature of fragmentation of
-   SCTP user messages as defined in {{RFC4960}}. To efficiently
-   implement and support larger user messages it is also recommended
-   that I-DATA chunks as defined in {{RFC8260}} as well as an SCTP API
-   that supports partial user message delivery as discussed in
-   {{RFC6458}}.
+The method described in this document requires that the SCTP
+implementation supports the optional feature of fragmentation of SCTP
+user messages as defined in {{RFC4960}}. To efficiently implement and
+support larger user messages it is also recommended that I-DATA chunks
+as defined in {{RFC8260}} as well as an SCTP API that supports partial
+user message delivery as discussed in {{RFC6458}}.
 
 To simplify implementation and reduce the risk for security holes,
 limitations have been defined such that STARTTLS as specified in
