@@ -236,11 +236,12 @@ TLS:  Transport Layer Security
    NOT be used. It is expected that DTLS/SCTP as described in this
    document will work with future versions of DTLS.
 
-## Cipher Suites
+##  Cipher Suites and Cryptographic Parameters
 
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
-   be used. Cipher suites without encryption MUST NOT be used.
-
+   be used. For all versions of DTLS, cryptographic parameters giving
+   confidentiality and Perfect Forward Secrecy (PFS) MUST be used.
+   
 ## Message Sizes {#Msg-size}
 
    DTLS/SCTP, automatically fragments and reassembles user
@@ -335,7 +336,11 @@ TLS:  Transport Layer Security
    third party attempts to inject or replay SCTP packets resulting in
    impact on the received protected user message. In fact this
    document's solution is dependent on SCTP-AUTH and SCTP to prevent
-   reordering of the DTLS records within each protected user message.
+   reordering, duplication and removal of the DTLS records within
+   each protected user message.  This includes detection of changes to
+   what DTLS records start and end the SCTP user message, and removal of
+   DTLS records before an increment to the epoch.  Without SCTP-AUTH,
+   these would all have required explicit handling.
 
    DTLS optionally supports record replay detection. Such replay
    detection could result in the DTLS layer dropping valid messages
@@ -540,8 +545,9 @@ TLS:  Transport Layer Security
    At the initialization of the association, a sender of the INIT or
    INIT ACK chunk that intends to use DTLS/SCTP as specified in this
    specification MUST include an Adaptation Layer Indication Parameter
-   with the IANA assigned value TBD to inform its peer that it is
-   able to support DTLS over SCTP per this specification.
+   with the IANA assigned value TBD ({{sec-IANA-ACP}}) to inform its
+   peer that it is able to support DTLS over SCTP per this
+   specification.
 
 ## DTLS/SCTP "dtls_over_sctp_maximum_message_size" Extension {#TLS-Extension}
 
@@ -653,15 +659,15 @@ During resumption, the maximum message size is renegotiated.
    perform an fallback to RFC 6083 behavior. The first case is when
    the SCTP client receives an INIT-ACK doesn't contain the
    SCTP-Adaptation-Indication parameter with the DTLS/SCTP adaptation
-   layer codepoint but do include the SCTP-AUTH parameters on a server
-   that are expected to provide services using DTLS. The second case
-   is when the INIT-ACK do contain the SCTP-Adaptation-Indication
-   parameter with the correct code point, however the HMAC-ALGO or the
-   Chunks parameters values are such that do not fullfil the
-   requirement of this specification but do meet the requirements of
-   RFC 6083. In either of these cases the client could attempt DTLS
-   per RFC 6083 as fallback. However, the fallback attempt should only
-   be performed if policy says that is acceptable.
+   layer codepoint, see {{sec-IANA-ACP}}, but do include the SCTP-AUTH
+   parameters on a server that are expected to provide services using
+   DTLS. The second case is when the INIT-ACK do contain the
+   SCTP-Adaptation-Indication parameter with the correct code point,
+   however the HMAC-ALGO or the Chunks parameters values are such that
+   do not fullfil the requirement of this specification but do meet
+   the requirements of RFC 6083. In either of these cases the client
+   could attempt DTLS per RFC 6083 as fallback. However, the fallback
+   attempt should only be performed if policy says that is acceptable.
 
    If fallback is allowed it is possible that the client will send
    plain text user messages prior to DTLS handshake as it is allowed
@@ -696,9 +702,23 @@ During resumption, the maximum message size is renegotiated.
    ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3
    {{I-D.ietf-tls-dtls13}}.
 
-## SCTP Parameter
+## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
-IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
+   {{RFC5061}} defined a IANA registry for Adaptation Code Points to
+   be used in the Adaptation Layer Indication parameter. The registry
+   was at time of writing located:
+   https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-27
+   IANA is requested to assign one Adaptation Code Point for DTLS/SCTP
+   per the below proposed entry in {{iana-ACP}}.
+
+
+| Code Point (32-bit number) | Description | Reference |
+| -------------------------- | ----------- | --------- |
+| 0x00000002 | DTLS/SCTP | [RFC-TBD] |
+{: #iana-ACP title="Adaptation Code Point"}
+
+RFC-Editor Note: Please replace [RFC-TBD] with the RFC number given to
+this specification. 
 
 # Security Considerations {#sec-Consideration}
 
@@ -726,10 +746,16 @@ IANA is requested to assign a Adaptation Code Point for DTLS/SCTP.
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
    have been reached. The AEAD limits equations are equally valid for
    DTLS 1.2 and SHOULD be followed for DTLS/SCTP, but are not mandated
-   by the DTLS 1.2 specification. HMAC-SHA-256 as used in SCTP-AUTH
-   has a very large tag length and very good integrity properties. The
-   SCTP-AUTH key can be used until the DTLS handshake is re-run at
-   which point a new SCTP-AUTH key is derived using the TLS-Exporter.
+   by the DTLS 1.2 specification.
+
+   HMAC-SHA-256 as used in SCTP-AUTH has a very large tag length and
+   very good integrity properties. The SCTP-AUTH key can be used until
+   the DTLS handshake is re-run at which point a new SCTP-AUTH key is
+   derived using the TLS-Exporter. As discussed below DTLS 1.3 does
+   not currently support renegotiation and lacks the capability of
+   updating the SCTP-AUTH key. For upper layer protocols where
+   creating a new SCTP connection with DTLS1.3 to replace the current
+   is not a viable option it is RECOMMENDED to use DTLS 1.2.
 
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
