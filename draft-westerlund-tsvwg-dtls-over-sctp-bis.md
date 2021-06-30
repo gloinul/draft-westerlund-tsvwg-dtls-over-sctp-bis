@@ -693,15 +693,23 @@ During resumption, the maximum message size is renegotiated.
 ## DTLS "dtls_over_sctp_buffer_size_limit" Extension
 
    This document registers the "dtls_over_sctp_maximum_message_size"
-   extension in the TLS "ExtensionType Values" registry established in
-   {{RFC5246}}.  The "dtls_over_sctp_maximum_message_size" extension
-   has been assigned a code point of TBD. This entry \[\[will
-   be\|is\]\] marked as recommended ({{RFC8447}} and marked as
-   "Encrypted" in (D)TLS 1.3 {{I-D.ietf-tls-dtls13}}. The IANA
+   extension in the TLS "ExtensionType Values" registry {{RFC8447}}.
+	The "dtls_over_sctp_maximum_message_size" extension
+   has been assigned a code point of TBD. The IANA
    registry {{RFC8447}} \[\[will list\|lists\]\] this extension as
-   "Recommended" (i.e., "Y") and indicates that it may appear in the
+   "Recommended" (i.e., "Y"), "DLTS-Only" (i.e., "Y") and indicates
+	that it may appear in the
    ClientHello (CH) or EncryptedExtensions (EE) messages in (D)TLS 1.3
    {{I-D.ietf-tls-dtls13}}.
+
+
+
+| Value | TLS 1.3 | DTLS-Only | Recommended | Reference |
+| -------------------------- | ----------- | --------- |
+| TBD | CH, EE, | Y | Y | [RFC-TBD] |
+
+RFC-Editor Note: Please replace [RFC-TBD] with the RFC number given to
+this specification. 
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
