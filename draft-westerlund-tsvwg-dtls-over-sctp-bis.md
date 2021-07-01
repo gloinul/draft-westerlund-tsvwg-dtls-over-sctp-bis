@@ -69,7 +69,6 @@ normative:
   RFC8174:
   RFC8260:
   RFC8446:
-  RFC8447:
   I-D.ietf-tls-dtls13:
 
 --- abstract
@@ -335,11 +334,38 @@ ULP:  Upper Layer Protocol
    The new user_message', i.e the protected user message, is the input
    to SCTP.
 
-   On the receiving side DTLS is used to decrypt the records.  If a
-   DTLS decryption fails, the DTLS connection and the SCTP association
-   are terminated. Due to SCTP-AUTH preventing delivery of corrupt
-   fragments of the protected user message this should only occur in
-   case of implementation errors or internal hardware failures.
+   On the receiving side DTLS is used to decrypt the individual
+   records. There are three failure cases an implementation needs to
+   detect then act on as described below:
+
+   1. Failure in decryption and integrity verification process of any
+   DTLS record. Due to SCTP-AUTH preventing delivery of injected or
+   corrupt fragments of the protected user message this should only
+   occur in case of implementation errors or internal hardware
+   failures.
+
+   2. In case the SCTP layer indicates an end to an user message,
+   e.g. when receiving a MSG_EOR in a recvmsg() call when using the
+   API described in {{RFC6458}}, and the last buffered DTLS record
+   length field does not match, i.e. is incomplete.
+
+   3. Unable to perform the decryption processes due to lack of
+   resources, such as memory, and have to abandon the user message
+   fragment. This specification is defined such that the needed
+   resources for the DTLS/SCTP operations are bounded for a given
+   number of concurrent transmitted SCTP streams or unordered user
+   messages. 
+   
+   The above failure cases all results in the receiver failing to
+   recreate the full user message. This is a failure of the transport
+   service that is not possible to recover in the DTLS/SCTP layer and
+   the sender can believe the complete message have been
+   delivered. This error MUST NOT be ignored, therefore as SCTP lacks
+   any facility to declare a failure on a specific stream or user
+   message the DTLS connection and the SCTP association are
+   terminated. An exception to the termination MAY be used if the
+   receiver notifies the ULP about the failure in delivery and the ULP
+   is capable of recovering from this failure.
 
    The DTLS Connection ID SHOULD NOT be negotiated (Section 9 of
    {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the
