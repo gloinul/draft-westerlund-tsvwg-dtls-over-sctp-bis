@@ -102,7 +102,7 @@ normative:
 
    This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
-   DTLS 1.3{{I-D.ietf-tls-dtls13}}, over the Stream Control
+   DTLS 1.3 {{I-D.ietf-tls-dtls13}}, over the Stream Control
    Transmission Protocol (SCTP), as defined in {{RFC4960}} with
    Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
 
@@ -135,10 +135,11 @@ normative:
 
 The method described in this document requires that the SCTP
 implementation supports the optional feature of fragmentation of SCTP
-user messages as defined in {{RFC4960}}. To efficiently implement and
-support larger user messages it is also recommended that I-DATA chunks
-as defined in {{RFC8260}} as well mandating an SCTP API that supports
-partial user message delivery as discussed in {{RFC6458}}.
+user messages as defined in {{RFC4960}}. The implementation is also
+required to have an SCTP API (for example the one described in
+{{RFC6458}}) that supports partial user message delivery and also
+recommended that I-DATA chunks as defined in {{RFC8260}} is used to
+efficiently implement and support larger user messages.
 
 To simplify implementation and reduce the risk for security holes,
 limitations have been defined such that STARTTLS as specified in
@@ -191,7 +192,7 @@ This update that replaces RFC 6083 defines the following changes:
 * Requires that SCTP-AUTH is applied to all SCTP Chunks that can be
      authenticated.
 
-* Require support of partial delivery of user messages {{RFC6458}}.
+* Requires support of partial delivery of user messages.
 
 ## Terminology
 
@@ -259,14 +260,15 @@ ULP:  Upper Layer Protocol
    protected user message, i.e. with DTLS record overhead, is buffered
    in the receiver. This buffer space will thus put a limit on the
    largest size of plain text user message that can be transferred
-   securely. However, by requiring the use of the partial delivery of
-   user messages from SCTP {{RFC6458}} the required buffering prior to
-   DTLS processing can be limited to a single DTLS record per user
-   message (unordered delivery streams) and used streams (ordered
-   delivery streams). This enables the DTLS/SCTP implementation to provide the
-   Upper Layer Protocol (ULP) with each DTLS record's content when it
-   has been decrypted and its integrity been verified enabling partial
-   user message delivery to the ULP.
+   securely. However, by mandating the use of the partial delivery of
+   user messages from SCTP and assuming that no two messages received
+   on the same stream are interleaved (as it is the case when using
+   the API defined in {{RFC6458}}) the required buffering prior to
+   DTLS processing can be limited to a single DTLS record per used
+   incoming stream. This enables the DTLS/SCTP implementation to
+   provide the Upper Layer Protocol (ULP) with each DTLS record's
+   content when it has been decrypted and its integrity been verified
+   enabling partial user message delivery to the ULP.
 
    The DTLS/SCTP implementation is expected to behave very similar to
    just SCTP when it comes to handling of user messages and dealing
@@ -336,7 +338,7 @@ ULP:  Upper Layer Protocol
 
    On the receiving side DTLS is used to decrypt the individual
    records. There are three failure cases an implementation needs to
-   detect then act on as described below:
+   detect and then act on:
 
    1. Failure in decryption and integrity verification process of any
    DTLS record. Due to SCTP-AUTH preventing delivery of injected or
@@ -358,14 +360,20 @@ ULP:  Upper Layer Protocol
    
    The above failure cases all results in the receiver failing to
    recreate the full user message. This is a failure of the transport
-   service that is not possible to recover in the DTLS/SCTP layer and
-   the sender can believe the complete message have been
-   delivered. This error MUST NOT be ignored, therefore as SCTP lacks
-   any facility to declare a failure on a specific stream or user
-   message the DTLS connection and the SCTP association are
-   terminated. An exception to the termination MAY be used if the
-   receiver notifies the ULP about the failure in delivery and the ULP
-   is capable of recovering from this failure.
+   service that is not possible to recover from in the DTLS/SCTP layer
+   and the sender can believe the complete message have been
+   delivered. This error MUST NOT be ignored, as SCTP lacks any
+   facility to declare a failure on a specific stream or user message,
+   the DTLS connection and the SCTP association SHOULD be
+   terminated. An valid exception to the termination of the SCTP
+   association is if the receiver is capable of notifying the ULP
+   about the failure in delivery and the ULP is capable of recovering
+   from this failure.
+
+   Note that if the SCTP Partial Reliability (PR-SCTP) extension
+   {{RFC3758}} is used for a user message, user message may be
+   partially delivered or abandoned. These failures are not a reason
+   for terminating the DTLS connection and SCTP association. 
 
    The DTLS Connection ID SHOULD NOT be negotiated (Section 9 of
    {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the
