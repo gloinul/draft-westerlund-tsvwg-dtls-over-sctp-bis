@@ -137,8 +137,8 @@ The method described in this document requires that the SCTP
 implementation supports the optional feature of fragmentation of SCTP
 user messages as defined in {{RFC4960}}. To efficiently implement and
 support larger user messages it is also recommended that I-DATA chunks
-as defined in {{RFC8260}} as well as an SCTP API that supports partial
-user message delivery as discussed in {{RFC6458}}.
+as defined in {{RFC8260}} as well mandating an SCTP API that supports
+partial user message delivery as discussed in {{RFC6458}}.
 
 To simplify implementation and reduce the risk for security holes,
 limitations have been defined such that STARTTLS as specified in
@@ -262,8 +262,8 @@ ULP:  Upper Layer Protocol
    securely. However, by requiring the use of the partial delivery of
    user messages from SCTP {{RFC6458}} the required buffering prior to
    DTLS processing can be limited to a single DTLS record per user
-   message (unreliable streams) and used streams (ordered
-   delivery). This enables the DTLS/SCTP implementation to provide the
+   message (unordered delivery streams) and used streams (ordered
+   delivery streams). This enables the DTLS/SCTP implementation to provide the
    Upper Layer Protocol (ULP) with each DTLS record's content when it
    has been decrypted and its integrity been verified enabling partial
    user message delivery to the ULP.
