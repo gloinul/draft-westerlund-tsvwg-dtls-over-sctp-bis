@@ -376,9 +376,8 @@ ULP:  Upper Layer Protocol
    for terminating the DTLS connection and SCTP association. 
 
    The DTLS Connection ID SHOULD NOT be negotiated (Section 9 of
-   {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the
-   length field MUST NOT be omitted and a 16 bit sequence number
-   SHOULD be used.
+   {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the length field
+   MUST be included and a 16 bit sequence number SHOULD be used.
 
 ## DTLS Connection Handling
 
