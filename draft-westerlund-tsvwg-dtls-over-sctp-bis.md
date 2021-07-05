@@ -506,7 +506,7 @@ ULP:  Upper Layer Protocol
    To prevent DTLS from discarding DTLS user messages while it is
    shutting down, a CloseNotify message MUST only be sent after all
    outstanding SCTP user messages have been acknowledged by the SCTP
-   peer and MUST NOT be revoked by the SCTP peer.
+   peer in a non-revokable way.
 
    Prior to processing a received CloseNotify, all other received SCTP
    user messages that are buffered in the SCTP layer MUST be read and
