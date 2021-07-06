@@ -6,9 +6,9 @@ TSVWG                                                      M. Westerlund
 Internet-Draft                                         J. Preuß Mattsson
 Obsoletes: 6083 (if approved)                                 C. Porfiri
 Intended status: Standards Track                                Ericsson
-Expires: 2 January 2022                                         M. Tüxen
+Expires: 7 January 2022                                         M. Tüxen
                                          Münster Univ. of Appl. Sciences
-                                                             1 July 2021
+                                                             6 July 2021
 
 
       Datagram Transport Layer Security (DTLS) over Stream Control
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 January 2022.
+   This Internet-Draft will expire on 7 January 2022.
 
 Copyright Notice
 
@@ -526,7 +526,7 @@ Table of Contents
    To prevent DTLS from discarding DTLS user messages while it is
    shutting down, a CloseNotify message MUST only be sent after all
    outstanding SCTP user messages have been acknowledged by the SCTP
-   peer and MUST NOT be revoked by the SCTP peer.
+   peer in a non-revokable way.
 
    Prior to processing a received CloseNotify, all other received SCTP
    user messages that are buffered in the SCTP layer MUST be read and
