@@ -201,7 +201,7 @@ DTLS/SCTP as defined by this document can use either DTLS 1.2
 difference between the DTLS versions make it necessary for a user of
 DTLS/SCTP to make an informed choice of the DTLS version to use based
 on their application's requirements. In general DTLS 1.3 is to prefer
-being a newer protocol that addresses know vulnerabilities and only
+being a newer protocol that addresses known vulnerabilities and only
 define strong algorithms without major weaknesses at the time of
 publication.
 
@@ -221,11 +221,11 @@ that need either of:
 At the time of publication DTLS 1.3 does not support any of these,
 where DTLS 1.2 renegotiation functionality can provide this
 functionality in the context of DTLS/SCTP. The application will have
-to analyse their needs and requirements on the above and based on this
+to analyse its needs and requirements on the above and based on this
 select the DTLS version to use.
 
 To address known vulnerabilities in DTLS 1.2 this document describes
-and mandates implementations constrain on ciphers, protocol options
+and mandates implementation constraints on ciphers, protocol options
 and how to use the DTLS re-negotation mechanism.
 
 In the rest of the document, unless the version of DTLS is
@@ -270,7 +270,7 @@ ULP:  Upper Layer Protocol
 
 ## Version of DTLS
 
-   This document is defines usage of either DTLS 1.3
+   This document defines usage of either DTLS 1.3
    {{I-D.ietf-tls-dtls13}}, or DTLS 1.2 {{RFC6347}}. Earlier versions
    of DTLS MUST NOT be used. It is expected that DTLS/SCTP as
    described in this document will work with future versions of DTLS.
