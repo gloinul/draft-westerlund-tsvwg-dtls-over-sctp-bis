@@ -200,13 +200,13 @@ DTLS/SCTP as defined by this document can use either DTLS 1.2
 {{RFC6347}} or DTLS 1.3 {{I-D.ietf-tls-dtls13}}. Some crucial
 difference between the DTLS versions make it necessary for a user of
 DTLS/SCTP to make an informed choice of the DTLS version to use based
-on their application's requirements. In general DTLS 1.3 is to prefer
-being a newer protocol that addresses known vulnerabilities and only
-define strong algorithms without major weaknesses at the time of
-publication.
+on their application's requirements. In general DTLS 1.3 is to
+preferred being a newer protocol that addresses known vulnerabilities
+and only defines strong algorithms without known major weaknesses at
+the time of publication.
 
-However, some DTLS/SCTP using applications are of semi-permanent
-nature and uses SCTP associations with life times that are more than a
+However, some applications using DTLS/SCTP are of semi-permanent
+nature and use SCTP associations with life times that are more than a
 few hours, and where there is a significant cost of bringing down the
 SCTP association in order to restart it. For such DTLS/SCTP usages
 that need either of:
@@ -270,7 +270,7 @@ ULP:  Upper Layer Protocol
 
 ## Version of DTLS
 
-   This document defines usage of either DTLS 1.3
+   This document defines the usage of either DTLS 1.3
    {{I-D.ietf-tls-dtls13}}, or DTLS 1.2 {{RFC6347}}. Earlier versions
    of DTLS MUST NOT be used. It is expected that DTLS/SCTP as
    described in this document will work with future versions of DTLS.
@@ -288,7 +288,7 @@ ULP:  Upper Layer Protocol
    messages into DTLS records, where each DTLS 1.3 record allows a
    maximum of 2^14 protected bytes. Each DTLS record adds some
    overhead, thus using records of maximum possible size are
-   recommended to minimize the transmitted overhead. 
+   recommended to minimize the transmitted overhead.
 
    The sequence of DTLS records is then fragmented into DATA or I-DATA
    Chunks to fit the path MTU by SCTP. The largest possible user
