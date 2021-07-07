@@ -90,7 +90,7 @@ normative:
    message size by defining a secure user message fragmentation so
    that multiple DTLS records can be used to protect a single user
    message. It further updates the DTLS versions to use, as well as
-   the HMAC algorithms for SCTP-AUTH, and simplifies the
+   the HMAC algorithms for SCTP-AUTH, and simplifies secure 
    implementation by some stricter requirements on the establishment
    procedures.
 
@@ -194,6 +194,43 @@ This update that replaces RFC 6083 defines the following changes:
 
 * Requires support of partial delivery of user messages.
 
+## DTLS Version
+
+DTLS/SCTP as defined by this document can use either DTLS 1.2
+{{RFC6347}} or DTLS 1.3 {{I-D.ietf-tls-dtls13}}. Some crucial
+difference between the DTLS versions make it necessary for a user of
+DTLS/SCTP to make an informed choice of the DTLS version to use based
+on their application's requirements. In general DTLS 1.3 is to
+preferred being a newer protocol that addresses known vulnerabilities
+and only defines strong algorithms without known major weaknesses at
+the time of publication.
+
+However, some applications using DTLS/SCTP are of semi-permanent
+nature and use SCTP associations with life times that are more than a
+few hours, and where there is a significant cost of bringing down the
+SCTP association in order to restart it. For such DTLS/SCTP usages
+that need either of:
+
+  * Periodic re-authentication of both endpoints (not only the DTLS client).
+  
+  * Periodic rerunning of Diffie-Hellman key-exchange to provide
+    Perfect Forward Secrecy (PFS) to reduce the impact any key-reveal.
+ 
+  * Perform SCTP-AUTH re-keying.
+
+At the time of publication DTLS 1.3 does not support any of these,
+where DTLS 1.2 renegotiation functionality can provide this
+functionality in the context of DTLS/SCTP. The application will have
+to analyse its needs and requirements on the above and based on this
+select the DTLS version to use.
+
+To address known vulnerabilities in DTLS 1.2 this document describes
+and mandates implementation constraints on ciphers, protocol options
+and how to use the DTLS re-negotation mechanism.
+
+In the rest of the document, unless the version of DTLS is
+specifically called out the text applies to both versions of DTLS.
+
 ## Terminology
 
 This document uses the following terms:
@@ -208,6 +245,8 @@ identified by a stream identifier.
 DTLS:  Datagram Transport Layer Security
 
 MTU:  Maximum Transmission Unit
+
+PFS:  Perfect Forward Secrecy
 
 PPID:  Payload Protocol Identifier
 
@@ -231,10 +270,10 @@ ULP:  Upper Layer Protocol
 
 ## Version of DTLS
 
-   This document is based on DTLS 1.3 {{I-D.ietf-tls-dtls13}}, but
-   works also for DTLS 1.2 {{RFC6347}}. Earlier versions of DTLS MUST
-   NOT be used. It is expected that DTLS/SCTP as described in this
-   document will work with future versions of DTLS.
+   This document defines the usage of either DTLS 1.3
+   {{I-D.ietf-tls-dtls13}}, or DTLS 1.2 {{RFC6347}}. Earlier versions
+   of DTLS MUST NOT be used. It is expected that DTLS/SCTP as
+   described in this document will work with future versions of DTLS.
 
 ##  Cipher Suites and Cryptographic Parameters
 
@@ -249,7 +288,7 @@ ULP:  Upper Layer Protocol
    messages into DTLS records, where each DTLS 1.3 record allows a
    maximum of 2^14 protected bytes. Each DTLS record adds some
    overhead, thus using records of maximum possible size are
-   recommended to minimize the overhead.
+   recommended to minimize the transmitted overhead.
 
    The sequence of DTLS records is then fragmented into DATA or I-DATA
    Chunks to fit the path MTU by SCTP. The largest possible user
@@ -268,7 +307,9 @@ ULP:  Upper Layer Protocol
    incoming stream. This enables the DTLS/SCTP implementation to
    provide the Upper Layer Protocol (ULP) with each DTLS record's
    content when it has been decrypted and its integrity been verified
-   enabling partial user message delivery to the ULP.
+   enabling partial user message delivery to the ULP. Implementations
+   can trade-off buffer memory requirements in the DTLS layer with
+   transport overhead by using smaller DTLS records.
 
    The DTLS/SCTP implementation is expected to behave very similar to
    just SCTP when it comes to handling of user messages and dealing
@@ -298,9 +339,9 @@ ULP:  Upper Layer Protocol
 
 ## Path MTU Discovery
 
-   DTLS Path MTU Discovery MUST NOT be used.  Since SCTP provides own
-   Path MTU discovery and fragmentation/reassembly for user messages,
-   and according to {{Msg-size}}, DTLS can send maximum sized DTLS
+   DTLS Path MTU Discovery MUST NOT be used.  Since SCTP provides Path
+   MTU discovery and fragmentation/reassembly for user messages, and
+   according to {{Msg-size}}, DTLS can send maximum sized DTLS
    Records.
 
 ## Retransmission of Messages
@@ -349,7 +390,7 @@ ULP:  Upper Layer Protocol
    2. In case the SCTP layer indicates an end to an user message,
    e.g. when receiving a MSG_EOR in a recvmsg() call when using the
    API described in {{RFC6458}}, and the last buffered DTLS record
-   length field does not match, i.e. is incomplete.
+   length field does not match, i.e. the DTLS record is incomplete.
 
    3. Unable to perform the decryption processes due to lack of
    resources, such as memory, and have to abandon the user message
@@ -361,7 +402,7 @@ ULP:  Upper Layer Protocol
    The above failure cases all results in the receiver failing to
    recreate the full user message. This is a failure of the transport
    service that is not possible to recover from in the DTLS/SCTP layer
-   and the sender can believe the complete message have been
+   and the sender could believe the complete message have been
    delivered. This error MUST NOT be ignored, as SCTP lacks any
    facility to declare a failure on a specific stream or user message,
    the DTLS connection and the SCTP association SHOULD be
@@ -370,10 +411,10 @@ ULP:  Upper Layer Protocol
    about the failure in delivery and the ULP is capable of recovering
    from this failure.
 
-   Note that if the SCTP Partial Reliability (PR-SCTP) extension
+   Note that if the SCTP extension for Partial Reliability (PR-SCTP)
    {{RFC3758}} is used for a user message, user message may be
    partially delivered or abandoned. These failures are not a reason
-   for terminating the DTLS connection and SCTP association. 
+   for terminating the DTLS connection and SCTP association.
 
    The DTLS Connection ID SHOULD NOT be negotiated (Section 9 of
    {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the length field
@@ -390,7 +431,7 @@ ULP:  Upper Layer Protocol
    As it is required to establish the DTLS connection at the beginning
    of the SCTP association, either of the peers should never send any
    SCTP user messages that are not protected by DTLS. So the case that
-   an endpoint receives data that is not either DTLS messages on Strea
+   an endpoint receives data that is not either DTLS messages on Stream
    0 or protecetd user messages in the form of a sequence of DTLS
    Records on any stream is a protocol violation. The receiver MAY
    terminate the SCTP association due to this protocol violation.
@@ -796,6 +837,9 @@ this specification.
    Fairhurst, Ian Goldberg, Alfred Hoenes, Carsten Hohendorf, Stefan
    Lindskog, Daniel Mentz, and Sean Turner for their invaluable
    comments.
+
+   The authors of this document want to thank github user vanrein for
+   their contribution.
 
 --- back
 
