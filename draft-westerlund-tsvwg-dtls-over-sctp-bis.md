@@ -109,7 +109,7 @@ normative:
    This specification provides mutual authentication of endpoints,
    confidentiality, integrity protection, and replay protection of
    user messages for applications that use SCTP as their transport
-   protocol.  Thus it allows client/server applications to communicate
+   protocol.  Thus, it allows client/server applications to communicate
    in a way that is designed to give communications privacy and to
    prevent eavesdropping and detect tampering or message
    forgery. DTLS/SCTP uses DTLS for mutual authentication, key
@@ -200,13 +200,13 @@ DTLS/SCTP as defined by this document can use either DTLS 1.2
 {{RFC6347}} or DTLS 1.3 {{I-D.ietf-tls-dtls13}}. Some crucial
 difference between the DTLS versions make it necessary for a user of
 DTLS/SCTP to make an informed choice of the DTLS version to use based
-on their application's requirements. In general DTLS 1.3 is to
+on their application's requirements. In general, DTLS 1.3 is to
 preferred being a newer protocol that addresses known vulnerabilities
 and only defines strong algorithms without known major weaknesses at
 the time of publication.
 
 However, some applications using DTLS/SCTP are of semi-permanent
-nature and use SCTP associations with life times that are more than a
+nature and use SCTP associations with lifetimes that are more than a
 few hours, and where there is a significant cost of bringing down the
 SCTP association in order to restart it. For such DTLS/SCTP usages
 that need either of:
@@ -221,12 +221,12 @@ that need either of:
 At the time of publication DTLS 1.3 does not support any of these,
 where DTLS 1.2 renegotiation functionality can provide this
 functionality in the context of DTLS/SCTP. The application will have
-to analyse its needs and requirements on the above and based on this
+to analyze its needs and requirements on the above and based on this
 select the DTLS version to use.
 
 To address known vulnerabilities in DTLS 1.2 this document describes
 and mandates implementation constraints on ciphers, protocol options
-and how to use the DTLS re-negotation mechanism.
+and how to use the DTLS renegotiation mechanism.
 
 In the rest of the document, unless the version of DTLS is
 specifically called out the text applies to both versions of DTLS.
@@ -296,7 +296,7 @@ ULP:  Upper Layer Protocol
    2^64-1 bytes.
 
    The security operations and reassembly process requires that the
-   protected user message, i.e. with DTLS record overhead, is buffered
+   protected user message, i.e., with DTLS record overhead, is buffered
    in the receiver. This buffer space will thus put a limit on the
    largest size of plain text user message that can be transferred
    securely. However, by mandating the use of the partial delivery of
@@ -323,9 +323,9 @@ ULP:  Upper Layer Protocol
    protection. However, the combination of SCTP-AUTH's protection of
    DATA or I-DATA chunks and SCTP user message handling will prevent
    third party attempts to inject or replay SCTP packets resulting in
-   impact on the received protected user message. In fact this
+   impact on the received protected user message. In fact, this
    document's solution is dependent on SCTP-AUTH and SCTP to prevent
-   reordering, duplication and removal of the DTLS records within
+   reordering, duplication, and removal of the DTLS records within
    each protected user message.  This includes detection of changes to
    what DTLS records start and end the SCTP user message, and removal of
    DTLS records before an increment to the epoch.  Without SCTP-AUTH,
@@ -374,7 +374,7 @@ ULP:  Upper Layer Protocol
    user_message' = DTLS( m0 ) | DTLS( m1 ) | DTLS( m2 ) ...
 ~~~~~~~~~~~
 
-   The new user_message', i.e the protected user message, is the input
+   The new user_message', i.e., the protected user message, is the input
    to SCTP.
 
    On the receiving side DTLS is used to decrypt the individual
@@ -387,10 +387,10 @@ ULP:  Upper Layer Protocol
    occur in case of implementation errors or internal hardware
    failures.
 
-   2. In case the SCTP layer indicates an end to an user message,
+   2. In case the SCTP layer indicates an end to a user message,
    e.g. when receiving a MSG_EOR in a recvmsg() call when using the
    API described in {{RFC6458}}, and the last buffered DTLS record
-   length field does not match, i.e. the DTLS record is incomplete.
+   length field does not match, i.e., the DTLS record is incomplete.
 
    3. Unable to perform the decryption processes due to lack of
    resources, such as memory, and have to abandon the user message
@@ -399,14 +399,14 @@ ULP:  Upper Layer Protocol
    number of concurrent transmitted SCTP streams or unordered user
    messages. 
    
-   The above failure cases all results in the receiver failing to
+   The above failure cases all result in the receiver failing to
    recreate the full user message. This is a failure of the transport
    service that is not possible to recover from in the DTLS/SCTP layer
    and the sender could believe the complete message have been
    delivered. This error MUST NOT be ignored, as SCTP lacks any
    facility to declare a failure on a specific stream or user message,
    the DTLS connection and the SCTP association SHOULD be
-   terminated. An valid exception to the termination of the SCTP
+   terminated. A valid exception to the termination of the SCTP
    association is if the receiver is capable of notifying the ULP
    about the failure in delivery and the ULP is capable of recovering
    from this failure.
@@ -418,21 +418,21 @@ ULP:  Upper Layer Protocol
 
    The DTLS Connection ID SHOULD NOT be negotiated (Section 9 of
    {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the length field
-   MUST be included and a 16 bit sequence number SHOULD be used.
+   MUST be included and a 16-bit sequence number SHOULD be used.
 
 ## DTLS Connection Handling
 
    The DTLS connection MUST be established at the beginning of the
    SCTP association and be terminated when the SCTP association is
-   terminated, (i.e. there's only one DTLS connection within one
+   terminated, (i.e., there's only one DTLS connection within one
    association).  A DTLS connection MUST NOT span multiple SCTP
    associations.
 
    As it is required to establish the DTLS connection at the beginning
    of the SCTP association, either of the peers should never send any
-   SCTP user messages that are not protected by DTLS. So the case that
+   SCTP user messages that are not protected by DTLS. So, the case that
    an endpoint receives data that is not either DTLS messages on Stream
-   0 or protecetd user messages in the form of a sequence of DTLS
+   0 or protected user messages in the form of a sequence of DTLS
    Records on any stream is a protocol violation. The receiver MAY
    terminate the SCTP association due to this protocol violation.
 
@@ -459,14 +459,14 @@ ULP:  Upper Layer Protocol
    user messages, SHOULD use multiple streams other than stream 0;
    they MAY use stream 0 as long as the ordered message semantics is
    acceptable. On stream 0 protected user messages as well as any DTLS
-   messages that isn't record protocol will be mixed, thus the additional
+   messages that aren't record protocol will be mixed, thus the additional
    head of line blocking can occur.
 
 ## Chunk Handling
 
    DATA chunks of SCTP MUST be sent in an authenticated way as
    described in {{RFC4895}}.  All other chunks that can be
-   authenticated, i.e. all chunk types that can be listed in the Chunk
+   authenticated, i.e., all chunk types that can be listed in the Chunk
    List Parameter {{RFC4895}}, MUST also be sent in an authenticated
    way.  This makes sure that an attacker cannot modify the stream in
    which a message is sent or affect the ordered/unordered delivery of
@@ -482,7 +482,7 @@ ULP:  Upper Layer Protocol
    supported to avoid some of the down sides that large user messages
    have on blocking transmission of later arriving high priority user
    messages. However, the support is not mandated and negotiated
-   independently from DTLS/SCTP. If I-DATA chunks are used then
+   independently from DTLS/SCTP. If I-DATA chunks are used, then
    they MUST be sent in an authenticated way as described in
    {{RFC4895}}.
 
@@ -491,7 +491,7 @@ ULP:  Upper Layer Protocol
    When using DTLS/SCTP, the SHA-256 Message Digest Algorithm MUST be
    supported in the SCTP-AUTH {{RFC4895}} implementation. SHA-1 MUST
    NOT be used when using DTLS/SCTP. {{RFC4895}} requires support and
-   inclusion of of SHA-1 in the HMAC-ALGO parameter, thus, to meet
+   inclusion of SHA-1 in the HMAC-ALGO parameter, thus, to meet
    both requirements the HMAC-ALGO parameter will include both SHA-256
    and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
    preference.
@@ -504,7 +504,7 @@ ULP:  Upper Layer Protocol
    upper layer to use/allow it or not.  Application writers should be
    aware that allowing renegotiations may result in changes of
    security parameters. Renegotiation has been removed from DTLS 1.3
-   and partly replaced with Post-Handshake messages such as
+   and partly replaced with post-handshake messages such as
    KeyUpdate. See {{sec-Consideration}} for security considerations
    regarding rekeying.
 
@@ -611,7 +611,7 @@ ULP:  Upper Layer Protocol
 ## Client Use Case
 
    When a client initiates an SCTP Association with DTLS protection,
-   i.e. the SCTP INIT contianing DTSL/SCTP Mandatory Options, it can
+   i.e., the SCTP INIT containing DTSL/SCTP Mandatory Options, it can
    receive an INIT-ACK also containing DTLS/SCTP Mandatory Options, in
    that case the Association will proceed as specified in the previous
    {{DTLS-init}} section.  If the peer replies with an INIT-ACK not
@@ -620,12 +620,12 @@ ULP:  Upper Layer Protocol
 
 ## Server Use Case
 
-   If a SCTP Server supports DTLS/SCTP, i.e. per this specification,
+   If a SCTP Server supports DTLS/SCTP, i.e., per this specification,
    when receiving an INIT chunk with all DTLS/SCTP Mandatory Options
    it will reply with an INIT-ACK also containing all the DTLS/SCTP
    Mandatory Options, following the sequence for DTLS initialization
    {{DTLS-init}} and the related traffic case.  If a SCTP Server that
-   supports DTLS and configured to use it, receivs an INIT chunk
+   supports DTLS and configured to use it, receives an INIT chunk
    without all DTLS/SCTP Mandatory Options, it SHOULD reply with an
    SCTP ABORT.
 
@@ -637,26 +637,26 @@ ULP:  Upper Layer Protocol
    policy to allow fallback or not. However, the possibility to use
    fallback is based on the ULP can operate using user messages that
    are no longer than 16383 bytes and where the security issues can be
-   mitigated or considerd acceptable. Fallback is NOT RECOMMEND to be
+   mitigated or considered acceptable. Fallback is NOT RECOMMEND to be
    enabled as it enables downgrade to weaker algorithms and versions
    of DTLS.
 
    A SCTP client that receives an INIT-ACK that is not compliant
-   according this specification may in certain cases potentially
-   perform an fallback to RFC 6083 behavior. The first case is when
+   according to this specification may in certain cases potentially
+   perform a fallback to RFC 6083 behavior. The first case is when
    the SCTP client receives an INIT-ACK doesn't contain the
    SCTP-Adaptation-Indication parameter with the DTLS/SCTP adaptation
    layer codepoint, see {{sec-IANA-ACP}}, but do include the SCTP-AUTH
    parameters on a server that are expected to provide services using
    DTLS. The second case is when the INIT-ACK do contain the
    SCTP-Adaptation-Indication parameter with the correct code point,
-   however the HMAC-ALGO or the Chunks parameters values are such that
-   do not fullfil the requirement of this specification but do meet
+   however, the HMAC-ALGO or the Chunks parameters values are such that
+   do not fulfill the requirement of this specification but do meet
    the requirements of RFC 6083. In either of these cases the client
    could attempt DTLS per RFC 6083 as fallback. However, the fallback
    attempt should only be performed if policy says that is acceptable.
 
-   If fallback is allowed it is possible that the client will send
+   If fallback is allowed, it is possible that the client will send
    plain text user messages prior to DTLS handshake as it is allowed
    per RFC 6083.  So that needs to be part of the consideration for a
    policy allowing fallback. 
@@ -726,7 +726,7 @@ this specification.
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy. ANSSI
    writes "It is recommended to force the periodic renewal of the
-   keys, e.g. every hour and every 100 GB of data, in order to limit
+   keys, e.g., every hour and every 100 GB of data, in order to limit
    the impact of a key compromise." {{ANSSI-DAT-NT-003}}.
 
    For many DTLS/SCTP deployments the DTLS connections are expected to
@@ -734,7 +734,7 @@ this specification.
    with such long lifetimes there is a need to frequently
    re-authenticate both client and server.
 
-   When using DTLS 1.2 {{RFC6347}}, AEAD limits, frequant
+   When using DTLS 1.2 {{RFC6347}}, AEAD limits, frequent
    re-authentication and frequent re-run of Diffie-Hellman can be
    achieved with frequent renegotiation, see TLS 1.2 {{RFC5246}}. When
    renegotiation is used both clients and servers MUST use the
@@ -746,14 +746,14 @@ this specification.
    In DTLS 1.3 renegotiation has been removed from DTLS 1.3 and partly
    replaced with Post-Handshake KeyUpdate. When using DTLS 1.3
    {{I-D.ietf-tls-dtls13}}, AEAD limits and frequent rekeying can be
-   achieved by sending frequent Post-Handshake KeyUpdate
+   achieved by sending frequent post-handshake KeyUpdate
    messages. Symmetric rekeying gives less protection against key
    leakage than re-running Diffie-Hellman.  After leakage of
    application_traffic_secret_N, a passive attacker can passively
    eavesdrop on all future application data sent on the connection
    including application data encrypted with
    application_traffic_secret_N+1, application_traffic_secret_N+2,
-   etc. The is no way to do Post-Handshake server authentication or
+   etc. The is no way to do post-handshake server authentication or
    Ephemeral Diffie-Hellman inside a DTLS 1.3 connection. Note that
    KeyUpdate does not update the exporter_secret.
 
@@ -774,7 +774,7 @@ this specification.
 ## Authentication and Policy Decisions
 
    DTLS/SCTP MUST be mutually authenticated. It is RECOMMENDED that
-   DTLS/SCTP is used with certificate based authentication.  All
+   DTLS/SCTP is used with certificate-based authentication.  All
    security decisions MUST be based on the peer's authenticated
    identity, not on its transport layer identity.
 
@@ -796,7 +796,7 @@ this specification.
    or unordered, and a payload protocol identifier.  Although
    DTLS/SCTP provides privacy for the actual user message, the other
    three information fields are not confidentiality protected.  They
-   are sent as clear text, because they are part of the SCTP DATA
+   are sent as cleartext because they are part of the SCTP DATA
    chunk header.
 
    It is RECOMMENDED that DTLS/SCTP is used with certificate based
@@ -826,7 +826,7 @@ this specification.
    a large scale may enable tracking of a user over a wider
    geographical area and across different access networks.  Using
    information from DTLS/SCTP together with information gathered from
-   other protocols increases the risk of identifying individual users.
+   other protocols increase the risk of identifying individual users.
 
 # Acknowledgments
 
@@ -838,7 +838,7 @@ this specification.
    Lindskog, Daniel Mentz, and Sean Turner for their invaluable
    comments.
 
-   The authors of this document want to thank github user vanrein for
+   The authors of this document want to thank GitHub user vanrein for
    their contribution.
 
 --- back
@@ -861,7 +861,7 @@ New Versions: Almost 10 years has passed since RFC 6083 was written,
    the end of usefulness. Thus, this document mandates usage of
    relevant versions and algorithms.
 
-Clarifications: Some implementation experiences has been gained that
+Clarifications: Some implementation experiences have been gained that
    motivates additional clarifications on the specification.
 
 * Avoid unsecured messages prior to DTLS handshake have completed.
