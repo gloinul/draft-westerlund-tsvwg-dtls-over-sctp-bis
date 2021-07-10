@@ -508,8 +508,17 @@ ULP:  Upper Layer Protocol
    KeyUpdate. See {{sec-Consideration}} for security considerations
    regarding rekeying.
 
+   Before sending during renegotiation a ClientHello message or ServerHello
+   message, the DTLS endpoint MUST ensure that all DTLS messages using the
+   previous epoch have been acknowledged by the SCTP peer in a non-revokable
+   way. Prior to processing a received ClientHello message or ServerHello
+   message, all other received SCTP user messages that are buffered in the
+   SCTP layer and can be delivered to the DTLS layer MUST be read and
+   processed by DTLS.
+
 ## DTLS Epochs
 
+### DTLS 1.2 Considerations
    In general, DTLS implementations SHOULD discard records from
    earlier epochs, as described in Section 4.2.1 of
    {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the
@@ -517,12 +526,17 @@ ULP:  Upper Layer Protocol
    {{I-D.ietf-tls-dtls13}} or Section 4.1 or DTLS 1.2 {{RFC6347}}
    should be followed.
 
+### DTLS 1.3 Considerations
+
+
 ## Handling of Endpoint-Pair Shared Secrets
 
    SCTP-AUTH {{RFC4895}} is keyed using Endpoint-Pair Shared
    Secrets. In SCTP associations where DTLS is used, DTLS is used to
    establish these secrets. The endpoints MUST NOT use another
    mechanism for establishing shared secrets for SCTP-AUTH.
+
+### DTLS 1.2 Considerations
 
    The endpoint-pair shared secret for Shared Key Identifier 0 is
    empty and MUST be used when establishing a DTLS connection.  In
@@ -534,13 +548,17 @@ ULP:  Upper Layer Protocol
    in {{RFC5705}}. The exporter MUST use the label given in Section
    {{IANA-Consideration}} and no context.  The new Shared Key
    Identifier MUST be the old Shared Key Identifier incremented by 1.
-   If the old one is 65535, the new one MUST be 1.
 
    Before sending the DTLS Finished message, the active SCTP-AUTH key
-   MUST be switched to the new one.
+   SHOULD be switched to the new one, it MAY be sent using the old one.
+   If the active SCTP-AUTH key is not switched to the new one before sending
+   the DTLS Finished message, it MUST be switched to the new one immediately
+   after sending the DTLS Finished message.
 
-   Once the corresponding Finished message from the peer has been
-   received, the old SCTP-AUTH key SHOULD be removed.
+   Once the initial Finished message from the peer has been received,
+   the old SCTP-AUTH key MUST be removed.
+
+### DTLS 1.3 Considerations
 
 ## Shutdown
 
