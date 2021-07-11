@@ -682,7 +682,7 @@ struct sctp_authkey_event {
    auth_identifier just replaces auth_keynumber in the context of {{RFC6458}}.
    In addition to that, the SCTP_AUTHENTICATION_EVENT event is extended to
    also indicate when a new HMAC Identifier is received and such reporting is
-   explicitly enabled as described in {{#API-SCTP-EXPOSE-HMAC-IDENT-CHANGES}}.
+   explicitly enabled as described in {{API-SCTP-EXPOSE-HMAC-IDENT-CHANGES}}.
    In this case auth_indication is SCTP_AUTH_NEW_HMAC and the new
    HMAC identifier is reported in auth_identifier.
 
@@ -690,7 +690,7 @@ struct sctp_authkey_event {
 
    This options allows the application to enable and disable the reception of
    SCTP_AUTHENTICATION_EVENT events when a new HMAC Identifiers has been
-   received in an AUTH chunk (see {{#API-SCTP-AUTHENTICATION-EVENT}}).
+   received in an AUTH chunk (see {{API-SCTP-AUTHENTICATION-EVENT}}).
    This read/write socket option uses the level IPPROTO_SCTP and the name
    SCTP_EXPOSE_HMAC_IDENT_CHANGES.
    It is needed to provide backwards compatibility and the default is that
