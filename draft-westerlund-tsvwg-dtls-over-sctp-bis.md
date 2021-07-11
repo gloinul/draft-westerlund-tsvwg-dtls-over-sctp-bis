@@ -628,6 +628,21 @@ ULP:  Upper Layer Protocol
 
    Please note that this section is informational only.
 
+   A socket API implementation based on {{RFC6458}} is, by means of the
+   existing SCTP_AUTHENTICATION_EVENT event, extended to provide the event
+   notification whenever a new HMAC algorithm is used in a received AUTH chunk.
+
+   Furthermore, two new socket options for the level IPPROTO_SCTP and the
+   name SCTP_SEND_HMAC_IDENT and SCTP_EXPOSE_HMAC_IDENT_CHANGES are defined
+   as described below.
+   The first socket option is used to query the HMAC algorithm used for sending
+   AUTH chunks.
+   The second enables the monitoring of HMAC algorithms used in received
+   AUTH chunks via the SCTP_AUTHENTICATION_EVENT event.
+
+   Support for the SCTP_SEND_HMAC_IDENT and SCTP_EXPOSE_HMAC_IDENT_CHANGES
+   socket options also needs to be added to the function sctp_opt_info().
+
 ## Socket Option to Get the HMAC Identifier being Sent (SCTP_SEND_HMAC_IDENT)
 
    During the SCTP association establishment a HMAC Identifier is selected
