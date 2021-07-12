@@ -508,6 +508,8 @@ ULP:  Upper Layer Protocol
    KeyUpdate. See {{sec-Consideration}} for security considerations
    regarding rekeying.
 
+### DTLS 1.2 Considerations
+
    Before sending during renegotiation a ClientHello message or ServerHello
    message, the DTLS endpoint MUST ensure that all DTLS messages using the
    previous epoch have been acknowledged by the SCTP peer in a non-revokable
@@ -518,14 +520,38 @@ ULP:  Upper Layer Protocol
    SCTP layer and can be delivered to the DTLS layer MUST be read and
    processed by DTLS.
 
+   User messages that arrive between ChangeCipherSpec and Finished messages and
+   use the new epoch have probably passed the Finished message and MUST be
+   buffered by DTLS until the Finished message has been processed.
+
+### DTLS 1.3 Considerations
+
+   Before sending a KeyUpdate message, the DTLS endpoint MUST ensure that
+   all DTLS messages have been acknowledged by the SCTP peer in a non-revokable
+   way.
+   After sending the KeyUpdate message, it stops sending DTLS messages until
+   the corresponding Ack message has been processed.
+
+   Prior to processing a received KeyUpdate message, all other received SCTP
+   user messages that are buffered in the SCTP layer and can be delivered to
+   the DTLS layer MUST be read and processed by DTLS.
+
 ## DTLS Epochs
 
-   In general, DTLS implementations SHOULD discard records from
-   earlier epochs, as described in Section 4.2.1 of
-   {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the
-   processing guidelines in Section 4.2.1 of DTLS 1.3
-   {{I-D.ietf-tls-dtls13}} or Section 4.1 or DTLS 1.2 {{RFC6347}}
-   should be followed.
+   In general, DTLS implementations SHOULD discard records from earlier epochs.
+   However, in the context of a reliable communication this is not appropriate.
+
+### DTLS 1.2 Considerations
+
+   The procedures of Section 4.1 of {{RFC6347}} MUST NOT be followed.
+   Instead, when currently using epoch n, for n > 1, DTLS packets from epoch
+   n - 1 and n MUST be processed.
+
+### DTLS 1.3 Considerations
+
+   The procedures of Section 4.2.1 of {{RFC6347}} MUST NOT be followed.
+   Instead, when currently using epoch n, for n > 3, DTLS packets from epoch
+   n - 1 and n MUST be processed.
 
 ## Handling of Endpoint-Pair Shared Secrets
 
