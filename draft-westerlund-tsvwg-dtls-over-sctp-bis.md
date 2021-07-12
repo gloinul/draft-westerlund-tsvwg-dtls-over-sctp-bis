@@ -574,13 +574,8 @@ ULP:  Upper Layer Protocol
    The new Shared Key Identifier MUST be the old Shared Key Identifier
    incremented by 1.
 
-   Before sending the DTLS Finished message, the active SCTP-AUTH key
-   SHOULD be switched to the new one, it MAY be sent using the old one
-   (for example in the case of the client performing a full handshake or the
-   server performing a session-resuming handshake).
-   If the active SCTP-AUTH key is not switched to the new one before sending
-   the DTLS Finished message, it MUST be switched to the new one immediately
-   after sending the DTLS Finished message.
+   After sending the DTLS Finished message, the active SCTP-AUTH key
+   MUST be switched to the new one.
 
    Once the initial Finished message from the peer has been processed by DTLS,
    the SCTP-AUTH key with Shared Key Identifier 0 MUST be removed.
