@@ -69,6 +69,7 @@ normative:
   RFC8174:
   RFC8260:
   RFC8446:
+  RFC8996:
   I-D.ietf-tls-dtls13:
 
 --- abstract
@@ -271,9 +272,10 @@ ULP:  Upper Layer Protocol
 ## Version of DTLS
 
    This document defines the usage of either DTLS 1.3
-   {{I-D.ietf-tls-dtls13}}, or DTLS 1.2 {{RFC6347}}. Earlier versions
-   of DTLS MUST NOT be used. It is expected that DTLS/SCTP as
-   described in this document will work with future versions of DTLS.
+   {{I-D.ietf-tls-dtls13}}, or DTLS 1.2 {{RFC6347}}.
+   Earlier versions of DTLS MUST NOT be used (see {{RFC8996}}).
+   It is expected that DTLS/SCTP as described in this document will work with
+   future versions of DTLS.
 
 ##  Cipher Suites and Cryptographic Parameters
 
@@ -643,18 +645,15 @@ ULP:  Upper Layer Protocol
 
    A SCTP client that receives an INIT-ACK that is not compliant
    according to this specification may in certain cases potentially
-   perform a fallback to RFC 6083 behavior. The first case is when
-   the SCTP client receives an INIT-ACK doesn't contain the
-   SCTP-Adaptation-Indication parameter with the DTLS/SCTP adaptation
-   layer codepoint, see {{sec-IANA-ACP}}, but do include the SCTP-AUTH
-   parameters on a server that are expected to provide services using
-   DTLS. The second case is when the INIT-ACK do contain the
-   SCTP-Adaptation-Indication parameter with the correct code point,
-   however, the HMAC-ALGO or the Chunks parameters values are such that
-   do not fulfill the requirement of this specification but do meet
-   the requirements of RFC 6083. In either of these cases the client
-   could attempt DTLS per RFC 6083 as fallback. However, the fallback
-   attempt should only be performed if policy says that is acceptable.
+   perform a fallback to RFC 6083 behavior.
+   This is the case is when the SCTP client receives an INIT-ACK doesn't
+   contain the SCTP-Adaptation-Indication parameter with the 
+   DTLS/SCTP adaptation layer codepoint, see {{sec-IANA-ACP}}, but do include
+   the SCTP-AUTH parameters on a server that are expected to provide services
+   using DTLS.
+   In this cases the client could attempt DTLS per RFC 6083 as fallback.
+   However, the fallback attempt should only be performed if policy says that
+   is acceptable.
 
    If fallback is allowed, it is possible that the client will send
    plain text user messages prior to DTLS handshake as it is allowed
