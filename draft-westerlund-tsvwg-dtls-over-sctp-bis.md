@@ -569,7 +569,7 @@ ULP:  Upper Layer Protocol
    The exporter MUST use the label given in Section {{IANA-Consideration}}
    and no context.
    The new Shared Key Identifier MUST be the old Shared Key Identifier
-   incremented by 1. If the old one is 65535, the new one MUST be 1.
+   incremented by 1.
 
    After sending the DTLS Finished message, the active SCTP-AUTH key
    MUST be switched to the new one.
