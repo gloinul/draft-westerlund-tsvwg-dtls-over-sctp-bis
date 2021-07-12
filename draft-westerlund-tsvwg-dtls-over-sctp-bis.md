@@ -524,8 +524,7 @@ ULP:  Upper Layer Protocol
 
    Before sending a KeyUpdate message, the DTLS endpoint MUST ensure that
    all DTLS messages have been acknowledged by the SCTP peer in a non-revokable
-   way.
-   After sending the KeyUpdate message, it stops sending DTLS messages until
+   way. After sending the KeyUpdate message, it stops sending DTLS messages until
    the corresponding Ack message has been processed.
 
    Prior to processing a received KeyUpdate message, all other received SCTP
@@ -545,7 +544,7 @@ ULP:  Upper Layer Protocol
 
 ### DTLS 1.3 Considerations
 
-   The procedures of Section 4.2.1 of {{RFC6347}} are irrelevant.
+   The procedures of Section 4.2.1 of {{I-D.ietf-tls-dtls13}} are irrelevant.
    When receiving DTLS packets using epoch n, no DTLS packets from earlier
    epochs are received.
 
@@ -568,7 +567,7 @@ ULP:  Upper Layer Protocol
    The exporter MUST use the label given in Section {{IANA-Consideration}}
    and no context.
    The new Shared Key Identifier MUST be the old Shared Key Identifier
-   incremented by 1.
+   incremented by 1. If the old one is 65535, the new one MUST be 1.
 
    After sending the DTLS Finished message, the active SCTP-AUTH key
    MUST be switched to the new one.
