@@ -510,14 +510,45 @@ ULP:  Upper Layer Protocol
    KeyUpdate. See {{sec-Consideration}} for security considerations
    regarding rekeying.
 
+### DTLS 1.2 Considerations
+
+   Before sending during renegotiation a ClientHello message or ServerHello
+   message, the DTLS endpoint MUST ensure that all DTLS messages using the
+   previous epoch have been acknowledged by the SCTP peer in a non-revokable
+   way.
+
+   Prior to processing a received ClientHello message or ServerHello
+   message, all other received SCTP user messages that are buffered in the
+   SCTP layer and can be delivered to the DTLS layer MUST be read and
+   processed by DTLS.
+
+### DTLS 1.3 Considerations
+
+   Before sending a KeyUpdate message, the DTLS endpoint MUST ensure that
+   all DTLS messages have been acknowledged by the SCTP peer in a non-revokable
+   way. After sending the KeyUpdate message, it stops sending DTLS messages until
+   the corresponding Ack message has been processed.
+
+   Prior to processing a received KeyUpdate message, all other received SCTP
+   user messages that are buffered in the SCTP layer and can be delivered to
+   the DTLS layer MUST be read and processed by DTLS.
+
 ## DTLS Epochs
 
-   In general, DTLS implementations SHOULD discard records from
-   earlier epochs, as described in Section 4.2.1 of
-   {{I-D.ietf-tls-dtls13}}. To avoid discarding messages, the
-   processing guidelines in Section 4.2.1 of DTLS 1.3
-   {{I-D.ietf-tls-dtls13}} or Section 4.1 or DTLS 1.2 {{RFC6347}}
-   should be followed.
+   In general, DTLS implementations SHOULD discard records from earlier epochs.
+   However, in the context of a reliable communication this is not appropriate.
+
+### DTLS 1.2 Considerations
+
+   The procedures of Section 4.1 of {{RFC6347}} MUST NOT be followed.
+   Instead, when currently using epoch n, for n > 1, DTLS packets from epoch
+   n - 1 and n MUST be processed.
+
+### DTLS 1.3 Considerations
+
+   The procedures of Section 4.2.1 of {{I-D.ietf-tls-dtls13}} are irrelevant.
+   When receiving DTLS packets using epoch n, no DTLS packets from earlier
+   epochs are received.
 
 ## Handling of Endpoint-Pair Shared Secrets
 
@@ -525,25 +556,46 @@ ULP:  Upper Layer Protocol
    Secrets. In SCTP associations where DTLS is used, DTLS is used to
    establish these secrets. The endpoints MUST NOT use another
    mechanism for establishing shared secrets for SCTP-AUTH.
-
    The endpoint-pair shared secret for Shared Key Identifier 0 is
-   empty and MUST be used when establishing a DTLS connection.  In
-   DTLS 1.2, whenever the main secret changes, a 64-byte shared secret
-   is derived from every main secret and provided as a new
-   endpoint-pair shared secret by using the TLS-Exporter. In DTLS 1.3,
-   the exporter_secret never change. For DTLS 1.3, the exporter is
-   described in {{RFC8446}}. For DTLS 1.2, the exporter is described
-   in {{RFC5705}}. The exporter MUST use the label given in Section
-   {{IANA-Consideration}} and no context.  The new Shared Key
-   Identifier MUST be the old Shared Key Identifier incremented by 1.
-   If the old one is 65535, the new one MUST be 1.
+   empty and MUST be used when establishing a DTLS connection.
 
-   Before sending the DTLS Finished message, the active SCTP-AUTH key
+### DTLS 1.2 Considerations
+
+   Whenever the master secret changes, a 64-byte shared secret is derived from
+   every master secret and provided as a new endpoint-pair shared secret by
+   using the TLS-Exporter described in {{RFC5705}}.
+   The 64-byte shared secret MUST be provided to the SCTP stack as soon as
+   the computation is possible.
+   The exporter MUST use the label given in Section {{IANA-Consideration}}
+   and no context.
+   The new Shared Key Identifier MUST be the old Shared Key Identifier
+   incremented by 1. If the old one is 65535, the new one MUST be 1.
+
+   After sending the DTLS Finished message, the active SCTP-AUTH key
    MUST be switched to the new one.
 
-   Once the corresponding Finished message from the peer has been
-   received, the old SCTP-AUTH key SHOULD be removed.
+   Once the initial Finished message from the peer has been processed by DTLS,
+   the SCTP-AUTH key with Shared Key Identifier 0 MUST be removed.
+   Once the Finished message using DTLS epoch n with n > 2 has been processed
+   by DTLS, the SCTP-AUTH key with Shared Key Identifier n - 2 MUST be removed.
 
+### DTLS 1.3 Considerations
+
+   When the exporter_secret can be computed, a 64-byte shared secret is derived
+   from it and provided as a new endpoint-pair shared secret by using the
+   TLS-Exporter described in {{RFC8446}}.
+   The 64-byte shared secret MUST be provided to the SCTP stack as soon as
+   the computation is possible.
+   The exporter MUST use the label given in Section {{IANA-Consideration}}
+   and no context.
+   This shared secret MUST use Shared Key Identifier 1.
+
+   After sending the DTLS Finished message, the active SCTP-AUTH key
+   MUST be switched to use Shared Key Identifier 1.
+
+   Once the Finished message from the peer has been processed by DTLS,
+   the SCTP-AUTH key with Shared Key Identifier 0 MUST be removed.
+   
 ## Shutdown
 
    To prevent DTLS from discarding DTLS user messages while it is
