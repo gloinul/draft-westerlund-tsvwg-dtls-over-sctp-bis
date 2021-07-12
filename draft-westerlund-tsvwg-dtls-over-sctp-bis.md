@@ -643,15 +643,10 @@ ULP:  Upper Layer Protocol
    enabled as it enables downgrade to weaker algorithms and versions
    of DTLS.
 
-   A SCTP client that receives an INIT-ACK that is not compliant
-   according to this specification may in certain cases potentially
-   perform a fallback to RFC 6083 behavior.
-   This is the case is when the SCTP client receives an INIT-ACK doesn't
-   contain the SCTP-Adaptation-Indication parameter with the 
-   DTLS/SCTP adaptation layer codepoint, see {{sec-IANA-ACP}}, but do include
-   the SCTP-AUTH parameters on a server that are expected to provide services
-   using DTLS.
-   In this cases the client could attempt DTLS per RFC 6083 as fallback.
+   An SCTP endpoint that receives an INIT chunk or an INIT-ACK chunk that does
+   not contain the SCTP-Adaptation-Indication parameter with the  DTLS/SCTP
+   adaptation layer codepoint, see {{sec-IANA-ACP}}, may in certain cases
+   potentially perform a fallback to RFC 6083 behavior.
    However, the fallback attempt should only be performed if policy says that
    is acceptable.
 
