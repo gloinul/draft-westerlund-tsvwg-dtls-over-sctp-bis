@@ -195,6 +195,16 @@ This update that replaces RFC 6083 defines the following changes:
 
 * Requires support of partial delivery of user messages.
 
+Mandating DTLS 1.2 or DTLS 1.3 instead to using DTLS 1.0 limits the lifetime
+of a DTLS connection and the data volume which can be transferred over a
+DTLS connection. This is cause by:
+
+* The number of renegotations in DTLS 1.2 is limited to 65534 compared to
+  unlimited in DTLS 1.0.
+
+* The number of KeyUpdates in DTLS 1.3 is limited to 65532 and renegotiations
+  are not supported.
+
 ## DTLS Version
 
 DTLS/SCTP as defined by this document can use either DTLS 1.2
