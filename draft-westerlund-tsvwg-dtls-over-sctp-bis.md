@@ -688,25 +688,28 @@ ULP:  Upper Layer Protocol
 
    The following structure is used to access HMAC Identifier used for sending
    AUTH chunks:
+
 ~~~~~~~~~~~
 struct sctp_assoc_value {
     sctp_assoc_t assoc_id;
     uint32_t assoc_value;
 };
 ~~~~~~~~~~~
-   assoc_id
+
+   assoc_id:
    :  This parameter is ignored for one-to-one style sockets.
       For one-to-many style sockets, the application fills in an association
       identifier.
       It is an error to use SCTP_{FUTURE|CURRENT|ALL}_ASSOC in assoc_id.
 
-   assoc_value
+   assoc_value:
    :  This parameter contains the HMAC Identifier used for sending AUTH chunks.
 
 ## Exposing the HMAC Identifiers being Received {#API-SCTP-AUTHENTICATION-EVENT}
 
    Section 6.1.8 of {{RFC6458}} defines the SCTP_AUTHENTICATION_EVENT event,
    which uses the following structure:
+
 ~~~~~~~~~~~
 struct sctp_authkey_event {
     uint16_t auth_type;
@@ -717,7 +720,9 @@ struct sctp_authkey_event {
     sctp_assoc_t auth_assoc_id;
 };
 ~~~~~~~~~~~
+
    This document updates this structure to
+
 ~~~~~~~~~~~
 struct sctp_authkey_event {
     uint16_t auth_type;
@@ -728,6 +733,7 @@ struct sctp_authkey_event {
     sctp_assoc_t auth_assoc_id;
 };
 ~~~~~~~~~~~
+
    by renaming auth_keynumber to auth_identifier.
    auth_identifier just replaces auth_keynumber in the context of {{RFC6458}}.
    In addition to that, the SCTP_AUTHENTICATION_EVENT event is extended to
@@ -748,18 +754,20 @@ struct sctp_authkey_event {
 
    The following structure is used to enable or disable the reporting of newly
    received HMAC Identifiers in AUTH chunks:
+
 ~~~~~~~~~~~
 struct sctp_assoc_value {
     sctp_assoc_t assoc_id;
     uint32_t assoc_value;
 };
 ~~~~~~~~~~~
-   assoc_id
+
+   assoc_id:
    :  This parameter is ignored for one-to-one style sockets.
       For one-to-many style sockets, the application may fill in an association
       identifier or SCTP_{FUTURE|CURRENT|ALL}_ASSOC.
 
-   assoc_value
+   assoc_value:
    :  Newly received HMAC Identifiers are reported if, and only if, this
       parameter is non-zero.
 
