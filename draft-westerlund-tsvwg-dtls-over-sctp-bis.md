@@ -549,9 +549,9 @@ ULP:  Upper Layer Protocol
 
 ### DTLS 1.3 Considerations
 
-   The procedures of Section 4.2.1 of {{RFC6347}} MUST NOT be followed.
-   Instead, when currently using epoch n, for n > 3, DTLS packets from epoch
-   n - 1 and n MUST be processed.
+   The procedures of Section 4.2.1 of {{RFC6347}} are irrelevant.
+   When receiving DTLS packets using epoch n, no DTLS packets from earlier
+   epochs are received.
 
 ## Handling of Endpoint-Pair Shared Secrets
 
