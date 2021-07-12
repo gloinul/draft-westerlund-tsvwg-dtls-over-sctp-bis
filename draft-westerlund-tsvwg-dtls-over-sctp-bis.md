@@ -520,10 +520,6 @@ ULP:  Upper Layer Protocol
    SCTP layer and can be delivered to the DTLS layer MUST be read and
    processed by DTLS.
 
-   User messages that arrive between ChangeCipherSpec and Finished messages and
-   use the new epoch have probably passed the Finished message and MUST be
-   buffered by DTLS until the Finished message has been processed.
-
 ### DTLS 1.3 Considerations
 
    Before sending a KeyUpdate message, the DTLS endpoint MUST ensure that
