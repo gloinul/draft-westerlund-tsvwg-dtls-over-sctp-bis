@@ -459,8 +459,8 @@ ULP:  Upper Layer Protocol
 
    DTLS messages of the record protocol, which carries the protected
    user messages, SHOULD use multiple streams other than stream 0;
-   they MAY use stream 0 as long as the ordered message semantics is
-   acceptable. On stream 0 protected user messages as well as any DTLS
+   they MAY use stream 0.
+   On stream 0 protected user messages as well as any DTLS
    messages that aren't record protocol will be mixed, thus the additional
    head of line blocking can occur.
 
