@@ -181,7 +181,7 @@ This update that replaces RFC 6083 defines the following changes:
 * Mandates that more modern DTLS version are required (DTLS 1.2 or
      1.3)
 
-* Mandates use of modern HMAC algorithm (SHA-256) in the SCTP
+* Mandates support of modern HMAC algorithm (SHA-256) in the SCTP
      authentication extension {{RFC4895}}.
 
 * Recommends support of {{RFC8260}} to enable interleaving of large
