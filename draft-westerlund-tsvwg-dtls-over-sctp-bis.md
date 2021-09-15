@@ -297,7 +297,7 @@ ULP:  Upper Layer Protocol
 
    DTLS/SCTP, automatically fragments and reassembles user
    messages. This specification defines how to fragment the user
-   messages into DTLS records, where each DTLS 1.3 record allows a
+   messages into DTLS records, where each DTLS record allows a
    maximum of 2^14 protected bytes. Each DTLS record adds some
    overhead, thus using records of maximum possible size are
    recommended to minimize the transmitted overhead.
