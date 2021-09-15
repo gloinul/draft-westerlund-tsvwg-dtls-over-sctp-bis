@@ -702,7 +702,7 @@ ULP:  Upper Layer Protocol
    fallback is based on the ULP can operate using user messages that
    are no longer than 16383 bytes and where the security issues can be
    mitigated or considered acceptable. Fallback is NOT RECOMMEND to be
-   enabled as it enables downgrade to weaker algorithms and versions
+   enabled as it enables downgrade attacks to weaker algorithms and versions
    of DTLS.
 
    An SCTP endpoint that receives an INIT chunk or an INIT-ACK chunk that does
