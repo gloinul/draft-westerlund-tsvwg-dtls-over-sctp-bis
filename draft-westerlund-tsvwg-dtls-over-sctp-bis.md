@@ -945,7 +945,11 @@ this specification.
 
 ## Authentication and Policy Decisions
 
-   DTLS/SCTP MUST be mutually authenticated. It is RECOMMENDED that
+   DTLS/SCTP MUST be mutually authenticated. Authentication is the process
+   of establishing the identity of a user or system and verifying that
+   the identity is valid. DTLS only provides proof of possession of a key. 
+   DTLS/SCTP MUST perform identity authentication. When certificates are
+   used DTLS/SCTP MUST perform certificate chain validation. It is RECOMMENDED that
    DTLS/SCTP is used with certificate-based authentication.  All
    security decisions MUST be based on the peer's authenticated
    identity, not on its transport layer identity.
