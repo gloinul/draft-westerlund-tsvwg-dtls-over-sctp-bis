@@ -464,11 +464,11 @@ ULP:  Upper Layer Protocol
 
 ## Stream Usage {#Stream-Usage}
 
-   All DTLS Handshake, Alert, or ChangeCipherSpec (DTLS 1.2 only)
-   messages MUST be transported on stream 0 with unlimited reliability
-   and with the ordered delivery feature.
+   DTLS records with a content type different from "application_data"
+   (e.g., "handshake", "alert", ...) MUST be transported on stream 0 with
+   unlimited reliability and with the ordered delivery feature.
 
-   DTLS messages of the record protocol, which carries the protected
+   DTLS records of content type "application_data", which carries the protected
    user messages, SHOULD use multiple streams other than stream 0;
    they MAY use stream 0.
    On stream 0 protected user messages as well as any DTLS
