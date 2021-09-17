@@ -211,10 +211,10 @@ DTLS/SCTP as defined by this document can use either DTLS 1.2
 {{RFC6347}} or DTLS 1.3 {{I-D.ietf-tls-dtls13}}. Some crucial
 difference between the DTLS versions make it necessary for a user of
 DTLS/SCTP to make an informed choice of the DTLS version to use based
-on their application's requirements. In general, DTLS 1.3 is to
-preferred being a newer protocol that addresses known vulnerabilities
-and only defines strong algorithms without known major weaknesses at
-the time of publication.
+on their application's requirements. In general, DTLS 1.2 is obsoleted
+and DTLS 1.3 is to be preferred being a newer protocol that addresses
+known vulnerabilities and only defines strong algorithms without known
+major weaknesses at the time of publication.
 
 However, some applications using DTLS/SCTP are of semi-permanent
 nature and use SCTP associations with lifetimes that are more than a
