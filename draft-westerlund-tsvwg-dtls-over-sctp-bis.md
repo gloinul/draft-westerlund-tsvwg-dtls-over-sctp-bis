@@ -300,7 +300,8 @@ ULP:  Upper Layer Protocol
    messages into DTLS records, where each DTLS record allows a
    maximum of 2^14 protected bytes. Each DTLS record adds some
    overhead, thus using records of maximum possible size are
-   recommended to minimize the transmitted overhead.
+   recommended to minimize the transmitted overhead. DTLS 1.3
+   has much less overhead than DTLS 1.2 per record.
 
    The sequence of DTLS records is then fragmented into DATA or I-DATA
    Chunks to fit the path MTU by SCTP. The largest possible user
