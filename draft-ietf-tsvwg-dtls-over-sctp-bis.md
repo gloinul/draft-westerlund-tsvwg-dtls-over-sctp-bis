@@ -181,7 +181,7 @@ This update that replaces RFC 6083 defines the following changes:
 * Mandates that more modern DTLS version are required (DTLS 1.2 or
      1.3)
 
-* Mandates use of modern HMAC algorithm (SHA-256) in the SCTP
+* Mandates support of modern HMAC algorithm (SHA-256) in the SCTP
      authentication extension {{RFC4895}}.
 
 * Recommends support of {{RFC8260}} to enable interleaving of large
@@ -211,10 +211,10 @@ DTLS/SCTP as defined by this document can use either DTLS 1.2
 {{RFC6347}} or DTLS 1.3 {{I-D.ietf-tls-dtls13}}. Some crucial
 difference between the DTLS versions make it necessary for a user of
 DTLS/SCTP to make an informed choice of the DTLS version to use based
-on their application's requirements. In general, DTLS 1.3 is to
-preferred being a newer protocol that addresses known vulnerabilities
-and only defines strong algorithms without known major weaknesses at
-the time of publication.
+on their application's requirements. In general, DTLS 1.2 is obsoleted
+and DTLS 1.3 is to be preferred being a newer protocol that addresses
+known vulnerabilities and only defines strong algorithms without known
+major weaknesses at the time of publication.
 
 However, some applications using DTLS/SCTP are of semi-permanent
 nature and use SCTP associations with lifetimes that are more than a
@@ -297,10 +297,11 @@ ULP:  Upper Layer Protocol
 
    DTLS/SCTP, automatically fragments and reassembles user
    messages. This specification defines how to fragment the user
-   messages into DTLS records, where each DTLS 1.3 record allows a
+   messages into DTLS records, where each DTLS record allows a
    maximum of 2^14 protected bytes. Each DTLS record adds some
    overhead, thus using records of maximum possible size are
-   recommended to minimize the transmitted overhead.
+   recommended to minimize the transmitted overhead. DTLS 1.3
+   has much less overhead than DTLS 1.2 per record.
 
    The sequence of DTLS records is then fragmented into DATA or I-DATA
    Chunks to fit the path MTU by SCTP. The largest possible user
@@ -463,11 +464,11 @@ ULP:  Upper Layer Protocol
 
 ## Stream Usage {#Stream-Usage}
 
-   All DTLS Handshake, Alert, or ChangeCipherSpec (DTLS 1.2 only)
-   messages MUST be transported on stream 0 with unlimited reliability
-   and with the ordered delivery feature.
+   DTLS records with a content type different from "application_data"
+   (e.g., "handshake", "alert", ...) MUST be transported on stream 0 with
+   unlimited reliability and with the ordered delivery feature.
 
-   DTLS messages of the record protocol, which carries the protected
+   DTLS records of content type "application_data", which carries the protected
    user messages, SHOULD use multiple streams other than stream 0;
    they MAY use stream 0.
    On stream 0 protected user messages as well as any DTLS
@@ -702,7 +703,7 @@ ULP:  Upper Layer Protocol
    fallback is based on the ULP can operate using user messages that
    are no longer than 16383 bytes and where the security issues can be
    mitigated or considered acceptable. Fallback is NOT RECOMMEND to be
-   enabled as it enables downgrade to weaker algorithms and versions
+   enabled as it enables downgrade attacks to weaker algorithms and versions
    of DTLS.
 
    An SCTP endpoint that receives an INIT chunk or an INIT-ACK chunk that does
@@ -945,7 +946,11 @@ this specification.
 
 ## Authentication and Policy Decisions
 
-   DTLS/SCTP MUST be mutually authenticated. It is RECOMMENDED that
+   DTLS/SCTP MUST be mutually authenticated. Authentication is the process
+   of establishing the identity of a user or system and verifying that
+   the identity is valid. DTLS only provides proof of possession of a key. 
+   DTLS/SCTP MUST perform identity authentication. When certificates are
+   used DTLS/SCTP MUST perform certificate chain validation. It is RECOMMENDED that
    DTLS/SCTP is used with certificate-based authentication.  All
    security decisions MUST be based on the peer's authenticated
    identity, not on its transport layer identity.
