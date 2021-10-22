@@ -24,16 +24,6 @@ author:
    name: Claudio Porfiri
    org: Ericsson
    email: claudio.porfiri@ericsson.com
--
-   ins: M. Tüxen
-   name: Michael Tüxen
-   org: Münster University of Applied Sciences
-   abbrev: Münster Univ. of Appl. Sciences
-   street: Stegerwaldstrasse 39
-   code: 48565
-   city: Steinfurt
-   country: Germany
-   email: tuexen@fh-muenster.de
 
 informative:
   RFC3436:
@@ -1004,6 +994,17 @@ this specification.
    geographical area and across different access networks.  Using
    information from DTLS/SCTP together with information gathered from
    other protocols increase the risk of identifying individual users.
+
+# Contributors
+
+   Michael Tüxen contributed as co-author to the intitial versions
+   this draft. Michael's contributions include:
+
+   * The use of the Adaptation Layer Indication.
+
+   * Socket API extension
+
+   * Many editorial improvements.
 
 # Acknowledgments
 
