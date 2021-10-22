@@ -1194,7 +1194,7 @@ this specification.
 
    DTLS/SCTP MUST be mutually authenticated. Authentication is the process
    of establishing the identity of a user or system and verifying that
-   the identity is valid. DTLS only provides proof of possession of a key. 
+   the identity is valid. DTLS only provides proof of possession of a key.
    DTLS/SCTP MUST perform identity authentication. When certificates are
    used DTLS/SCTP MUST perform certificate chain validation. It is RECOMMENDED that
    DTLS/SCTP is used with certificate-based authentication.  All
@@ -1258,6 +1258,17 @@ this specification.
    geographical area and across different access networks.  Using
    information from DTLS/SCTP together with information gathered from
    other protocols increase the risk of identifying individual users.
+
+# Contributors
+
+   Michael Tüxen contributed as co-author to the intitial versions
+   this draft. Michael's contributions include:
+
+   * The use of the Adaptation Layer Indication.
+
+   * Socket API extension
+
+   * Many editorial improvements.
 
 # Acknowledgments
 
