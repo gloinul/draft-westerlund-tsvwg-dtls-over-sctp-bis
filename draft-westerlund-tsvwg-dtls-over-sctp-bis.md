@@ -610,7 +610,7 @@ ULP:  Upper Layer Protocol
    DTLS connection and its security context when performing its
    de-protection operations. There is also only a single SCTP-AUTH key
    exported per DTLS connection ensuring that there is clear mapping
-   between the DTLS connection and the SCTP-AUTH security context for
+   between the DTLS connection ID and the SCTP-AUTH security context for
    each key-id.
 
    Application writers should be aware that establishing a new DTLS
