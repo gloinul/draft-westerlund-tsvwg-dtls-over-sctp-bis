@@ -101,7 +101,7 @@ normative:
 
 --- abstract
 
-   This document describes a propsal for the usage of the Datagram
+   This document describes a proposal for the usage of the Datagram
    Transport Layer Security (DTLS) protocol to protect user messages
    sent over the Stream Control Transmission Protocol (SCTP). It is an
    update of the existing rfc6083.
@@ -288,12 +288,19 @@ This document uses the following terms:
 
 Association:  An SCTP association.
 
+Connection:  An DTLS connection. It is uniquely
+identified by a connection identifier.
+
 Stream: A unidirectional stream of an SCTP association.  It is uniquely
 identified by a stream identifier.
 
 ## Abbreviations
 
+AEAD:  Authenticated Encryption with Associated Data
+
 DTLS:  Datagram Transport Layer Security
+
+HMAC: Keyed-Hash Message Authentication Code
 
 MTU:  Maximum Transmission Unit
 
@@ -303,11 +310,14 @@ PPID:  Payload Protocol Identifier
 
 SCTP:  Stream Control Transmission Protocol
 
+SCTP-AUTH: Authenticated Chunks for SCTP
+
 TCP:  Transmission Control Protocol
 
 TLS:  Transport Layer Security
 
 ULP:  Upper Layer Protocol
+
 
 # Conventions
 
@@ -324,6 +334,7 @@ ULP:  Upper Layer Protocol
    This document defines the usage of either DTLS 1.3
    {{I-D.ietf-tls-dtls13}}, or DTLS 1.2 {{RFC6347}}.
    Earlier versions of DTLS MUST NOT be used (see {{RFC8996}}).
+   DTLS 1.3 is RECOMMENDED for security and performance reasons.
    It is expected that DTLS/SCTP as described in this document will work with
    future versions of DTLS.
 
@@ -413,7 +424,7 @@ ULP:  Upper Layer Protocol
    DTLS/SCTP works as a shim layer between the user message API and
    SCTP. The fragmentation works similar as the DTLS fragmentation of
    handshake messages.  On the sender side a user message fragmented
-   into fragments m0, m1, m2, each no larger than 2^14 - 1 = 16383
+   into fragments m0, m1, m2, each no larger than 2^14 = 16384
    bytes.
 
 ~~~~~~~~~~~
@@ -442,7 +453,7 @@ ULP:  Upper Layer Protocol
    discarded.
 
    2. In case the SCTP layer indicates an end to a user message,
-   e.g. when receiving a MSG_EOR in a recvmsg() call when using the
+   e.g., when receiving a MSG_EOR in a recvmsg() call when using the
    API described in {{RFC6458}}, and the last buffered DTLS record
    length field does not match, i.e., the DTLS record is incomplete.
 
@@ -473,7 +484,7 @@ ULP:  Upper Layer Protocol
    The DTLS Connection ID MUST be negotiated
    ({{I-D.ietf-tls-dtls-connection-id}} or Section 9 of
    {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the length field
-   MUST be included and a 16-bit sequence number SHOULD be used.
+   in the record layer MUST be included and a 16-bit sequence number SHOULD be used.
 
    Section 4 of {{I-D.ietf-tls-dtls-connection-id}} states “If,
    however, an implementation chooses to receive different lengths of
@@ -543,7 +554,7 @@ ULP:  Upper Layer Protocol
 ## Chunk Handling
 
    DATA chunks of SCTP MUST be sent in an authenticated way as
-   described in {{RFC4895}}.  All other chunks that can be
+   described in SCTP-AUTH {{RFC4895}}.  All other chunks that can be
    authenticated, i.e., all chunk types that can be listed in the Chunk
    List Parameter {{RFC4895}}, MUST also be sent in an authenticated
    way.  This makes sure that an attacker cannot modify the stream in
@@ -577,16 +588,17 @@ ULP:  Upper Layer Protocol
 ## Parallel DTLS connections
 
    To enable SCTP-AUTH re-rekeying, periodic authentication of both
-   endpoints, and force attackers to dynamic key extraction, DTLS/SCTP
-   per this specification define the usage of parallel DTLS
+   endpoints, and force attackers to dynamic key extraction {{RFC7624}}, DTLS/SCTP
+   per this specification defines the usage of parallel DTLS
    connections over the same SCTP association. This solution ensures
    that there are no limitations to the lifetime of the SCTP
-   association due to DTLS, it also avoids dependency on DTLS
-   renegotiation (DTLS 1.2 only) or the properties of key-update in
-   DTLS 1.3 which does not allow mutual endpoint
-   re-authentication. Parallel DTLS connections enables opening a new
-   DTLS connection performing a full handshake, maybe using
-   resumption, while the existing DTLS is kept in place. On handshake
+   association due to DTLS, it also avoids dependency on version specific DTLS
+   mechanisms such as renegotiation in DTLS 1.2, which is disabled by default in
+   many DTLS implementations, or post-handshake messages in
+   DTLS 1.3, which does not allow mutual endpoint
+   re-authentication or re-keying of SCTP-AUTH. Parallel DTLS connections enable opening a new
+   DTLS connection performing a handshake, maybe using
+   resumption, while the existing DTLS connection is kept in place. On handshake
    completion switch to the security context of the new DTLS
    connection and then ensure delivery of all the SCTP chunks using
    the old DTLS connections security context. When that has been
@@ -599,8 +611,7 @@ ULP:  Upper Layer Protocol
    de-protection operations. There is also only a single SCTP-AUTH key
    exported per DTLS connection ensuring that there is clear mapping
    between the DTLS connection and the SCTP-AUTH security context for
-   each key-id, unless DTLS 1.2 renegotiation is used when multiple
-   keys may be exported.
+   each key-id.
 
    Application writers should be aware that establishing a new DTLS
    connections may result in changes of security parameters.  See
@@ -635,7 +646,7 @@ ULP:  Upper Layer Protocol
    supported.
 
    The SCTP endpoint will indicate to its peer when the previous DTLS
-   connection and its context is no longer needed for receiving any
+   connection and its context are no longer needed for receiving any
    more data from this endpoint. This is done by having DTLS to send a
    DTLS close_notify alert. The endpoint MUST NOT send the
    close_notify until the following two conditions are fulfilled:
@@ -649,7 +660,7 @@ ULP:  Upper Layer Protocol
       in a non-renegable way.
 
    There is a very basic way of determining the above conditions for
-   an implementation that enable using the new DTLS connection’s
+   an implementation that enables using the new DTLS connection’s
    security context for all future DTLS records protected and enabling
    the associated new SCTP-AUTH key at the same time and not use the
    old context for any future protection operations. Mark the time
@@ -663,7 +674,7 @@ ULP:  Upper Layer Protocol
    configurable parameters. The maximum endpoint failure timeout
    period is the product of the 'Association.Max.Retrans' and RTO.Max
    parameters. For the default values per {{RFC4960}} that would be 10
-   attempts time with an RTO.Max = 60 s, i.e. 10 minutes.
+   attempts time with an RTO.Max = 60 s, i.e., 10 minutes.
 
    For SCTP implementations exposing APIs like {{RFC6458}} where it is
    not possible to change the SCTP-AUTH key for a partial SCTP message
@@ -686,7 +697,7 @@ ULP:  Upper Layer Protocol
    it will be able to close down the old DTLS connection in a timelier
    fashion, thus supporting more frequent rekeying etc. if needed.
 
-   The consequences of sending a DTLS close_notify altert in the old
+   The consequences of sending a DTLS close_notify alert in the old
    DTLS connection prior to the receiver having received the data can
    result in failure case 1 described in Section 4.1, which likely
    result in SCTP association termination.
@@ -794,7 +805,7 @@ ULP:  Upper Layer Protocol
 
 ### DTLS 1.2 Considerations
 
-   Whenever the master secret changes, i.e. either due to DTLS
+   Whenever the master secret changes, i.e., either due to DTLS
    Renegotiation or the establishment of a new DTLS connection, a
    64-byte shared secret is derived from every master secret and
    provided as a new endpoint-pair shared secret by using the
@@ -955,7 +966,7 @@ ULP:  Upper Layer Protocol
    AUTH chunks via the SCTP_AUTHENTICATION_EVENT event.
 
    Support for the SCTP_SEND_HMAC_IDENT and SCTP_EXPOSE_HMAC_IDENT_CHANGES
-   socket options also needs to be added to the function sctp_opt_info().
+   socket options also need to be added to the function sctp_opt_info().
 
 ## Socket Option to Get the HMAC Identifier being Sent (SCTP_SEND_HMAC_IDENT)
 
@@ -1097,7 +1108,7 @@ this specification.
    {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
    weaknesses at the time of publication. Many of the TLS registries
    have a "Recommended" column. Parameters not marked as "Y" are NOT
-   RECOMMENDED to support. DTLS 1.3 is preferred being a newer
+   RECOMMENDED to support. DTLS 1.3 is RECOMMENDED over DTLS 1.2 being a newer
    protocol that addresses known vulnerabilities and only defines
    strong algorithms without known major weaknesses at the time of
    publication.
@@ -1116,7 +1127,7 @@ this specification.
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy and
-   force attackers to dynamic key extraction. ANSSI writes "It is
+   force attackers to dynamic key extraction {{RFC7624}}. ANSSI writes "It is
    recommended to force the periodic renewal of the keys, e.g., every
    hour and every 100 GB of data, in order to limit the impact of a
    key compromise." {{ANSSI-DAT-NT-003}}.
@@ -1159,7 +1170,7 @@ this specification.
    {{I-D.ietf-tls-dtls13}}, AEAD limits and frequent rekeying can be
    achieved by sending frequent post-handshake KeyUpdate
    messages. Symmetric rekeying gives significantly less protection
-   against key leakage than re- running Diffie-Hellman.  After leakage
+   against key leakage than re-running Diffie-Hellman.  After leakage
    of application_traffic_secret_N, a passive attacker can passively
    eavesdrop on all future application data sent on the connection
    including application data encrypted with
@@ -1195,11 +1206,13 @@ this specification.
    DTLS/SCTP MUST be mutually authenticated. Authentication is the process
    of establishing the identity of a user or system and verifying that
    the identity is valid. DTLS only provides proof of possession of a key.
-   DTLS/SCTP MUST perform identity authentication. When certificates are
-   used DTLS/SCTP MUST perform certificate chain validation. It is RECOMMENDED that
-   DTLS/SCTP is used with certificate-based authentication.  All
-   security decisions MUST be based on the peer's authenticated
-   identity, not on its transport layer identity.
+   DTLS/SCTP MUST perform identity authentication. It is RECOMMENDED that
+   DTLS/SCTP is used with certificate-based authentication. When certificates are
+   used the applicatication using DTLS/SCTP is reposible for certificate policies,
+   certificate chain validation, and identity authentication (HTTPS does
+   for example match the hostname with a subjectAltName of type dNSName).
+   All security decisions MUST be based on the peer's authenticated
+   identity, not on its transport layer identity. 
 
    It is possible to authenticate DTLS endpoints based on IP addresses
    in certificates. SCTP associations can use multiple IP addresses
@@ -1300,7 +1313,8 @@ New Versions: Almost 10 years has passed since RFC 6083 was written,
    and significant evolution has happened in the area of DTLS and
    security algorithms. Thus DTLS 1.3 is the newest version of DTLS
    and also the SHA-1 HMAC algorithm of RFC 4895 is getting towards
-   the end of usefulness. Thus, this document mandates usage of
+   the end of usefulness. Use of DTLS 1.3 with long lived associations
+   require parallel DTLS connections. Thus, this document mandates usage of
    relevant versions and algorithms.
 
 Clarifications: Some implementation experiences have been gained that
