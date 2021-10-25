@@ -501,7 +501,7 @@ ULP:  Upper Layer Protocol
    sequence number length and DTLS Record size so that the product is
    larger than the used receiver window, preferably twice as
    large. Receiver implementations that are offering receiver windows
-   larger than the the product 65536*16384 bytes MUST be capable of
+   larger than the product 65536*16384 bytes MUST be capable of
    handling sequence number wraps through trial decoding with a lower
    values in the higher bits of the extended sequence number.
 
@@ -566,9 +566,10 @@ ULP:  Upper Layer Protocol
    Applications are RECOMMENDED to send its protected user messages
    using multiple streams, and on other streams than stream 0.
    However, applications MAY use stream 0 for their protected user
-   messages.  On stream 0 protected user messages as well as any DTLS
-   messages that aren't record protocol will be mixed, thus the
-   additional head of line blocking can occur.
+   messages.  On stream 0 protected user messages, each containing the
+   sequence of DTLS records, as well as any DTLS messages that aren't
+   record protocol will be mixed, thus the additional head of line
+   blocking can occur.
 
 ## Chunk Handling
 
@@ -607,24 +608,24 @@ ULP:  Upper Layer Protocol
 ## Parallel DTLS connections
 
    To enable SCTP-AUTH re-rekeying, periodic authentication of both
-   endpoints, and force attackers to dynamic key extraction {{RFC7624}}, DTLS/SCTP
-   per this specification defines the usage of parallel DTLS
-   connections over the same SCTP association. This solution ensures
-   that there are no limitations to the lifetime of the SCTP
-   association due to DTLS, it also avoids dependency on version specific DTLS
-   mechanisms such as renegotiation in DTLS 1.2, which is disabled by default in
-   many DTLS implementations, or post-handshake messages in
-   DTLS 1.3, which does not allow mutual endpoint
-   re-authentication or re-keying of SCTP-AUTH. Parallel DTLS connections enable opening a new
-   DTLS connection performing a handshake, maybe using
-   resumption, while the existing DTLS connection is kept in place. On handshake
-   completion switch to the security context of the new DTLS
+   endpoints, and force attackers to dynamic key extraction
+   {{RFC7624}}, DTLS/SCTP per this specification defines the usage of
+   parallel DTLS connections over the same SCTP association. This
+   solution ensures that there are no limitations to the lifetime of
+   the SCTP association due to DTLS, it also avoids dependency on
+   version specific DTLS mechanisms such as renegotiation in DTLS 1.2,
+   which is disabled by default in many DTLS implementations, or
+   post-handshake messages in DTLS 1.3, which does not allow mutual
+   endpoint re-authentication or re-keying of SCTP-AUTH. Parallel DTLS
+   connections enable opening a new DTLS connection performing a
+   handshake, while the existing DTLS connection is kept in place. On
+   handshake completion switch to the security context of the new DTLS
    connection and then ensure delivery of all the SCTP chunks using
    the old DTLS connections security context. When that has been
    achieved close the old DTLS connection and discard the related
    security context.
 
-   As specified in Section 4.1 the usage of DTLS connection ID is
+   As specified in {{Mapping-DTLS}} the usage of DTLS connection ID is
    required to ensure that the receiver can correctly identify the
    DTLS connection and its security context when performing its
    de-protection operations. There is also only a single SCTP-AUTH key
@@ -634,35 +635,34 @@ ULP:  Upper Layer Protocol
 
    Application writers should be aware that establishing a new DTLS
    connections may result in changes of security parameters.  See
-   Section 8 for security considerations regarding rekeying.
+   {{sec-Consideration}} for security considerations regarding rekeying.
 
    A DTLS/SCTP Endpoint MUST NOT have more than two DTLS connections
    open at the same time. Either of the endpoints MAY initiate a new
-   DTLS connection by performing a full DTLS handshake, which MAY use
-   DTLS resumption when applicable. As either endpoint can initiate a
-   DTLS handshake on either side at the same time, either endpoint may
-   receive a DTLS ClientHello when it has sent its own ClientHello. In
-   this case the ClientHello from the endpoint that had the DTLS
-   Client role in the establishment of the existing DTLS connection
-   shall be continued to be processed and the other dropped.
+   DTLS connection by performing a full DTLS handshake. As either
+   endpoint can initiate a DTLS handshake on either side at the same
+   time, either endpoint may receive a DTLS ClientHello when it has
+   sent its own ClientHello. In this case the ClientHello from the
+   endpoint that had the DTLS Client role in the establishment of the
+   existing DTLS connection shall be continued to be processed and the
+   other dropped.
 
    When performing the DTLS handshake the endpoint MUST verify that
    the peer identifies using the same identity as in the previous DTLS
    connection.
 
    When the DTLS handshake has been completed, a new SCTP-AUTH key
-   will be exported per Section 4.9 and the new DTLS connection MUST
-   be used for the DTLS protection operation of any future protected
-   SCTP message. The endpoint is RECOMMENDED to use the security
-   context of the new DTLS connection for any DTLS protection
-   operation occurring after the completed handshake. The new
-   SCTP-AUTH key SHALL be used for any SCTP message being sent after
-   the DTLS handshake has completed. There is a possibility to use the
-   new SCTP-AUTH key for any SCTP packets part of an SCTP message that
-   was initiated but not yet fully transmitted prior to the completion
-   of the new DTLS handshake, however the API defined in {{RFC6458}} is
-   not supporting this unless the extensions in Section 6 are
-   supported.
+   will be exported per {{handling-endpoint-secret}} and the new DTLS
+   connection MUST be used for the DTLS protection operation of any
+   future protected SCTP message. The endpoint is RECOMMENDED to use
+   the security context of the new DTLS connection for any DTLS
+   protection operation occurring after the completed handshake. The
+   new SCTP-AUTH key SHALL be used for any SCTP message being sent
+   after the DTLS handshake has completed. There is a possibility to
+   use the new SCTP-AUTH key for any SCTP packets part of an SCTP
+   message that was initiated but not yet fully transmitted prior to
+   the completion of the new DTLS handshake, however the API defined
+   in {{RFC6458}} is not supporting this.
 
    The SCTP endpoint will indicate to its peer when the previous DTLS
    connection and its context are no longer needed for receiving any
@@ -708,7 +708,7 @@ ULP:  Upper Layer Protocol
    to the need to create yet another DTLS connection. Thus, SCTP
    messages can’t be larger than that the transmission completes in
    less than the duration between the rekeying or re-authentications
-   for this SCTP association.
+   needed for this SCTP association.
 
    When the DTLS/SCTP implementation are more tightly integrated with
    the SCTP stack or have a fuller API that enable the DTLS/SCTP
@@ -718,7 +718,7 @@ ULP:  Upper Layer Protocol
 
    The consequences of sending a DTLS close_notify alert in the old
    DTLS connection prior to the receiver having received the data can
-   result in failure case 1 described in Section 4.1, which likely
+   result in failure case 1 described in {{Mapping-DTLS}}, which likely
    result in SCTP association termination.
 
 ## Renegotiation and KeyUpdate
@@ -732,38 +732,26 @@ ULP:  Upper Layer Protocol
    SCTP associations, such as rekeying (with ephemeral Diffie-Hellman)
    as well as mutual reauthentication.
 
-   This specification recommends against using either of these
-   mechanisms and instead rely on parallel DTLS connections. For DTLS
-   1.3 there isn’t feature parity. Both also have the issue that a
-   DTLS implementation following the RFC may assume a too limited
-   window for SCTP where the previous epoch’s security context is
-   maintained and thus changes to epoch handling (Section 4.8) are
-   necessary. Thus, unless the below specified more application
-   impacting draining is used there exist risk of losing data that the
-   sender will have assumed has been reliably delivered.
+   This specification do not allow usage of DTLS 1.2 renegotiation to
+   avoid race conditions and corner cases in the interaction between
+   the parallel DTLS connection mechanism and the keying of
+   SCTP-AUTH. In addtion renegotiation is also disabled in
+   implementation, as well as dealing with the epoch change reliable
+   have similar or worse applicaiton impact.
+
+   This specification also recommends against using DTLS 1.3 KeyUpdate
+   and instead rely on parallel DTLS connections. For DTLS 1.3 there
+   isn’t feature parity. It also have the issue that a DTLS
+   implementation following the RFC may assume a too limited window
+   for SCTP where the previous epoch’s security context is maintained
+   and thus changes to epoch handling ({{epoch}}) are necessary. Thus,
+   unless the below specified more application impacting draining is
+   used there exist risk of losing data that the sender will have
+   assumed has been reliably delivered.
 
 ### DTLS 1.2 Considerations
 
-   The endpoint MUST NOT initiate an DTLS renegotiation in the
-   existing/old DTLS connection after it has initiated the
-   establishment of a new parallel DTLS connection in this SCTP
-   association. In case a new DTLS connection handshake is received
-   after the endpoint has initiated a DTLS renegotiation on the
-   existing DTLS connection, both parties need to complete the
-   renegotiation and the SCPT-AUTH key identifier should be n+1 and
-   the new DTLS connection should use n+2. This may be accomplished by
-   first finishing the renegotiation and hold the new DTLS handshake
-   processing until the renegotiation has completed.
-
-   Before sending during renegotiation a ClientHello message or
-   ServerHello message, the DTLS endpoint MUST ensure that all DTLS
-   messages using the previous epoch have been acknowledged by the SCTP
-   peer in a non-revokable way.
-
-   Prior to processing a received ClientHello message or ServerHello
-   message, all other received SCTP user messages that are buffered in
-   the SCTP layer and can be delivered to the DTLS layer MUST be read
-   and processed by DTLS.
+   The endpoint MUST NOT use DTLS 1.2 renegotiation.
 
 ### DTLS 1.3 Considerations
 
@@ -777,16 +765,14 @@ ULP:  Upper Layer Protocol
    SCTP user messages that are buffered in the SCTP layer and can be
    delivered to the DTLS layer MUST be read and processed by DTLS.
 
-## DTLS Epochs
+## DTLS Epochs {#epoch}
 
    In general, DTLS implementations SHOULD discard records from earlier epochs.
    However, in the context of a reliable communication this is not appropriate.
 
 ### DTLS 1.2 Considerations
 
-   The procedures of Section 4.1 of {{RFC6347}} MUST NOT be followed.
-   Instead, when currently using epoch n, for n > 1, DTLS packets from epoch
-   n - 1 and n MUST be processed.
+   Epochs will not be used as renegotiation is disallowed.
 
 ### DTLS 1.3 Considerations
 
@@ -794,7 +780,7 @@ ULP:  Upper Layer Protocol
    When receiving DTLS packets using epoch n, no DTLS packets from earlier
    epochs are received.
 
-## Handling of Endpoint-Pair Shared Secrets
+## Handling of Endpoint-Pair Shared Secrets {#handling-endpoint-secret}
 
    SCTP-AUTH {{RFC4895}} is keyed using Endpoint-Pair Shared
    Secrets. In SCTP associations where DTLS is used, DTLS is used to
@@ -814,7 +800,8 @@ ULP:  Upper Layer Protocol
    secret is derived using the TLS-Exporter. The shared secret
    identifiers form a sequence. If the previous shared secret used
    Shared Key Identifier n, the new one MUST use Shared Key Identifier
-   n+1.
+   n+1, unless n= 65535, in which case the new Shared Key Identifier
+   is 1.
 
    After sending the DTLS Finished message, the active SCTP-AUTH key
    MUST be switched to the new one. When the endpoint has both sent
@@ -824,34 +811,23 @@ ULP:  Upper Layer Protocol
 
 ### DTLS 1.2 Considerations
 
-   Whenever the master secret changes, i.e., either due to DTLS
-   Renegotiation or the establishment of a new DTLS connection, a
-   64-byte shared secret is derived from every master secret and
-   provided as a new endpoint-pair shared secret by using the
-   TLS-Exporter described in {{RFC5705}}.
+    Whenever a new DTLS connection is established, a 64-byte
+    endpoint-pair shared secret is derived using the TLS-Exporter
+    described in {{RFC5705}}.
 
    The 64-byte shared secret MUST be provided to the SCTP stack as
    soon as the computation is possible.  The exporter MUST use the
-   label given in Section 7 and no context. The shared key identifier
-   is selected per the above to be n+1 also for epoch changes due to
-   renegotiation.
-
-   Once the Finished message using DTLS epoch m with m > 2 has been
-   processed by DTLS, the SCTP-AUTH key with Shared Key Identifier for
-   this DTLS connection and epoch m – 2 MUST be removed.
-
-   When the DTLS connection closes and it has used renegotiation all
-   non-removed shared keys MUST be removed, which should be n and n-1,
-   if the new DTLS connection has created n+1.
+   label given in {{IANA-Consideration}} and no context.
 
 ### DTLS 1.3 Considerations
 
    When the exporter_secret can be computed, a 64-byte shared secret
    is derived from it and provided as a new endpoint-pair shared
-   secret by using the TLS-Exporter described in {{RFC8446}}.  The
-   64-byte shared secret MUST be provided to the SCTP stack as soon as
-   the computation is possible.  The exporter MUST use the label given
-   in Section {{IANA-Consideration}} and no context.
+   secret by using the TLS-Exporter described in {{RFC8446}}.
+
+   The 64-byte shared secret MUST be provided to the SCTP stack as
+   soon as the computation is possible.  The exporter MUST use the
+   label given in Section {{IANA-Consideration}} and no context.
 
 ## Shutdown
 
@@ -964,7 +940,7 @@ ULP:  Upper Layer Protocol
    per RFC 6083.  So that needs to be part of the consideration for a
    policy allowing fallback.
 
-# Socket API Considerations
+# Socket API Considerations {#socket-api}
 
    This section describes how the socket API defined in {{RFC6458}} is extended
    to provide a way for the application to observe the HMAC algorithms used for
@@ -1140,8 +1116,8 @@ this specification.
    HMAC-SHA-256 as used in SCTP-AUTH has a very large tag length and
    very good integrity properties.  The SCTP-AUTH key can be used
    longer than the current algorithms in the TLS record layer. The
-   SCTP-AUTH key is rekeyed when a new connection is set up at which
-   point a new SCTP-AUTH key is derived using the TLS-Exporter.
+   SCTP-AUTH key is rekeyed when a new DTLS connection is set up at
+   which point a new SCTP-AUTH key is derived using the TLS-Exporter.
 
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
@@ -1151,8 +1127,8 @@ this specification.
    every hour and every 100 GB of data, in order to limit the impact
    of a key compromise." {{ANSSI-DAT-NT-003}}.
 
-   For many DTLS/SCTP deployments the DTLS connections are expected to
-   have very long lifetimes of months or even years. For connections
+   For many DTLS/SCTP deployments the SCTP association is expected to
+   have a very long lifetime of months or even years. For associations
    with such long lifetimes there is a need to frequently
    re-authenticate both client and server. TLS Certificate lifetimes
    significantly shorter than a year are common which is shorter than
@@ -1171,18 +1147,6 @@ this specification.
    identity during the setup of a new connections, but MAY accept
    negotiation of stronger algorithms and security parameters, which
    might be motivated by new attacks.
-
-   When using DTLS 1.2 {{RFC6347}}, AEAD limits, frequent re-
-   authentication and frequent re-run of Diffie-Hellman, can also be
-   achieved with renegotiation, see TLS 1.2 {{RFC5246}}. If
-   renegotiation is used both clients and servers MUST use the
-   renegotiation_info extension {{RFC5746}} and MUST follow the
-   renegotiation guidelines in BCP 195 {{RFC7525}}.  In particular, both
-   clients and servers MUST NOT accept a change of identity during
-   Renegotiation. Renegotiation is disabled by default in many DTLS
-   implementations. While Renegotiation updates the exporter_secret,
-   DTLS/SCTP per this specification only derive new SCTP-AUTH keys
-   when a new connection is set up.
 
    In DTLS 1.3 renegotiation has been removed from DTLS 1.3 and partly
    replaced with Post-Handshake KeyUpdate. When using DTLS 1.3
