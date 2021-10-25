@@ -1210,7 +1210,9 @@ this specification.
    DTLS/SCTP is used with certificate-based authentication. When certificates are
    used the applicatication using DTLS/SCTP is reposible for certificate policies,
    certificate chain validation, and identity authentication (HTTPS does
-   for example match the hostname with a subjectAltName of type dNSName).
+   for example match the hostname with a subjectAltName of type dNSName). The
+   application using DTLS/SCTP MUST define what the identity is and how it is
+   encoded. It is RECOMMENDED that client and server use the same identity format.
    All security decisions MUST be based on the peer's authenticated
    identity, not on its transport layer identity. 
 
