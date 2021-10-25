@@ -1148,22 +1148,19 @@ this specification.
    negotiation of stronger algorithms and security parameters, which
    might be motivated by new attacks.
 
-   In DTLS 1.3 renegotiation has been removed from DTLS 1.3 and partly
-   replaced with Post-Handshake KeyUpdate. When using DTLS 1.3
-   {{I-D.ietf-tls-dtls13}}, AEAD limits and frequent rekeying can be
-   achieved by sending frequent post-handshake KeyUpdate
-   messages. Symmetric rekeying gives significantly less protection
+   When using DTLS 1.3
+   {{I-D.ietf-tls-dtls13}}, AEAD limits and forward secrecy can be
+   achieved by sending post-handshake KeyUpdate messages, which triggers
+   rekeying of DTLS. Such symmetric rekeying gives significantly less protection
    against key leakage than re-running Diffie-Hellman.  After leakage
    of application_traffic_secret_N, a passive attacker can passively
    eavesdrop on all future application data sent on the connection
    including application data encrypted with
    application_traffic_secret_N+1, application_traffic_secret_N+2,
-   etc.  Note that KeyUpdate does not update the exporter_secret.
+   etc. Note that KeyUpdate does not update the exporter_secret.
 
-   Allowing client initiated renegotiation and client initiated new
-   connections can enable denial-of-service attacks. The server should
-   limit the frequency of client initiated renegotiation and new
-   connections.
+   Allowing new connections can enable denial-of-service attacks.
+   The endpoints SHOULD limit the frequency of new connections.
 
    When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, the TLS Session
    Hash and Extended Master Secret Extension {{RFC7627}} MUST be used to
