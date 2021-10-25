@@ -1214,7 +1214,7 @@ this specification.
    application using DTLS/SCTP MUST define what the identity is and how it is
    encoded and the client and server MUST use the same identity format.
    All security decisions MUST be based on the peer's authenticated
-   identity, not on its transport layer identity. 
+   identity, not on its transport layer identity.
 
    It is possible to authenticate DTLS endpoints based on IP addresses
    in certificates. SCTP associations can use multiple IP addresses
