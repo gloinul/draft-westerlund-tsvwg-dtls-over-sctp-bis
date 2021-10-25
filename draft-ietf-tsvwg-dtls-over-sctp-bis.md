@@ -76,9 +76,7 @@ normative:
   RFC3758:
   RFC4895:
   RFC4960:
-  RFC5246:
   RFC5705:
-  RFC5746:
   RFC6347:
   RFC7627:
   RFC7540:
@@ -563,13 +561,14 @@ ULP:  Upper Layer Protocol
    (e.g., "handshake", "alert", ...) MUST be transported on stream 0 with
    unlimited reliability and with the ordered delivery feature.
 
-   Applications are RECOMMENDED to send its protected user messages
-   using multiple streams, and on other streams than stream 0.
-   However, applications MAY use stream 0 for their protected user
-   messages.  On stream 0 protected user messages, each containing the
-   sequence of DTLS records, as well as any DTLS messages that aren't
+   DTLS records of content type "application_data", which carries the
+   protected user messages MAY be sent in SCTP messages on any stream,
+   including stream 0. On stream 0 the DTLS record containing the part
+   of protected message, as well as any DTLS messages that aren't
    record protocol will be mixed, thus the additional head of line
-   blocking can occur.
+   blocking can occur. Therefore, applications are RECOMMENDED to send
+   its protected user messages using multiple streams, and on other
+   streams than stream 0.
 
 ## Chunk Handling
 
