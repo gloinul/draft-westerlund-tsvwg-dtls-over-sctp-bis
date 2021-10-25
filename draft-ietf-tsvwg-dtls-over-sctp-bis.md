@@ -267,7 +267,7 @@ disabled by default in many DTLS implementations.
 
 To address known vulnerabilities in DTLS 1.2 this document describes
 and mandates implementation constraints on ciphers and protocol
-options The DTLS 1.2 renegotiation mechanism is forbidden to be used
+options. The DTLS 1.2 renegotiation mechanism is forbidden to be used
 as it creates need for additional mechanism to handle race conditions
 and interactions between using DTLS connections in parallel.
 
