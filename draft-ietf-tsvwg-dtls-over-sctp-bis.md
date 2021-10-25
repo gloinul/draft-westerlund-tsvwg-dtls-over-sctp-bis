@@ -483,8 +483,35 @@ ULP:  Upper Layer Protocol
 
    The DTLS Connection ID MUST be negotiated
    ({{I-D.ietf-tls-dtls-connection-id}} or Section 9 of
-   {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the length field
-   in the record layer MUST be included and a 16-bit sequence number SHOULD be used.
+   {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the length field in
+   the record layer MUST be included. A 16-bit sequence number SHOULD
+   be used rather than 8-bit to minimize issues with DTLS record
+   sequence number wrapping.
+
+   The ULP may use multiple messages simultanous, and the progress and
+   delivery of these messages are progressing indepentely, thus the
+   recieving DTLS/SCTP implementation will not receive records in
+   order in case of packet loss. Assuming that the sender will send
+   the DTLS records in order the DTLS records (which may not be
+   certain in some implementations), then there is a risk that DTLS
+   sequence number have wrapped if the amount of data in flight is
+   more than the sequence number covers.  Thus, for 8-bit sequence
+   number space with 16384 bytes records the receiver window only
+   needs to be 256*16384 = 4,194,304 bytes for this risk to defintely
+   exist. While a 16-bit sequence number should not have any sequence
+   number wraps for receiver window up to 1 Gbyte. The DTLS/SCTP may
+   not be tightly integrated and the DTLS records may not be requested
+   to be sent in strict sequence order, in these case additional
+   buffer is needed.
+
+   However, if smaller DTLS records are used, this limit will be
+   correspondingly reduced. The DTLS/SCT Sender needs to choose
+   sequence number length and DTLS Record size so that the produce is
+   larger than the used receiver window. Receiver implementations that
+   are offering receiver windows larger than the the product
+   65536*16384 bytes MUST be capable of handling sequence number wraps
+   through trial decoding with a lower values in the higher bits of
+   the extended sequence number.
 
    Section 4 of {{I-D.ietf-tls-dtls-connection-id}} states “If,
    however, an implementation chooses to receive different lengths of
@@ -1108,10 +1135,10 @@ this specification.
    {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
    weaknesses at the time of publication. Many of the TLS registries
    have a "Recommended" column. Parameters not marked as "Y" are NOT
-   RECOMMENDED to support. DTLS 1.3 is RECOMMENDED over DTLS 1.2 being a newer
-   protocol that addresses known vulnerabilities and only defines
-   strong algorithms without known major weaknesses at the time of
-   publication.
+   RECOMMENDED to support. DTLS 1.3 is preferred over DTLS 1.2 being a
+   newer protocol that addresses known vulnerabilities and only
+   defines strong algorithms without known major weaknesses at the
+   time of publication.
 
    DTLS 1.3 requires rekeying before algorithm specific AEAD limits
    have been reached. The AEAD limits equations are equally valid for
@@ -1127,10 +1154,10 @@ this specification.
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
    re-run of Diffie-Hellman to provide Perfect Forward Secrecy and
-   force attackers to dynamic key extraction {{RFC7624}}. ANSSI writes "It is
-   recommended to force the periodic renewal of the keys, e.g., every
-   hour and every 100 GB of data, in order to limit the impact of a
-   key compromise." {{ANSSI-DAT-NT-003}}.
+   force attackers to dynamic key extraction {{RFC7624}}. ANSSI writes
+   "It is recommended to force the periodic renewal of the keys, e.g.,
+   every hour and every 100 GB of data, in order to limit the impact
+   of a key compromise." {{ANSSI-DAT-NT-003}}.
 
    For many DTLS/SCTP deployments the DTLS connections are expected to
    have very long lifetimes of months or even years. For connections
