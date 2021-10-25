@@ -40,6 +40,7 @@ informative:
   RFC3788:
   RFC5061:
   RFC6083:
+  RFC6125:
   RFC6458:
   RFC6973:
   RFC7258:
@@ -1213,6 +1214,7 @@ this specification.
    for example match the hostname with a subjectAltName of type dNSName). The
    application using DTLS/SCTP MUST define what the identity is and how it is
    encoded and the client and server MUST use the same identity format.
+   Guidance on server certificate validation can be found in {{RFC6125}}.
    All security decisions MUST be based on the peer's authenticated
    identity, not on its transport layer identity.
 
