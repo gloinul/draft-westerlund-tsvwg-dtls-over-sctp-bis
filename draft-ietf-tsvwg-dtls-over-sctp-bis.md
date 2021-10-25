@@ -24,16 +24,6 @@ author:
    name: Claudio Porfiri
    org: Ericsson
    email: claudio.porfiri@ericsson.com
--
-   ins: M. Tüxen
-   name: Michael Tüxen
-   org: Münster University of Applied Sciences
-   abbrev: Münster Univ. of Appl. Sciences
-   street: Stegerwaldstrasse 39
-   code: 48565
-   city: Steinfurt
-   country: Germany
-   email: tuexen@fh-muenster.de
 
 informative:
   RFC3436:
@@ -101,9 +91,9 @@ normative:
 
 --- abstract
 
-   This document describes a proposal for the usage of the Datagram
-   Transport Layer Security (DTLS) protocol to protect user messages
-   sent over the Stream Control Transmission Protocol (SCTP). It is an
+   This document describes the usage of the Datagram Transport Layer
+   Security (DTLS) protocol to protect user messages sent over the
+   Stream Control Transmission Protocol (SCTP). It is an improved
    update of the existing rfc6083.
 
    DTLS over SCTP provides mutual authentication, confidentiality,
@@ -198,7 +188,7 @@ some serious limitations:
 The DTLS over SCTP solution defined in RFC 6083 had the following
 limitations:
 
-* The maximum user message size is 2^14 bytes, which is a single
+* The maximum user message size is 2^14 (16384) bytes, which is a single
       DTLS record limit.
 
 * DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
@@ -276,8 +266,10 @@ several overlapping DTLS connections with either DTLS 1.2 or
 disabled by default in many DTLS implementations.
 
 To address known vulnerabilities in DTLS 1.2 this document describes
-and mandates implementation constraints on ciphers, protocol options
-and how to use the DTLS renegotiation mechanism.
+and mandates implementation constraints on ciphers and protocol
+options The DTLS 1.2 renegotiation mechanism is forbidden to be used
+as it creates need for additional mechanism to handle race conditions
+and interactions between using DTLS connections in parallel.
 
 In the rest of the document, unless the version of DTLS is
 specifically called out the text applies to both versions of DTLS.
@@ -490,28 +482,28 @@ ULP:  Upper Layer Protocol
 
    The ULP may use multiple messages simultanous, and the progress and
    delivery of these messages are progressing indepentely, thus the
-   recieving DTLS/SCTP implementation will not receive records in
-   order in case of packet loss. Assuming that the sender will send
-   the DTLS records in order the DTLS records (which may not be
+   recieving DTLS/SCTP implementation may not receive records in order
+   in case of packet loss. Assuming that the sender will send the DTLS
+   records in order the DTLS records where created (which may not be
    certain in some implementations), then there is a risk that DTLS
    sequence number have wrapped if the amount of data in flight is
    more than the sequence number covers.  Thus, for 8-bit sequence
    number space with 16384 bytes records the receiver window only
    needs to be 256*16384 = 4,194,304 bytes for this risk to defintely
    exist. While a 16-bit sequence number should not have any sequence
-   number wraps for receiver window up to 1 Gbyte. The DTLS/SCTP may
+   number wraps for receiver windows up to 1 Gbyte. The DTLS/SCTP may
    not be tightly integrated and the DTLS records may not be requested
    to be sent in strict sequence order, in these case additional
-   buffer is needed.
+   guard ranges are needed.
 
-   However, if smaller DTLS records are used, this limit will be
-   correspondingly reduced. The DTLS/SCT Sender needs to choose
-   sequence number length and DTLS Record size so that the produce is
-   larger than the used receiver window. Receiver implementations that
-   are offering receiver windows larger than the the product
-   65536*16384 bytes MUST be capable of handling sequence number wraps
-   through trial decoding with a lower values in the higher bits of
-   the extended sequence number.
+   Also, if smaller DTLS records are used, this limit will be
+   correspondingly reduced. The DTLS/SCTP Sender needs to choose
+   sequence number length and DTLS Record size so that the product is
+   larger than the used receiver window, preferably twice as
+   large. Receiver implementations that are offering receiver windows
+   larger than the the product 65536*16384 bytes MUST be capable of
+   handling sequence number wraps through trial decoding with a lower
+   values in the higher bits of the extended sequence number.
 
    Section 4 of {{I-D.ietf-tls-dtls-connection-id}} states “If,
    however, an implementation chooses to receive different lengths of
@@ -571,12 +563,12 @@ ULP:  Upper Layer Protocol
    (e.g., "handshake", "alert", ...) MUST be transported on stream 0 with
    unlimited reliability and with the ordered delivery feature.
 
-   DTLS records of content type "application_data", which carries the protected
-   user messages, SHOULD use multiple streams other than stream 0;
-   they MAY use stream 0.
-   On stream 0 protected user messages as well as any DTLS
-   messages that aren't record protocol will be mixed, thus the additional
-   head of line blocking can occur.
+   Applications are RECOMMENDED to send its protected user messages
+   using multiple streams, and on other streams than stream 0.
+   However, applications MAY use stream 0 for their protected user
+   messages.  On stream 0 protected user messages as well as any DTLS
+   messages that aren't record protocol will be mixed, thus the
+   additional head of line blocking can occur.
 
 ## Chunk Handling
 
