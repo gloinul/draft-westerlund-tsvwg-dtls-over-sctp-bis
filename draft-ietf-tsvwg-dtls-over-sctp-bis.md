@@ -618,7 +618,11 @@ ULP:  Upper Layer Protocol
    post-handshake messages in DTLS 1.3, which does not allow mutual
    endpoint re-authentication or re-keying of SCTP-AUTH. Parallel DTLS
    connections enable opening a new DTLS connection performing a
-   handshake, while the existing DTLS connection is kept in place. On
+   handshake, while the existing DTLS connection is kept in place.
+   In DTLS 1.3 the handshake MAY be a full handshake or a resumption
+   handshake and resumption can be done while the original
+   connection is still open. In DTLS 1.2 the handshake MUST be a
+   full handshake. On
    handshake completion switch to the security context of the new DTLS
    connection and then ensure delivery of all the SCTP chunks using
    the old DTLS connections security context. When that has been
