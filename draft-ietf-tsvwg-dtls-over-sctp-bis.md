@@ -131,7 +131,7 @@ normative:
    in a way that is designed to give communications privacy and to
    prevent eavesdropping and detect tampering or message
    forgery. DTLS/SCTP uses DTLS for mutual authentication, key
-   exchange with perfect forward secrecy for SCTP-AUTH, and
+   exchange with forward secrecy for SCTP-AUTH, and
    confidentiality of user messages. DTLS/SCTP use SCTP and SCTP-AUTH
    for integrity protection and replay protection of user messages.
 
@@ -251,7 +251,7 @@ need:
       client).
 
    *  Periodic rerunning of Diffie-Hellman key-exchange to provide
-      Perfect Forward Secrecy (PFS) to reduce the impact any key-reveal.
+      forward secrecy and mitigate static key exfiltration attacks.
 
    *  Perform SCTP-AUTH re-keying.
 
@@ -295,8 +295,6 @@ HMAC: Keyed-Hash Message Authentication Code
 
 MTU:  Maximum Transmission Unit
 
-PFS:  Perfect Forward Secrecy
-
 PPID:  Payload Protocol Identifier
 
 SCTP:  Stream Control Transmission Protocol
@@ -333,7 +331,7 @@ ULP:  Upper Layer Protocol
 
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
    be used. For all versions of DTLS, cryptographic parameters giving
-   confidentiality and Perfect Forward Secrecy (PFS) MUST be used.
+   confidentiality and forward secrecy MUST be used.
 
 ## Message Sizes {#Msg-size}
 
@@ -1125,7 +1123,7 @@ this specification.
 
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
-   re-run of Diffie-Hellman to provide Perfect Forward Secrecy and
+   re-run of Diffie-Hellman to provide forward secrecy and
    force attackers to dynamic key extraction {{RFC7624}}. ANSSI writes
    "It is recommended to force the periodic renewal of the keys, e.g.,
    every hour and every 100 GB of data, in order to limit the impact
@@ -1225,9 +1223,7 @@ this specification.
    It is RECOMMENDED that DTLS/SCTP is used with certificate based
    authentication in DTLS 1.3 {{I-D.ietf-tls-dtls13}} to provide
    identity protection. DTLS/SCTP MUST be used with a key exchange
-   method providing Perfect Forward Secrecy. Perfect Forward Secrecy
-   significantly limits the amount of data that can be compromised due
-   to key compromise.
+   method providing forward secrecy.
 
 ## Pervasive Monitoring
 
@@ -1240,7 +1236,7 @@ this specification.
    offers much better protection against pervasive monitoring.
 
    Massive pervasive monitoring attacks relying on key exchange
-   without forward secrecy has been reported. By mandating perfect
+   without forward secrecy has been reported. By mandating
    forward secrecy, DTLS/SCTP effectively mitigate many forms of
    passive pervasive monitoring and limits the amount of compromised
    data due to key compromise.
