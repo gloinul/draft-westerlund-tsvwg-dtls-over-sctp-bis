@@ -1121,6 +1121,37 @@ this specification.
    SCTP-AUTH key is rekeyed when a new DTLS connection is set up at
    which point a new SCTP-AUTH key is derived using the TLS-Exporter.
 
+   (D)TLS 1.3 {{RFC8446}} discusses forward secrecy from EC(DHE),
+   KeyUpdate, and tickets/resumption. Forward secrecy limits the
+   effect of key leakage in one direction (compromise of a key at
+   time T2 does not compromise some key at time T1 where T1 < T2).
+   Protection in the other direction (compromise at time T1 does not
+   compromise keys at time T2) can be achieved by rerunning EC(DHE).
+   If an authentication key has been compromised, rerunning EC(DHE)
+   gives protection against passive attackers. If a traffic key has
+   been compromised, rerunning EC(DHE) gives protection against active
+   attackers. 
+
+   The document “Confidentiality in the Face of Pervasive Surveillance:
+   A Threat Model and Problem Statement” [RFC7624] defines key
+   exfiltration as the transmission of cryptographic keying material
+   for an encrypted communication from a collaborator, deliberately or
+   unwittingly, to an attacker. Using the terms in RFC 7624, forward
+   secrecy without rerunning EC(DHE) still allows an attacker to do
+   static key exfiltration. Rerunning EC(DHE) forces and attacker to
+   dynamic key exfiltration (or content exfiltration).
+
+   When using DTLS 1.3
+   {{I-D.ietf-tls-dtls13}}, AEAD limits and forward secrecy can be
+   achieved by sending post-handshake KeyUpdate messages, which triggers
+   rekeying of DTLS. Such symmetric rekeying gives significantly less protection
+   against key leakage than re-running Diffie-Hellman.  After leakage
+   of application_traffic_secret_N, a passive attacker can passively
+   eavesdrop on all future application data sent on the connection
+   including application data encrypted with
+   application_traffic_secret_N+1, application_traffic_secret_N+2,
+   etc. Note that KeyUpdate does not update the exporter_secret.
+   
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
    re-run of Diffie-Hellman to provide forward secrecy and
@@ -1149,17 +1180,6 @@ this specification.
    identity during the setup of a new connections, but MAY accept
    negotiation of stronger algorithms and security parameters, which
    might be motivated by new attacks.
-
-   When using DTLS 1.3
-   {{I-D.ietf-tls-dtls13}}, AEAD limits and forward secrecy can be
-   achieved by sending post-handshake KeyUpdate messages, which triggers
-   rekeying of DTLS. Such symmetric rekeying gives significantly less protection
-   against key leakage than re-running Diffie-Hellman.  After leakage
-   of application_traffic_secret_N, a passive attacker can passively
-   eavesdrop on all future application data sent on the connection
-   including application data encrypted with
-   application_traffic_secret_N+1, application_traffic_secret_N+2,
-   etc. Note that KeyUpdate does not update the exporter_secret.
 
    Allowing new connections can enable denial-of-service attacks.
    The endpoints SHOULD limit the frequency of new connections.
@@ -1246,8 +1266,8 @@ this specification.
    exfiltration. Dynamic key exfiltration increases the risk of
    discovery for the attacker {{RFC7624}}. DTLS/SCTP per this
    specification encourages implementations to frequently set up new
-   DTLS connections over the same SCTP association to force attackers
-   to do dynamic key exfiltration.
+   DTLS connections with (EC)DHE over the same SCTP association to
+   force attackers to do dynamic key exfiltration.
 
    In addition to the privacy attacks discussed above, surveillance on
    a large scale may enable tracking of a user over a wider
