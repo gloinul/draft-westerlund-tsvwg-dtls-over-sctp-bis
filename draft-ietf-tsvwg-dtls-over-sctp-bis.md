@@ -1127,10 +1127,13 @@ this specification.
    time T2 does not compromise some key at time T1 where T1 < T2).
    Protection in the other direction (compromise at time T1 does not
    compromise keys at time T2) can be achieved by rerunning EC(DHE).
-   If an authentication key has been compromised, rerunning EC(DHE)
-   gives protection against passive attackers. If a traffic key has
-   been compromised, rerunning EC(DHE) gives protection against active
-   attackers. 
+   If a long-term authentication key has been compromised, a full
+   handshake with EC(DHE) gives protection against passive
+   attackers. If the resumption_master_secret has been compromised,
+   a resumption handshake with EC(DHE) gives protection against passive
+   attackers and a full handshake with EC(DHE) gives protection against
+   active attackers. If a traffic secret has been compromised, any
+   handshake with EC(DHE) gives protection against active attackers.
 
    The document “Confidentiality in the Face of Pervasive Surveillance:
    A Threat Model and Problem Statement” [RFC7624] defines key
@@ -1145,7 +1148,7 @@ this specification.
    {{I-D.ietf-tls-dtls13}}, AEAD limits and forward secrecy can be
    achieved by sending post-handshake KeyUpdate messages, which triggers
    rekeying of DTLS. Such symmetric rekeying gives significantly less protection
-   against key leakage than re-running Diffie-Hellman.  After leakage
+   against key leakage than re-running Diffie-Hellman as explained above.  After leakage
    of application_traffic_secret_N, a passive attacker can passively
    eavesdrop on all future application data sent on the connection
    including application data encrypted with
