@@ -1136,7 +1136,7 @@ this specification.
    handshake with EC(DHE) gives protection against active attackers.
 
    The document “Confidentiality in the Face of Pervasive Surveillance:
-   A Threat Model and Problem Statement” [RFC7624] defines key
+   A Threat Model and Problem Statement” {{RFC7624}} defines key
    exfiltration as the transmission of cryptographic keying material
    for an encrypted communication from a collaborator, deliberately or
    unwittingly, to an attacker. Using the terms in RFC 7624, forward
