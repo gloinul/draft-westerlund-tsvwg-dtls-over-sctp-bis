@@ -131,7 +131,7 @@ normative:
    in a way that is designed to give communications privacy and to
    prevent eavesdropping and detect tampering or message
    forgery. DTLS/SCTP uses DTLS for mutual authentication, key
-   exchange with perfect forward secrecy for SCTP-AUTH, and
+   exchange with forward secrecy for SCTP-AUTH, and
    confidentiality of user messages. DTLS/SCTP use SCTP and SCTP-AUTH
    for integrity protection and replay protection of user messages.
 
@@ -251,7 +251,7 @@ need:
       client).
 
    *  Periodic rerunning of Diffie-Hellman key-exchange to provide
-      Perfect Forward Secrecy (PFS) to reduce the impact any key-reveal.
+      forward secrecy and mitigate static key exfiltration attacks.
 
    *  Perform SCTP-AUTH re-keying.
 
@@ -295,8 +295,6 @@ HMAC: Keyed-Hash Message Authentication Code
 
 MTU:  Maximum Transmission Unit
 
-PFS:  Perfect Forward Secrecy
-
 PPID:  Payload Protocol Identifier
 
 SCTP:  Stream Control Transmission Protocol
@@ -333,7 +331,7 @@ ULP:  Upper Layer Protocol
 
    For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
    be used. For all versions of DTLS, cryptographic parameters giving
-   confidentiality and Perfect Forward Secrecy (PFS) MUST be used.
+   confidentiality and forward secrecy MUST be used.
 
 ## Message Sizes {#Msg-size}
 
@@ -1123,9 +1121,43 @@ this specification.
    SCTP-AUTH key is rekeyed when a new DTLS connection is set up at
    which point a new SCTP-AUTH key is derived using the TLS-Exporter.
 
+   (D)TLS 1.3 {{RFC8446}} discusses forward secrecy from EC(DHE),
+   KeyUpdate, and tickets/resumption. Forward secrecy limits the
+   effect of key leakage in one direction (compromise of a key at
+   time T2 does not compromise some key at time T1 where T1 < T2).
+   Protection in the other direction (compromise at time T1 does not
+   compromise keys at time T2) can be achieved by rerunning EC(DHE).
+   If a long-term authentication key has been compromised, a full
+   handshake with EC(DHE) gives protection against passive
+   attackers. If the resumption_master_secret has been compromised,
+   a resumption handshake with EC(DHE) gives protection against passive
+   attackers and a full handshake with EC(DHE) gives protection against
+   active attackers. If a traffic secret has been compromised, any
+   handshake with EC(DHE) gives protection against active attackers.
+
+   The document “Confidentiality in the Face of Pervasive Surveillance:
+   A Threat Model and Problem Statement” {{RFC7624}} defines key
+   exfiltration as the transmission of cryptographic keying material
+   for an encrypted communication from a collaborator, deliberately or
+   unwittingly, to an attacker. Using the terms in RFC 7624, forward
+   secrecy without rerunning EC(DHE) still allows an attacker to do
+   static key exfiltration. Rerunning EC(DHE) forces and attacker to
+   dynamic key exfiltration (or content exfiltration).
+
+   When using DTLS 1.3
+   {{I-D.ietf-tls-dtls13}}, AEAD limits and forward secrecy can be
+   achieved by sending post-handshake KeyUpdate messages, which triggers
+   rekeying of DTLS. Such symmetric rekeying gives significantly less protection
+   against key leakage than re-running Diffie-Hellman as explained above.  After leakage
+   of application_traffic_secret_N, a passive attacker can passively
+   eavesdrop on all future application data sent on the connection
+   including application data encrypted with
+   application_traffic_secret_N+1, application_traffic_secret_N+2,
+   etc. Note that KeyUpdate does not update the exporter_secret.
+   
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
-   re-run of Diffie-Hellman to provide Perfect Forward Secrecy and
+   re-run of Diffie-Hellman to provide forward secrecy and
    force attackers to dynamic key extraction {{RFC7624}}. ANSSI writes
    "It is recommended to force the periodic renewal of the keys, e.g.,
    every hour and every 100 GB of data, in order to limit the impact
@@ -1151,17 +1183,6 @@ this specification.
    identity during the setup of a new connections, but MAY accept
    negotiation of stronger algorithms and security parameters, which
    might be motivated by new attacks.
-
-   When using DTLS 1.3
-   {{I-D.ietf-tls-dtls13}}, AEAD limits and forward secrecy can be
-   achieved by sending post-handshake KeyUpdate messages, which triggers
-   rekeying of DTLS. Such symmetric rekeying gives significantly less protection
-   against key leakage than re-running Diffie-Hellman.  After leakage
-   of application_traffic_secret_N, a passive attacker can passively
-   eavesdrop on all future application data sent on the connection
-   including application data encrypted with
-   application_traffic_secret_N+1, application_traffic_secret_N+2,
-   etc. Note that KeyUpdate does not update the exporter_secret.
 
    Allowing new connections can enable denial-of-service attacks.
    The endpoints SHOULD limit the frequency of new connections.
@@ -1225,9 +1246,7 @@ this specification.
    It is RECOMMENDED that DTLS/SCTP is used with certificate based
    authentication in DTLS 1.3 {{I-D.ietf-tls-dtls13}} to provide
    identity protection. DTLS/SCTP MUST be used with a key exchange
-   method providing Perfect Forward Secrecy. Perfect Forward Secrecy
-   significantly limits the amount of data that can be compromised due
-   to key compromise.
+   method providing forward secrecy.
 
 ## Pervasive Monitoring
 
@@ -1240,7 +1259,7 @@ this specification.
    offers much better protection against pervasive monitoring.
 
    Massive pervasive monitoring attacks relying on key exchange
-   without forward secrecy has been reported. By mandating perfect
+   without forward secrecy has been reported. By mandating
    forward secrecy, DTLS/SCTP effectively mitigate many forms of
    passive pervasive monitoring and limits the amount of compromised
    data due to key compromise.
@@ -1250,8 +1269,8 @@ this specification.
    exfiltration. Dynamic key exfiltration increases the risk of
    discovery for the attacker {{RFC7624}}. DTLS/SCTP per this
    specification encourages implementations to frequently set up new
-   DTLS connections over the same SCTP association to force attackers
-   to do dynamic key exfiltration.
+   DTLS connections with (EC)DHE over the same SCTP association to
+   force attackers to do dynamic key exfiltration.
 
    In addition to the privacy attacks discussed above, surveillance on
    a large scale may enable tracking of a user over a wider
