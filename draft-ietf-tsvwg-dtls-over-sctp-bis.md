@@ -1149,9 +1149,9 @@ this specification.
    achieved by sending post-handshake KeyUpdate messages, which triggers
    rekeying of DTLS. Such symmetric rekeying gives significantly less protection
    against key leakage than re-running Diffie-Hellman as explained above.  After leakage
-   of application_traffic_secret_N, a passive attacker can passively
-   eavesdrop on all future application data sent on the connection
-   including application data encrypted with
+   of application_traffic_secret_N, an attacker can passively
+   eavesdrop on all future data sent on the connection
+   including data encrypted with
    application_traffic_secret_N+1, application_traffic_secret_N+2,
    etc. Note that KeyUpdate does not update the exporter_secret.
    
