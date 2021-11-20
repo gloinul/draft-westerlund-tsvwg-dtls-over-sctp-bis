@@ -247,8 +247,8 @@ where there is a significant cost of bringing down the SCTP
 association in order to restart it. Such DTLS/SCTP usages that
 need:
 
-   *  Periodic re-authentication of both endpoints (not only the DTLS
-      client).
+   *  Periodic re-authentication and transfer of revocation information
+      of both endpoints (not only the DTLS client).
 
    *  Periodic rerunning of Diffie-Hellman key-exchange to provide
       forward secrecy and mitigate static key exfiltration attacks.
@@ -613,7 +613,7 @@ ULP:  Upper Layer Protocol
    the SCTP association due to DTLS, it also avoids dependency on
    version specific DTLS mechanisms such as renegotiation in DTLS 1.2,
    which is disabled by default in many DTLS implementations, or
-   post-handshake messages in DTLS 1.3, which does not allow mutual
+   post-handshake messages in DTLS 1.3, which does not allow periodic mutual
    endpoint re-authentication or re-keying of SCTP-AUTH. Parallel DTLS
    connections enable opening a new DTLS connection performing a
    handshake, while the existing DTLS connection is kept in place.
@@ -726,7 +726,8 @@ ULP:  Upper Layer Protocol
 ## Renegotiation and KeyUpdate
 
    DTLS 1.2 renegotiation enables rekeying (with ephemeral Diffie-
-   Hellman) of DTLS as well as mutual reauthentication inside an DTLS
+   Hellman) of DTLS as well as mutual reauthentication and transfer
+	of revocation information inside an DTLS
    1.2 connection. Renegotiation has been removed from DTLS 1.3 and
    partly replaced with post-handshake messages such as KeyUpdate. The
    parallel DTLS connection solution was specified due to lack of
@@ -1219,6 +1220,8 @@ this specification.
    application using DTLS/SCTP MUST define what the identity is and how it is
    encoded and the client and server MUST use the same identity format.
    Guidance on server certificate validation can be found in {{RFC6125}}.
+   DTLS/SCTP enables periodic transfer of mutual revocation information
+   (OSCP stapling) every time a new parallel connection is set up.
    All security decisions MUST be based on the peer's authenticated
    identity, not on its transport layer identity.
 
