@@ -78,7 +78,7 @@ normative:
   RFC4895:
   RFC4960:
   RFC5705:
-  RFC6347:
+  RFC9147:
   RFC7627:
   RFC7540:
   RFC8174:
@@ -119,7 +119,7 @@ normative:
 ## Overview
 
    This document describes the usage of the Datagram Transport Layer
-   Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
+   Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC9147}}, and
    DTLS 1.3 {{I-D.ietf-tls-dtls13}}, over the Stream Control
    Transmission Protocol (SCTP), as defined in {{RFC4960}} with
    Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
@@ -321,7 +321,7 @@ ULP:  Upper Layer Protocol
 ## Version of DTLS
 
    This document defines the usage of either DTLS 1.3
-   {{I-D.ietf-tls-dtls13}}, or DTLS 1.2 {{RFC6347}}.
+   {{I-D.ietf-tls-dtls13}}, or DTLS 1.2 {{RFC9147}}.
    Earlier versions of DTLS MUST NOT be used (see {{RFC8996}}).
    DTLS 1.3 is RECOMMENDED for security and performance reasons.
    It is expected that DTLS/SCTP as described in this document will work with
@@ -1099,7 +1099,7 @@ this specification.
    and BCP 195 {{RFC7525}} {{RFC8996}} provide recommendations for
    improving the security of deployed services that use TLS.
 
-   When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2 MUST be
+   When DTLS/SCTP is used with DTLS 1.2 {{RFC9147}}, DTLS 1.2 MUST be
    configured to disable options known to provide insufficient
    security. HTTP/2 {{RFC7540}} gives good minimum requirements based
    on the attacks that where publicly known in 2015. DTLS 1.3
@@ -1188,7 +1188,7 @@ this specification.
    Allowing new connections can enable denial-of-service attacks.
    The endpoints SHOULD limit the frequency of new connections.
 
-   When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, the TLS Session
+   When DTLS/SCTP is used with DTLS 1.2 {{RFC9147}}, the TLS Session
    Hash and Extended Master Secret Extension {{RFC7627}} MUST be used to
    prevent unknown key-share attacks where an attacker establishes the
    same key on several connections. DTLS 1.3 always prevents these
