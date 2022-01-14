@@ -78,14 +78,15 @@ normative:
   RFC4895:
   RFC4960:
   RFC5705:
-  RFC9147:
+  RFC6347:
   RFC7627:
   RFC7540:
   RFC8174:
   RFC8260:
   RFC8446:
   RFC8996:
-  I-D.ietf-tls-dtls13:
+  RFC9146:
+  RFC9147:
   I-D.ietf-tls-dtls-connection-id:
 
 --- abstract
@@ -119,8 +120,8 @@ normative:
 ## Overview
 
    This document describes the usage of the Datagram Transport Layer
-   Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC9147}}, and
-   DTLS 1.3 {{I-D.ietf-tls-dtls13}}, over the Stream Control
+   Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC9146}}, and
+   DTLS 1.3 {{RFC9147}}, over the Stream Control
    Transmission Protocol (SCTP), as defined in {{RFC4960}} with
    Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
 
@@ -321,7 +322,7 @@ ULP:  Upper Layer Protocol
 ## Version of DTLS
 
    This document defines the usage of either DTLS 1.3
-   {{I-D.ietf-tls-dtls13}}, or DTLS 1.2 {{RFC9147}}.
+   {{RFC9147}}, or DTLS 1.2 {{RFC9146}}.
    Earlier versions of DTLS MUST NOT be used (see {{RFC8996}}).
    DTLS 1.3 is RECOMMENDED for security and performance reasons.
    It is expected that DTLS/SCTP as described in this document will work with
@@ -472,7 +473,7 @@ ULP:  Upper Layer Protocol
 
    The DTLS Connection ID MUST be negotiated
    ({{I-D.ietf-tls-dtls-connection-id}} or Section 9 of
-   {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the length field in
+   {{RFC9147}}). If DTLS 1.3 is used, the length field in
    the record layer MUST be included. A 16-bit sequence number SHOULD
    be used rather than 8-bit to minimize issues with DTLS record
    sequence number wrapping.
@@ -779,7 +780,7 @@ ULP:  Upper Layer Protocol
 
 ### DTLS 1.3 Considerations
 
-   The procedures of Section 4.2.1 of {{I-D.ietf-tls-dtls13}} are irrelevant.
+   The procedures of Section 4.2.1 of {{RFC9147}} are irrelevant.
    When receiving DTLS packets using epoch n, no DTLS packets from earlier
    epochs are received.
 
@@ -1087,7 +1088,7 @@ this specification.
 
 # Security Considerations {#sec-Consideration}
 
-   The security considerations given in {{I-D.ietf-tls-dtls13}},
+   The security considerations given in {{RFC9147}},
    {{RFC4895}}, and {{RFC4960}} also apply to this document.
 
 ## Cryptographic Considerations
@@ -1099,11 +1100,11 @@ this specification.
    and BCP 195 {{RFC7525}} {{RFC8996}} provide recommendations for
    improving the security of deployed services that use TLS.
 
-   When DTLS/SCTP is used with DTLS 1.2 {{RFC9147}}, DTLS 1.2 MUST be
+   When DTLS/SCTP is used with DTLS 1.2 {{RFC9146}}, DTLS 1.2 MUST be
    configured to disable options known to provide insufficient
    security. HTTP/2 {{RFC7540}} gives good minimum requirements based
    on the attacks that where publicly known in 2015. DTLS 1.3
-   {{I-D.ietf-tls-dtls13}} only define strong algorithms without major
+   {{RFC9147}} only define strong algorithms without major
    weaknesses at the time of publication. Many of the TLS registries
    have a "Recommended" column. Parameters not marked as "Y" are NOT
    RECOMMENDED to support. DTLS 1.3 is preferred over DTLS 1.2 being a
@@ -1146,7 +1147,7 @@ this specification.
    dynamic key exfiltration (or content exfiltration).
 
    When using DTLS 1.3
-   {{I-D.ietf-tls-dtls13}}, AEAD limits and forward secrecy can be
+   {{RFC9147}}, AEAD limits and forward secrecy can be
    achieved by sending post-handshake KeyUpdate messages, which triggers
    rekeying of DTLS. Such symmetric rekeying gives significantly less protection
    against key leakage than re-running Diffie-Hellman as explained above.  After leakage
@@ -1188,7 +1189,7 @@ this specification.
    Allowing new connections can enable denial-of-service attacks.
    The endpoints SHOULD limit the frequency of new connections.
 
-   When DTLS/SCTP is used with DTLS 1.2 {{RFC9147}}, the TLS Session
+   When DTLS/SCTP is used with DTLS 1.2 {{RFC9146}}, the TLS Session
    Hash and Extended Master Secret Extension {{RFC7627}} MUST be used to
    prevent unknown key-share attacks where an attacker establishes the
    same key on several connections. DTLS 1.3 always prevents these
@@ -1247,7 +1248,7 @@ this specification.
    chunk header.
 
    It is RECOMMENDED that DTLS/SCTP is used with certificate based
-   authentication in DTLS 1.3 {{I-D.ietf-tls-dtls13}} to provide
+   authentication in DTLS 1.3 {{RFC9147}} to provide
    identity protection. DTLS/SCTP MUST be used with a key exchange
    method providing forward secrecy.
 
