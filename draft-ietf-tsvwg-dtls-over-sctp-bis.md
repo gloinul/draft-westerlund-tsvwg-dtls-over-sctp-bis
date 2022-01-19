@@ -87,7 +87,6 @@ normative:
   RFC8996:
   RFC9146:
   RFC9147:
-  I-D.ietf-tls-dtls-connection-id:
 
 --- abstract
 
@@ -120,7 +119,7 @@ normative:
 ## Overview
 
    This document describes the usage of the Datagram Transport Layer
-   Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC9146}}, and
+   Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
    DTLS 1.3 {{RFC9147}}, over the Stream Control
    Transmission Protocol (SCTP), as defined in {{RFC4960}} with
    Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
@@ -322,7 +321,7 @@ ULP:  Upper Layer Protocol
 ## Version of DTLS
 
    This document defines the usage of either DTLS 1.3
-   {{RFC9147}}, or DTLS 1.2 {{RFC9146}}.
+   {{RFC9147}}, or DTLS 1.2 {{RFC6347}}.
    Earlier versions of DTLS MUST NOT be used (see {{RFC8996}}).
    DTLS 1.3 is RECOMMENDED for security and performance reasons.
    It is expected that DTLS/SCTP as described in this document will work with
@@ -472,7 +471,7 @@ ULP:  Upper Layer Protocol
    for terminating the DTLS connection and SCTP association.
 
    The DTLS Connection ID MUST be negotiated
-   ({{I-D.ietf-tls-dtls-connection-id}} or Section 9 of
+   ({{RFC9146}} or Section 9 of
    {{RFC9147}}). If DTLS 1.3 is used, the length field in
    the record layer MUST be included. A 16-bit sequence number SHOULD
    be used rather than 8-bit to minimize issues with DTLS record
@@ -503,7 +502,7 @@ ULP:  Upper Layer Protocol
    handling sequence number wraps through trial decoding with a lower
    values in the higher bits of the extended sequence number.
 
-   Section 4 of {{I-D.ietf-tls-dtls-connection-id}} states “If,
+   Section 4 of {{RFC9146}} states “If,
    however, an implementation chooses to receive different lengths of
    CID, the assigned CID values must be self-delineating since there
    is no other mechanism available to determine what connection (and
@@ -728,7 +727,7 @@ ULP:  Upper Layer Protocol
 
    DTLS 1.2 renegotiation enables rekeying (with ephemeral Diffie-
    Hellman) of DTLS as well as mutual reauthentication and transfer
-	of revocation information inside an DTLS
+   of revocation information inside an DTLS
    1.2 connection. Renegotiation has been removed from DTLS 1.3 and
    partly replaced with post-handshake messages such as KeyUpdate. The
    parallel DTLS connection solution was specified due to lack of
@@ -1100,7 +1099,7 @@ this specification.
    and BCP 195 {{RFC7525}} {{RFC8996}} provide recommendations for
    improving the security of deployed services that use TLS.
 
-   When DTLS/SCTP is used with DTLS 1.2 {{RFC9146}}, DTLS 1.2 MUST be
+   When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2 MUST be
    configured to disable options known to provide insufficient
    security. HTTP/2 {{RFC7540}} gives good minimum requirements based
    on the attacks that where publicly known in 2015. DTLS 1.3
@@ -1189,7 +1188,7 @@ this specification.
    Allowing new connections can enable denial-of-service attacks.
    The endpoints SHOULD limit the frequency of new connections.
 
-   When DTLS/SCTP is used with DTLS 1.2 {{RFC9146}}, the TLS Session
+   When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, the TLS Session
    Hash and Extended Master Secret Extension {{RFC7627}} MUST be used to
    prevent unknown key-share attacks where an attacker establishes the
    same key on several connections. DTLS 1.3 always prevents these
