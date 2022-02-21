@@ -1302,8 +1302,8 @@ this specification.
    Lindskog, Daniel Mentz, and Sean Turner for their invaluable
    comments.
 
-   The authors of this document want to thank GitHub user vanrein for
-   their contribution.
+   The authors of this document want to thank Daria Ivanova, Li Yan,
+   and GitHub user vanrein for their contribution.
 
 --- back
 
