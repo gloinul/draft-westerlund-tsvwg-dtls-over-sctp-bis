@@ -726,14 +726,14 @@ ULP:  Upper Layer Protocol
 ## Renegotiation and KeyUpdate
 
    DTLS 1.2 renegotiation enables rekeying (with ephemeral Diffie-
-   Hellman) of DTLS as well as mutual reauthentication and transfer
-	of revocation information inside an DTLS
-   1.2 connection. Renegotiation has been removed from DTLS 1.3 and
-   partly replaced with post-handshake messages such as KeyUpdate. The
-   parallel DTLS connection solution was specified due to lack of
-   necessary features with DTLS 1.3 considered needed for long lived
-   SCTP associations, such as rekeying (with ephemeral Diffie-Hellman)
-   as well as mutual reauthentication.
+   Hellman) of DTLS as well as mutual reauthentication and transfer of
+   revocation information inside an DTLS 1.2 connection. Renegotiation
+   has been removed from DTLS 1.3 and partly replaced with
+   post-handshake messages such as KeyUpdate. The parallel DTLS
+   connection solution was specified due to lack of necessary features
+   with DTLS 1.3 considered needed for long lived SCTP associations,
+   such as rekeying (with ephemeral Diffie-Hellman) as well as mutual
+   reauthentication.
 
    This specification do not allow usage of DTLS 1.2 renegotiation to
    avoid race conditions and corner cases in the interaction between
@@ -794,8 +794,9 @@ ULP:  Upper Layer Protocol
 
    The initial DTLS connection will be used to establish a new shared
    secret as specified per DTLS version below, and which MUST use
-   shared key identifier 1. After sending the DTLS Finished message,
-   the active SCTP-AUTH key MUST be switched to the new one. Once the
+   shared key identifier 1. After sending the DTLS Finished message
+   for the initial DTLS connection, the active SCTP-AUTH key MUST be
+   switched from key identifier 0 to key identifier 1. Once the
    initial Finished message from the peer has been processed by DTLS,
    the SCTP-AUTH key with Shared Key Identifier 0 MUST be removed.
 
@@ -1155,7 +1156,7 @@ this specification.
    including data encrypted with
    application_traffic_secret_N+1, application_traffic_secret_N+2,
    etc. Note that KeyUpdate does not update the exporter_secret.
-   
+
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
    re-run of Diffie-Hellman to provide forward secrecy and
