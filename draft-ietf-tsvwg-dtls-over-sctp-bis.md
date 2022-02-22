@@ -1322,7 +1322,7 @@ this specification.
    Michael Tüxen, Eric Rescorla, and Robin Seggelmann.
 
    The RFC 6083 authors thanked Anna Brunstrom, Lars Eggert, Gorry
-   Fairhurst, Ian Goldberg, Alfred Hoenes, Carsten Hohendorf, Stefan 
+   Fairhurst, Ian Goldberg, Alfred Hoenes, Carsten Hohendorf, Stefan
    Lindskog, Daniel Mentz, and Sean Turner for their invaluable comments.
 
    The authors of this document want to thank Daria Ivanova, Li Yan,
