@@ -843,16 +843,16 @@ ULP:  Upper Layer Protocol
    processed by DTLS.
 
    The interaction between peers and protocol stacks shall be as follows:
-1. Local peer A asks for terminating the DTLS/SCTP Association
-2. Local DTLS/SCTP acknowledge the request, from this time on no new messages will be accepted from A
-3. Local DTLS/SCTP flushes all data towards the remote peer B
-4. Local DTLS/SCTP waits until all data have been transferred to B via SCTP
-5. Local DTLS/SCTP sends Close_notify to remote peer B on each and all DTLS connections
-6. When receiving Close_notify on the last DTLS connection, remote DTLS/SCTP informs the remote peer B not to send any further data, from this time on no new messages will be accepted from B
-7. Remote DTLS/SCTP flushes all data towards local peer A
-8. Remote DTLS/SCTP waits until all data have been transferred to A via SCTP
-9. Remote DTLS/SCTP sends Close_notify to remote peer A on each and all DTLS connections.
-10. When receiving Close_notify on the last DTLS connection, local DTLS/SCTP will proceed with the SCTP shutdown procedure (section 3.3.8 of  {{RFC4960}}). 
+1. Local instance of ULP asks for terminating the DTLS/SCTP Association
+2. Local DTLS/SCTP acknowledge the request, from this time on no new data from local instance of ULP will be accepted
+3. Local DTLS/SCTP finishes any protection operation on buffered user messages and ensures that all protected user message data has been accepted by SCTP for transmission, i.e. data has been transferred in the SCTP tx_buffer
+4. Local DTLS/SCTP sends Close_notify to remote instance of ULP on each and all DTLS connections, keys are kept for processing packets received later on.
+5. When receiving Close_notify on the last open DTLS connection, remote DTLS/SCTP instance informs its ULP that remote shutdown has been initiated. No more ULP user message data can be accepted by DTLS/SCTP
+6. Remote DTLS/SCTP finishes any protection operation on buffered user messages and ensures that all protected user message data has been accepted by SCTP for transmission, i.e. data has been transferred in the SCTP tx_buffer
+7. Remote DTLS/SCTP sends Close_notify to remote instance of ULP on each and all DTLS connections, keys are kept for processing packets received later on.
+8. Remote DTLS/SCTP initiates the SCTP shutdown procedure (section 3.3.8 of  {{RFC4960}}).
+9. Completion of SCTP shutdown procedure is used for terminating the DTLS connections.
+
 
 
 # DTLS over SCTP Service {#Negotiation}
