@@ -528,18 +528,24 @@ ULP:  Upper Layer Protocol
 
 ## DTLS Connection Handling
 
-   A DTLS connection MUST be established at the beginning of the SCTP
-   association. All DTLS connections are terminated when the SCTP
-   association is terminated. A DTLS connection MUST NOT span multiple
-   SCTP associations.
+   DTLS/SCTP is negotiated on SCTP level as an adaptation layer
+   {{Negotiation}}. After a succesful negotiation of the DTLS/SCTP
+   during SCTP association establishment, a DTLS connection MUST be
+   established prior to transmission of any ULP user messages. All
+   DTLS connections are terminated when the SCTP association is
+   terminated. A DTLS connection MUST NOT span multiple SCTP
+   associations.
 
    As it is required to establish the DTLS connection at the beginning
    of the SCTP association, either of the peers should never send any
-   SCTP user messages that are not protected by DTLS. So, the case that
-   an endpoint receives data that is not either DTLS messages on Stream
-   0 or protected user messages in the form of a sequence of DTLS
-   Records on any stream is a protocol violation. The receiver MAY
-   terminate the SCTP association due to this protocol violation.
+   SCTP user messages that are not protected by DTLS. So, the case
+   that an endpoint receives data that is not either DTLS messages on
+   Stream 0 or protected user messages in the form of a sequence of
+   DTLS Records on any stream is a protocol violation. The receiver
+   MAY terminate the SCTP association due to this protocol
+   violation. Implementations that does not have a DTLS endpoint
+   immediately ready on SCTP handshake completion will have to ensure
+   correct caching of the messages until the DTLS endpoint is ready.
 
    Whenever a mutual authentication, updated security parameters,
    rerun of Diffie-Hellman key-exchange , or SCTP-AUTH rekeying is
