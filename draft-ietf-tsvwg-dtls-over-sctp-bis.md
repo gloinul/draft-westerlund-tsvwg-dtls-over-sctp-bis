@@ -842,6 +842,19 @@ ULP:  Upper Layer Protocol
    user messages that are buffered in the SCTP layer MUST be read and
    processed by DTLS.
 
+   The interaction between peers and protocol stacks shall be as follows:
+1. Local peer A asks for terminating the DTLS/SCTP Association
+2. Local DTLS/SCTP acknowledge the request, from this time on no new messages will be accepted from A
+3. Local DTLS/SCTP flushes all data towards the remote peer B
+4. Local DTLS/SCTP waits until all data have been transferred to B via SCTP
+5. Local DTLS/SCTP sends Close_notify to remote peer B on each and all DTLS connections
+6. When receiving Close_notify on the last DTLS connection, remote DTLS/SCTP informs the remote peer B not to send any further data, from this time on no new messages will be accepted from B
+7. Remote DTLS/SCTP flushes all data towards local peer A
+8. Remote DTLS/SCTP waits until all data have been transferred to A via SCTP
+9. Remote DTLS/SCTP sends Close_notify to remote peer A on each and all DTLS connections.
+10. When receiving Close_notify on the last DTLS connection, local DTLS/SCTP will proceed with the SCTP shutdown procedure (section 3.3.8 of  {{RFC4960}}). 
+
+
 # DTLS over SCTP Service {#Negotiation}
 
    The adoption of DTLS over SCTP according to the current description
