@@ -410,8 +410,7 @@ ULP:  Upper Layer Protocol
    using DATA {{RFC4960}}, and optionally I-DATA {{RFC8260}} chunks.
 
    DTLS/SCTP works as a shim layer between the user message API and
-   SCTP. The fragmentation works similar as the DTLS fragmentation of
-   handshake messages.  On the sender side a user message fragmented
+   SCTP. On the sender side a user message is split
    into fragments m0, m1, m2, each no larger than 2^14 = 16384
    bytes.
 
@@ -429,9 +428,17 @@ ULP:  Upper Layer Protocol
    The new user_message', i.e., the protected user message, is the input
    to SCTP.
 
-   On the receiving side DTLS is used to decrypt the individual
-   records. There are three failure cases an implementation needs to
-   detect and then act on:
+   On the receiving side, the length field in each DTLS record can be
+   used to determine the boundaries between DTLS records. DTLS can
+   decrypt individual records or a concatenated sequence of records.
+   The last DTLS record can be found by subtracting the length of
+   individual records from the length of user_message’. Whether to
+   decrypt individual records, sequences of records, or the whole
+   user_message’ is left to the implementation. The output from the
+   DTLS decryption(s) is the fragments m0, m1, m2 ... When all DTLS
+   records have been decrypted, the user_message is reassembled as
+   user_message = m0 | m1 | m2 ... There are three failure cases an
+   implementation needs to detect and then act on:
 
    1. Failure in decryption and integrity verification process of any
    DTLS record. Due to SCTP-AUTH preventing delivery of injected or
@@ -472,9 +479,9 @@ ULP:  Upper Layer Protocol
    The DTLS Connection ID MUST be negotiated
    ({{I-D.ietf-tls-dtls-connection-id}} or Section 9 of
    {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the length field in
-   the record layer MUST be included. A 16-bit sequence number SHOULD
-   be used rather than 8-bit to minimize issues with DTLS record
-   sequence number wrapping.
+   the record layer MUST be included in all records. A 16-bit sequence
+   number SHOULD be used rather than 8-bit to minimize issues with DTLS
+   record sequence number wrapping.
 
    The ULP may use multiple messages simultanous, and the progress and
    delivery of these messages are progressing indepentely, thus the
@@ -1297,9 +1304,8 @@ this specification.
    Michael Tüxen, Eric Rescorla, and Robin Seggelmann.
 
    The RFC 6083 authors thanked Anna Brunstrom, Lars Eggert, Gorry
-   Fairhurst, Ian Goldberg, Alfred Hoenes, Carsten Hohendorf, Stefan
-   Lindskog, Daniel Mentz, and Sean Turner for their invaluable
-   comments.
+   Fairhurst, Ian Goldberg, Alfred Hoenes, Carsten Hohendorf, Stefan 
+   Lindskog, Daniel Mentz, and Sean Turner for their invaluable comments.
 
    The authors of this document want to thank Daria Ivanova, Li Yan,
    and GitHub user vanrein for their contribution.
