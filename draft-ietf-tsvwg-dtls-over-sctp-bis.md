@@ -148,7 +148,7 @@ normative:
 * the dynamic address reconfiguration extension as defined in
       {{RFC5061}}.
 
-* User messages of a size up to 2^64-1.
+* User messages of any size.
 
 The method described in this document requires that the SCTP
 implementation supports the optional feature of fragmentation of SCTP
@@ -195,8 +195,9 @@ limitations:
 
 This update that replaces RFC 6083 defines the following changes:
 
-* Removes the limitations on user messages sizes by defining a
-     secure fragmentation mechanism.
+* Removes the limitations on user messages sizes by defining a secure
+     fragmentation mechanism. It is optional to support message sizes
+     over 2^64-1 bytes.
 
 * Enable DTLS key-change without draining
 
@@ -343,9 +344,12 @@ ULP:  Upper Layer Protocol
    has much less overhead than DTLS 1.2 per record.
 
    The sequence of DTLS records is then fragmented into DATA or I-DATA
-   Chunks to fit the path MTU by SCTP. The largest possible user
-   messages using the mechanism defined in this specification is
-   2^64-1 bytes.
+   Chunks to fit the path MTU by SCTP. These changes ensures that
+   DTLS/SCTP has the same capability as SCTP to support user messages
+   of any size. However, to simplify implementations it is OPTIONAL to
+   support user messages larger than 2^64-1 bytes. This is to allow
+   implementation to assume that 64-bit length fields and offset
+   pointers will be sufficient.
 
    The security operations and reassembly process requires that the
    protected user message, i.e., with DTLS record overhead, is buffered
