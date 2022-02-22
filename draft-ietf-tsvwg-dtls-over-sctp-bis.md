@@ -566,6 +566,9 @@ ULP:  Upper Layer Protocol
 
    This means, in particular, that there is no specific PPID for DTLS.
 
+   Messages that are exchanged between DTLS/SCTP peers not containing 
+   ULP user messages shall use PPID=0 according to section 3.3.1 of {{RFC4960}} as no application identifier can be specified by the upper layer for this payload data. 
+
 ## Stream Usage {#Stream-Usage}
 
    DTLS records with a content type different from "application_data"
