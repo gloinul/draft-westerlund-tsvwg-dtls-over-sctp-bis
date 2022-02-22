@@ -47,12 +47,11 @@ informative:
       -
         ins: Agence nationale de la sécurité des systèmes d'information
     date: August 2015
+
   TRISHAKE:
-    target: <https://hal.inria.fr/hal-01102259/file/triple-handshakes-and-cookie-cutters-oakland14.pdf>
-    title:
-       Triple Handshakes and Cookie Cutters: Breaking and Fixing Authentication over TLS
-    seriesinfo:
-      IEEE Symposium on Security & Privacy
+    target: "https://hal.inria.fr/hal-01102259/file/triple-handshakes-and-cookie-cutters-oakland14.pdf"
+    title: "Triple Handshakes and Cookie Cutters: Breaking and Fixing Authentication over TLS"
+    seriesinfo: "IEEE Symposium on Security & Privacy"
     author:
       -
         ins: K. Bhargavan
