@@ -357,6 +357,13 @@ This update that replaces RFC 6083 defines the following changes:
    implementation to assume that 64-bit length fields and offset
    pointers will be sufficient.
 
+   Another implementation dependent exception to the support of any
+   user message size is the SCTP-API defined in {{RFC6458}}. That API
+   does not allow changing the SCTP-AUTH key used to send a particular
+   user message. Thus, the user message size must be limited such that
+   completion of the user message can occur within a short time frame
+   from the establishment of the new DTLS connection ({{Parallel-Dtls}}).
+
    The security operations and reassembly process requires that the
    protected user message, i.e., with DTLS record overhead, is buffered
    in the receiver. This buffer space will thus put a limit on the
@@ -652,7 +659,7 @@ This update that replaces RFC 6083 defines the following changes:
    and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
    preference.
 
-## Parallel DTLS connections
+## Parallel DTLS connections {#Parallel-Dtls}
 
    To enable SCTP-AUTH rekeying, periodic authentication of both
    endpoints, and force attackers to dynamic key extraction
