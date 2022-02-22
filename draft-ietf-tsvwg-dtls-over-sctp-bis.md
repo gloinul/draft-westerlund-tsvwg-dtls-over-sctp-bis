@@ -410,7 +410,7 @@ ULP:  Upper Layer Protocol
    using DATA {{RFC4960}}, and optionally I-DATA {{RFC8260}} chunks.
 
    DTLS/SCTP works as a shim layer between the user message API and
-   SCTP. On the sender side a user message is fragmented
+   SCTP. On the sender side a user message is split
    into fragments m0, m1, m2, each no larger than 2^14 = 16384
    bytes.
 
