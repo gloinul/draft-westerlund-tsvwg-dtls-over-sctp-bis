@@ -1239,6 +1239,17 @@ this specification.
    not a problem provided that no security decisions are made based on
    the source or destination IP addresses.
 
+## Resumption and Tickets
+
+   In DTLS 1.3 any number of tickets can be issued in a connection and
+   the tickets can be used for resumption as long as they are valid, which
+   is up to seven days. The nodes in a resumed connection have the
+   same roles (client or server) as in the connection where the ticket
+   was issued. In DTLS/SCTP, there are no significant performance
+   benefits with resumption and an implementation can chose to never
+   issue any tickets. If tickets and resumption are used it is enough
+   to issue a single ticket per connection.
+
 ## Privacy Considerations
 
    {{RFC6973}} suggests that the privacy considerations of IETF
