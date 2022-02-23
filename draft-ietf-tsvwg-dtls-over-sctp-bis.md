@@ -839,7 +839,7 @@ ULP:  Upper Layer Protocol
    acknowledgments and utilizes existing SCTP protocol behavior to
    ensure delivery of the protected user messages data. However, it is
    dependent on that the DTLS implementation is capable of maintaining
-   its keys and process proteced records after having received DTLS
+   its keys and process protected records after having received DTLS
    Close_notify.
 
    Note: For DTLS 1.3 we do need clarification in the specification.
@@ -855,12 +855,12 @@ ULP:  Upper Layer Protocol
 
    3. Local DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
-   been accepted by SCTP for transmission, i.e. data has been
-   transferred in the SCTP tx_buffer.
+   been successfully transferred to the remote ULP by waiting for 
+   SCTP_SENDER_DRY event defined in section 6.1.9 of {{RFC6458}}.
 
    4. Local DTLS/SCTP sends DTLS Close_notify to remote instance of
-   ULP on each and all DTLS connections, keys and session state are
-   kept for processing packets received later on.
+   DTLS/SCTP on each and all DTLS connections, keys and session 
+   state are kept for processing packets received later on.
 
    5. When receiving Close_notify on the last open DTLS connection,
    remote DTLS/SCTP instance informs its ULP that remote shutdown has
@@ -869,59 +869,29 @@ ULP:  Upper Layer Protocol
 
    6. Remote DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
-   been accepted by SCTP for transmission, i.e. data has been
-   transferred in the SCTP tx_buffer
+   been successfully transferred to the remote ULP by waiting for 
+   SCTP_SENDER_DRY event defined in section 6.1.9 of {{RFC6458}}.
 
-   7. Remote DTLS/SCTP sends Close_notify to its DTLS peer for each
-   and all DTLS connections, keys and session state are kept for
-   processing packets received later on.
+   7. Remote DTLS/SCTP sends Close_notify to Local DTLS/SCTP entity
+   for each and all DTLS connections.
 
-   8. Remote DTLS/SCTP initiates the SCTP shutdown procedure (section
+   8. When receiving Close_notify on the last open DTLS connection,
+   local DTLS/SCTP instance initiates the SCTP shutdown procedure 
+   (section 9.2 of {{RFC4960}}).
+
+   9. Remote DTLS/SCTP replied to the SCTP shutdown procedure (section
    9.2 of {{RFC4960}}).
 
-   9. Local DTLS/SCTP upon having received DTLS Close_Notify on all
-   DTLS connections from remote peer initiates SCTP shutdown
-   procedure.
+   10. Upon receiving the information that SCTP has closed the 
+   Association, independently the local and remote DTLS/SCTP entities
+   destroy the DTLS connection.
 
-   10. Completion of SCTP shutdown procedure is used for terminating
-   the DTLS connections. Until this stage any protected user messages
-   with DTLS records with an earlier sequence number than the
-   Close_Notify message in an DTLS connection needs to be processed
-   and delivered to the ULP.
-
-   A succesful SCTP shutdown will indicate succesful delivery of all
+   A successful SCTP shutdown will indicate successful delivery of all
    data. However, in cases of communication failures and extensive
    packet loss the SCTP shutdown procedure can time out and result in
    SCTP association termination where its unknown if all data has been
-   delivered. The DTLS/SCPT should indicate to ULP succesful
+   delivered. The DTLS/SCPT should indicate to ULP successful
    completion or failure to shutdown gracefully.
-
-   If one have an DTLS implementation where DTLS Close_notify
-   reception results in no further processing of received DTLS
-   records, or having both sent and received Close_Notify results in
-   immediate DTLS connection state termination, then the DTLS/SCTP
-   implementation needs additional procedures.
-
-   As Shutdown Initiating party:
-
-   The DTLS Close_notify messages that the peer transmitts in Step
-   7 needs to be intercepted and cached prior to being processed by
-   the corresponding DTLS connection. It needs to be held in waiting
-   for the SCTP shutdown to complete when it can be used to close the
-   DTLS connection.
-
-   As remote party :
-
-   The DTLS Close_notify messages that the peer transmitts in Step
-   4 needs to be intercepted and cached prior to being processed by
-   the corresponding DTLS connection. It can be release when all prior
-   DTLS records with proteceted user messageas have been
-   received. That requires either DTLS record tracking, or access to
-   SCTP level ACK information confirming that all TSN upto and
-   including the Close Notify message has been ACKed (Note that this
-   is not 100% robust due to potential SCTP level stream
-   prioritizations that could result in Close Notify not being sent
-   last.)
 
 
 # DTLS over SCTP Service {#Negotiation}
