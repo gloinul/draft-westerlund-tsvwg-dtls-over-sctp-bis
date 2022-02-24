@@ -567,22 +567,30 @@ ULP:  Upper Layer Protocol
    This means, in particular, that there is no specific PPID for DTLS.
 
    Messages that are exchanged between DTLS/SCTP peers not containing 
-   ULP user messages shall use PPID=0 according to section 3.3.1 of {{RFC4960}} as no application identifier can be specified by the upper layer for this payload data. 
+   ULP user messages shall use PPID=0 according to section 3.3.1 of 
+   {{RFC4960}} as no application identifier can be specified by the 
+   upper layer for this payload data. 
 
 ## Stream Usage {#Stream-Usage}
 
-   DTLS records with a content type different from "application_data"
-   (e.g., "handshake", "alert", ...) MUST be transported on stream 0 with
-   unlimited reliability and with the ordered delivery feature.
+   DTLS records containing data from ULP will use the stream according
+   to ULP choice.
 
-   DTLS records of content type "application_data", which carries the
-   protected user messages MAY be sent in SCTP messages on any stream,
-   including stream 0. On stream 0 the DTLS record containing the part
-   of protected message, as well as any DTLS messages that aren't
-   record protocol will be mixed, thus the additional head of line
-   blocking can occur. Therefore, applications are RECOMMENDED to send
-   its protected user messages using multiple streams, and on other
-   streams than stream 0.
+   DTLS records not containing data from ULP (e.g. "handshake", "alerts"
+   ...) shall be transported on an arbitrary stream chosen by the
+   implementation at design time or at runtime.
+
+   It is RECOMMENDED to use the same stream for DTLS records not
+   containing data from ULP during the whole lifetime of a DTLS/SCTP
+   Association for avoiding race condition.
+
+   DTLS/SCTP SHALL deliver encrypted messages to DTLS in strict sequential
+   way, meaning that a message received from SCTP shall be split in 
+   DTLS records and then all these records will be delivered to DTLS
+   for decryption strictly sequentially. Further messages containing
+   or not containing ULP data will be queued until the whole previous
+   message has been delivered to DTLS.
+   
 
 ## Chunk Handling
 
