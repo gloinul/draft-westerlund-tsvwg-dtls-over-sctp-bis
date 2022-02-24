@@ -855,8 +855,7 @@ ULP:  Upper Layer Protocol
 
    3. Local DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
-   been successfully transferred to the remote ULP by waiting for 
-   SCTP_SENDER_DRY event defined in section 6.1.9 of {{RFC6458}}.
+   been successfully transferred to the remote ULP.
 
    4. Local DTLS/SCTP sends DTLS Close_notify to remote instance of
    DTLS/SCTP on each and all DTLS connections, keys and session 
@@ -869,8 +868,7 @@ ULP:  Upper Layer Protocol
 
    6. Remote DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
-   been successfully transferred to the remote ULP by waiting for 
-   SCTP_SENDER_DRY event defined in section 6.1.9 of {{RFC6458}}.
+   been successfully transferred to the remote ULP.
 
    7. Remote DTLS/SCTP sends Close_notify to Local DTLS/SCTP entity
    for each and all DTLS connections.
@@ -885,6 +883,11 @@ ULP:  Upper Layer Protocol
    10. Upon receiving the information that SCTP has closed the 
    Association, independently the local and remote DTLS/SCTP entities
    destroy the DTLS connection.
+
+   The verification in step 3 and 6 that all user data message has been 
+   successfully delivered to the remote ULP can be provided by the 
+   SCTP stack that implements {{RFC6458}} by means of SCTP_SENDER_DRY 
+   event (section 6.1.9 of {{RFC6458}})
 
    A successful SCTP shutdown will indicate successful delivery of all
    data. However, in cases of communication failures and extensive
