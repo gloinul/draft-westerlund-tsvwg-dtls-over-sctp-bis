@@ -837,15 +837,10 @@ ULP:  Upper Layer Protocol
    shutting down, the below procedure has been defined. Its goal is to
    avoid the need for APIs requiring per user message data level
    acknowledgments and utilizes existing SCTP protocol behavior to
-   ensure delivery of the protected user messages data. However, it is
-   dependent on that the DTLS implementation is capable of maintaining
-   its keys and process protected records after having received DTLS
-   Close_notify.
+   ensure delivery of the protected user messages data.
 
-   Note: For DTLS 1.3 we do need clarification in the specification.
-   https://github.com/tlswg/dtls13-spec/issues/268
-
-   The interaction between peers and protocol stacks shall be as follows:
+   The interaction between peers and protocol stacks shall be as
+   follows:
 
    1. Local instance of ULP asks for terminating the DTLS/SCTP
    Association.
@@ -858,7 +853,7 @@ ULP:  Upper Layer Protocol
    been successfully transferred to the remote ULP.
 
    4. Local DTLS/SCTP sends DTLS Close_notify to remote instance of
-   DTLS/SCTP on each and all DTLS connections, keys and session 
+   DTLS/SCTP on each and all DTLS connections, keys and session
    state are kept for processing packets received later on.
 
    5. When receiving Close_notify on the last open DTLS connection,
@@ -874,19 +869,19 @@ ULP:  Upper Layer Protocol
    for each and all DTLS connections.
 
    8. When receiving Close_notify on the last open DTLS connection,
-   local DTLS/SCTP instance initiates the SCTP shutdown procedure 
+   local DTLS/SCTP instance initiates the SCTP shutdown procedure
    (section 9.2 of {{RFC4960}}).
 
    9. Remote DTLS/SCTP replied to the SCTP shutdown procedure (section
    9.2 of {{RFC4960}}).
 
-   10. Upon receiving the information that SCTP has closed the 
+   10. Upon receiving the information that SCTP has closed the
    Association, independently the local and remote DTLS/SCTP entities
    destroy the DTLS connection.
 
-   The verification in step 3 and 6 that all user data message has been 
-   successfully delivered to the remote ULP can be provided by the 
-   SCTP stack that implements {{RFC6458}} by means of SCTP_SENDER_DRY 
+   The verification in step 3 and 6 that all user data message has been
+   successfully delivered to the remote ULP can be provided by the
+   SCTP stack that implements {{RFC6458}} by means of SCTP_SENDER_DRY
    event (section 6.1.9 of {{RFC6458}})
 
    A successful SCTP shutdown will indicate successful delivery of all
