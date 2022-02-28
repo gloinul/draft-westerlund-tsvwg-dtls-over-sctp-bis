@@ -356,7 +356,8 @@ ULP:  Upper Layer Protocol
    does not allow changing the SCTP-AUTH key used to send a particular
    user message. Thus, the user message size must be limited such that
    completion of the user message can occur within a short time frame
-   from the establishment of the new DTLS connection ({{Parallel-Dtls}}).
+   from the establishment of the new DTLS connection
+   ({{Parallel-Dtls}}).
 
    The security operations and reassembly process requires that the
    protected user message, i.e., with DTLS record overhead, is buffered
