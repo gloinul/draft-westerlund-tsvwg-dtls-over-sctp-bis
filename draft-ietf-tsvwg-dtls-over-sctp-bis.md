@@ -1398,6 +1398,14 @@ New Versions: Almost 10 years has passed since RFC 6083 was written,
    require parallel DTLS connections. Thus, this document mandates usage of
    relevant versions and algorithms.
 
+Allowing DTLS Messages on any stream: RFC6083 requires DTLS messages
+   that are not user message data to sent on stream 0 and that this
+   stream is used with in-order delivery. That can actually limit the
+   applications that can use DTLS/SCTP. In addition with DTLS 1.3
+   encrypting the actual message type it is anyway not available.
+   Therefore a more flexible rule set is used that relies on DTLS
+   handling reordering.
+
 Clarifications: Some implementation experiences have been gained that
    motivates additional clarifications on the specification.
 
