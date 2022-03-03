@@ -566,8 +566,10 @@ ULP:  Upper Layer Protocol
 
    This means, in particular, that there is no specific PPID for DTLS.
 
-   Messages that are exchanged between DTLS/SCTP peers not containing 
-   ULP user messages shall use PPID=0 according to section 3.3.1 of {{RFC4960}} as no application identifier can be specified by the upper layer for this payload data. 
+   Messages that are exchanged between DTLS/SCTP peers not containing
+   ULP user messages shall use PPID=0 according to section 3.3.1 of
+   {{RFC4960}} as no application identifier can be specified by the
+   upper layer for this payload data.
 
 ## Stream Usage {#Stream-Usage}
 
@@ -961,37 +963,38 @@ ULP:  Upper Layer Protocol
 
 # Socket API Considerations {#socket-api}
 
-   This section describes how the socket API defined in {{RFC6458}} is extended
-   to provide a way for the application to observe the HMAC algorithms used for
-   sending and receiving of AUTH chunks.
+   This section describes how the socket API defined in {{RFC6458}} is
+   extended to provide a way for the application to observe the HMAC
+   algorithms used for sending and receiving of AUTH chunks.
 
    Please note that this section is informational only.
 
-   A socket API implementation based on {{RFC6458}} is, by means of the
-   existing SCTP_AUTHENTICATION_EVENT event, extended to provide the event
-   notification whenever a new HMAC algorithm is used in a received AUTH chunk.
+   A socket API implementation based on {{RFC6458}} is, by means of
+   the existing SCTP_AUTHENTICATION_EVENT event, extended to provide
+   the event notification whenever a new HMAC algorithm is used in a
+   received AUTH chunk.
 
-   Furthermore, two new socket options for the level IPPROTO_SCTP and the
-   name SCTP_SEND_HMAC_IDENT and SCTP_EXPOSE_HMAC_IDENT_CHANGES are defined
-   as described below.
-   The first socket option is used to query the HMAC algorithm used for sending
-   AUTH chunks.
-   The second enables the monitoring of HMAC algorithms used in received
-   AUTH chunks via the SCTP_AUTHENTICATION_EVENT event.
+   Furthermore, two new socket options for the level IPPROTO_SCTP and
+   the name SCTP_SEND_HMAC_IDENT and SCTP_EXPOSE_HMAC_IDENT_CHANGES
+   are defined as described below.  The first socket option is used to
+   query the HMAC algorithm used for sending AUTH chunks.  The second
+   enables the monitoring of HMAC algorithms used in received AUTH
+   chunks via the SCTP_AUTHENTICATION_EVENT event.
 
-   Support for the SCTP_SEND_HMAC_IDENT and SCTP_EXPOSE_HMAC_IDENT_CHANGES
-   socket options also need to be added to the function sctp_opt_info().
+   Support for the SCTP_SEND_HMAC_IDENT and
+   SCTP_EXPOSE_HMAC_IDENT_CHANGES socket options also need to be added
+   to the function sctp_opt_info().
 
 ## Socket Option to Get the HMAC Identifier being Sent (SCTP_SEND_HMAC_IDENT)
 
-   During the SCTP association establishment a HMAC Identifier is selected
-   which is used by an SCTP endpoint when sending AUTH chunks.
-   An application can access the result of this selection by using this
-   read-only socket option, which uses the level IPPROTO_SCTP and the name
-   SCTP_SEND_HMAC_IDENT.
+   During the SCTP association establishment a HMAC Identifier is
+   selected which is used by an SCTP endpoint when sending AUTH
+   chunks.  An application can access the result of this selection by
+   using this read-only socket option, which uses the level
+   IPPROTO_SCTP and the name SCTP_SEND_HMAC_IDENT.
 
-   The following structure is used to access HMAC Identifier used for sending
-   AUTH chunks:
+   The following structure is used to access HMAC Identifier used for
+   sending AUTH chunks:
 
 ~~~~~~~~~~~
 struct sctp_assoc_value {
@@ -1048,16 +1051,17 @@ struct sctp_authkey_event {
 
 ## Socket Option to Expose HMAC Identifier Usage (SCTP_EXPOSE_HMAC_IDENT_CHANGES) {#API-SCTP-EXPOSE-HMAC-IDENT-CHANGES}
 
-   This options allows the application to enable and disable the reception of
-   SCTP_AUTHENTICATION_EVENT events when a new HMAC Identifiers has been
-   received in an AUTH chunk (see {{API-SCTP-AUTHENTICATION-EVENT}}).
-   This read/write socket option uses the level IPPROTO_SCTP and the name
-   SCTP_EXPOSE_HMAC_IDENT_CHANGES.
-   It is needed to provide backwards compatibility and the default is that
-   these events are not reported.
+   This options allows the application to enable and disable the
+   reception of SCTP_AUTHENTICATION_EVENT events when a new HMAC
+   Identifiers has been received in an AUTH chunk (see
+   {{API-SCTP-AUTHENTICATION-EVENT}}).  This read/write socket option
+   uses the level IPPROTO_SCTP and the name
+   SCTP_EXPOSE_HMAC_IDENT_CHANGES.  It is needed to provide backwards
+   compatibility and the default is that these events are not
+   reported.
 
-   The following structure is used to enable or disable the reporting of newly
-   received HMAC Identifiers in AUTH chunks:
+   The following structure is used to enable or disable the reporting
+   of newly received HMAC Identifiers in AUTH chunks:
 
 ~~~~~~~~~~~
 struct sctp_assoc_value {
@@ -1161,16 +1165,16 @@ this specification.
    static key exfiltration. Rerunning EC(DHE) forces and attacker to
    dynamic key exfiltration (or content exfiltration).
 
-   When using DTLS 1.3
-   {{I-D.ietf-tls-dtls13}}, AEAD limits and forward secrecy can be
-   achieved by sending post-handshake KeyUpdate messages, which triggers
-   rekeying of DTLS. Such symmetric rekeying gives significantly less protection
-   against key leakage than re-running Diffie-Hellman as explained above.  After leakage
-   of application_traffic_secret_N, an attacker can passively
-   eavesdrop on all future data sent on the connection
-   including data encrypted with
-   application_traffic_secret_N+1, application_traffic_secret_N+2,
-   etc. Note that KeyUpdate does not update the exporter_secret.
+   When using DTLS 1.3 {{I-D.ietf-tls-dtls13}}, AEAD limits and
+   forward secrecy can be achieved by sending post-handshake KeyUpdate
+   messages, which triggers rekeying of DTLS. Such symmetric rekeying
+   gives significantly less protection against key leakage than
+   re-running Diffie-Hellman as explained above.  After leakage of
+   application_traffic_secret_N, an attacker can passively eavesdrop
+   on all future data sent on the connection including data encrypted
+   with application_traffic_secret_N+1,
+   application_traffic_secret_N+2, etc. Note that KeyUpdate does not
+   update the exporter_secret.
 
    DTLS/SCTP is in many deployments replacing IPsec. For IPsec, NIST
    (US), BSI (Germany), and ANSSI (France) recommends very frequent
@@ -1225,21 +1229,23 @@ this specification.
 
 ## Authentication and Policy Decisions
 
-   DTLS/SCTP MUST be mutually authenticated. Authentication is the process
-   of establishing the identity of a user or system and verifying that
-   the identity is valid. DTLS only provides proof of possession of a key.
-   DTLS/SCTP MUST perform identity authentication. It is RECOMMENDED that
-   DTLS/SCTP is used with certificate-based authentication. When certificates are
-   used the applicatication using DTLS/SCTP is reposible for certificate policies,
-   certificate chain validation, and identity authentication (HTTPS does
-   for example match the hostname with a subjectAltName of type dNSName). The
-   application using DTLS/SCTP MUST define what the identity is and how it is
-   encoded and the client and server MUST use the same identity format.
-   Guidance on server certificate validation can be found in {{RFC6125}}.
-   DTLS/SCTP enables periodic transfer of mutual revocation information
-   (OSCP stapling) every time a new parallel connection is set up.
-   All security decisions MUST be based on the peer's authenticated
-   identity, not on its transport layer identity.
+   DTLS/SCTP MUST be mutually authenticated. Authentication is the
+   process of establishing the identity of a user or system and
+   verifying that the identity is valid. DTLS only provides proof of
+   possession of a key.  DTLS/SCTP MUST perform identity
+   authentication. It is RECOMMENDED that DTLS/SCTP is used with
+   certificate-based authentication. When certificates are used the
+   applicatication using DTLS/SCTP is reposible for certificate
+   policies, certificate chain validation, and identity authentication
+   (HTTPS does for example match the hostname with a subjectAltName of
+   type dNSName). The application using DTLS/SCTP MUST define what the
+   identity is and how it is encoded and the client and server MUST
+   use the same identity format.  Guidance on server certificate
+   validation can be found in {{RFC6125}}.  DTLS/SCTP enables periodic
+   transfer of mutual revocation information (OSCP stapling) every
+   time a new parallel connection is set up.  All security decisions
+   MUST be based on the peer's authenticated identity, not on its
+   transport layer identity.
 
    It is possible to authenticate DTLS endpoints based on IP addresses
    in certificates. SCTP associations can use multiple IP addresses
