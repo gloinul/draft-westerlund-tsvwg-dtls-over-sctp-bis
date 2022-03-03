@@ -658,19 +658,18 @@ This update that replaces RFC 6083 defines the following changes:
    the SCTP association due to DTLS, it also avoids dependency on
    version specific DTLS mechanisms such as renegotiation in DTLS 1.2,
    which is disabled by default in many DTLS implementations, or
-   post-handshake messages in DTLS 1.3, which does not allow periodic mutual
-   endpoint re-authentication or rekeying of SCTP-AUTH. Parallel DTLS
-   connections enable opening a new DTLS connection performing a
-   handshake, while the existing DTLS connection is kept in place.
-   In DTLS 1.3 the handshake MAY be a full handshake or a resumption
-   handshake and resumption can be done while the original
-   connection is still open. In DTLS 1.2 the handshake MUST be a
-   full handshake. On
-   handshake completion switch to the security context of the new DTLS
-   connection and then ensure delivery of all the SCTP chunks using
-   the old DTLS connections security context. When that has been
-   achieved close the old DTLS connection and discard the related
-   security context.
+   post-handshake messages in DTLS 1.3, which does not allow periodic
+   mutual endpoint re-authentication or re-keying of
+   SCTP-AUTH. Parallel DTLS connections enable opening a new DTLS
+   connection performing a handshake, while the existing DTLS
+   connection is kept in place.  In DTLS 1.3 the handshake MAY be a
+   full handshake or a resumption handshake and resumption can be done
+   while the original connection is still open. In DTLS 1.2 the
+   handshake MUST be a full handshake. On handshake completion switch
+   to the security context of the new DTLS connection and then ensure
+   delivery of all the SCTP chunks using the old DTLS connections
+   security context. When that has been achieved close the old DTLS
+   connection and discard the related security context.
 
    As specified in {{Mapping-DTLS}} the usage of DTLS connection ID is
    required to ensure that the receiver can correctly identify the
@@ -704,17 +703,19 @@ This update that replaces RFC 6083 defines the following changes:
    future protected ULP user message. The endpoint is RECOMMENDED to use
    the security context of the new DTLS connection for any DTLS
    protection operation occurring after the completed handshake. The
-   new SCTP-AUTH key SHALL be used for any SCTP message being sent
-   after the DTLS handshake has completed. There is a possibility to
-   use the new SCTP-AUTH key for any SCTP packets part of an SCTP
-   message that was initiated but not yet fully transmitted prior to
-   the completion of the new DTLS handshake, however the API defined
-   in {{RFC6458}} is not supporting this.
+   new SCTP-AUTH key SHALL be used for any SCTP user message being
+   sent after the DTLS handshake has completed. There is a possibility
+   to use the new SCTP-AUTH key for any SCTP packets part of an SCTP
+   user message that was initiated but not yet fully transmitted prior
+   to the completion of the new DTLS handshake, however the API
+   defined in {{RFC6458}} is not supporting switching the SCTP-AUTH
+   key on the sender side. Any SCTP-AUTH receiver implementation is
+   expected to be able to select key on SCTP packet basis.
 
-   The SCTP endpoint will indicate to its peer when the previous DTLS
-   connection and its context are no longer needed for receiving any
-   more data from this endpoint. This is done by having DTLS to send a
-   DTLS close_notify alert. The endpoint MUST NOT send the
+   The DTLS/SCTP endpoint will indicate to its peer when the previous
+   DTLS connection and its context are no longer needed for receiving
+   any more data from this endpoint. This is done by having DTLS to
+   send a DTLS close_notify alert. The endpoint MUST NOT send the
    close_notify until the following two conditions are fulfilled:
 
    1. All SCTP packets containing part of any DTLS record or message
@@ -725,22 +726,14 @@ This update that replaces RFC 6083 defines the following changes:
       security context of this DTLS connection have been acknowledged
       in a non-renegable way.
 
-   There is a very basic way of determining the above conditions for
-   an implementation that enables using the new DTLS connection’s
-   security context for all future DTLS records protected and enabling
-   the associated new SCTP-AUTH key at the same time and not use the
-   old context for any future protection operations. Mark the time
-   when the first SCTP chunk has been sent that is part of the first
-   (partial) SCTP message send call that uses the new security
-   context. That SCTP chunk and thus all previous chunks using the
-   older security context must have been delivered to the peer before
-   the Endpoint Failure Detection (See Section 8.1 of {{RFC4960}}
-   would trigger and terminate the SCTP association. Calculate the
-   upper limit for this timeout period, which is dependent on two
-   configurable parameters. The maximum endpoint failure timeout
-   period is the product of the 'Association.Max.Retrans' and RTO.Max
-   parameters. For the default values per {{RFC4960}} that would be 10
-   attempts time with an RTO.Max = 60 s, i.e., 10 minutes.
+   SCTP implementations exposing APIs like {{RFC6458}} fulfilling
+   these conditions requires draining the SCTP association of all
+   outstanding data after having completed all the user messages using
+   the previous SCTP-AUTH key identifier. Relying on the
+   SCTP_SENDER_DRY_EVENT to know when delivery has been accomplished.
+   A richer API could also be used that allows user message level
+   tracking of delivery, see {{api-considerations}} for API
+   considerations.
 
    For SCTP implementations exposing APIs like {{RFC6458}} where it is
    not possible to change the SCTP-AUTH key for a partial SCTP message
@@ -989,6 +982,9 @@ This update that replaces RFC 6083 defines the following changes:
    plain text user messages prior to DTLS handshake as it is allowed
    per RFC 6083.  So that needs to be part of the consideration for a
    policy allowing fallback.
+
+# SCTP API Consideration {#api-considerations}
+
 
 # Socket API Considerations {#socket-api}
 
