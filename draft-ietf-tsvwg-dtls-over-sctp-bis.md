@@ -137,94 +137,94 @@ normative:
    Applications using DTLS over SCTP can use almost all transport
    features provided by SCTP and its extensions. DTLS/SCTP supports:
 
-* preservation of message boundaries.
+   * preservation of message boundaries.
 
-* a large number of unidirectional and bidirectional streams.
+   * a large number of unidirectional and bidirectional streams.
 
-* ordered and unordered delivery of SCTP user messages.
+   * ordered and unordered delivery of SCTP user messages.
 
-* the partial reliability extension as defined in {{RFC3758}}.
+   * the partial reliability extension as defined in {{RFC3758}}.
 
-* the dynamic address reconfiguration extension as defined in
+   * the dynamic address reconfiguration extension as defined in
       {{RFC5061}}.
 
-* User messages of a size up to 2^64-1.
+   * User messages of a size up to 2^64-1.
 
-The method described in this document requires that the SCTP
-implementation supports the optional feature of fragmentation of SCTP
-user messages as defined in {{RFC4960}}. The implementation is
-required to have an SCTP API (for example the one described in
-{{RFC6458}}) that supports partial user message delivery and also
-recommended that I-DATA chunks as defined in {{RFC8260}} is used to
-efficiently implement and support larger user messages.
+   The method described in this document requires that the SCTP
+   implementation supports the optional feature of fragmentation of
+   SCTP user messages as defined in {{RFC4960}}. The implementation is
+   required to have an SCTP API (for example the one described in
+   {{RFC6458}}) that supports partial user message delivery and also
+   recommended that I-DATA chunks as defined in {{RFC8260}} is used to
+   efficiently implement and support larger user messages.
 
-To simplify implementation and reduce the risk for security holes,
-limitations have been defined such that STARTTLS as specified in
-{{RFC3788}} is no longer supported.
+   To simplify implementation and reduce the risk for security holes,
+   limitations have been defined such that STARTTLS as specified in
+   {{RFC3788}} is no longer supported.
 
 ### Comparison with TLS for SCTP
 
-TLS, from which DTLS was derived, is designed to run on top of a
-byte-stream-oriented transport protocol providing a reliable, in-
-sequence delivery. TLS over SCTP as described in {{RFC3436}} has
-some serious limitations:
+   TLS, from which DTLS was derived, is designed to run on top of a
+   byte-stream-oriented transport protocol providing a reliable, in-
+   sequence delivery. TLS over SCTP as described in {{RFC3436}} has
+   some serious limitations:
 
-* It does not support the unordered delivery of SCTP user messages.
+   * It does not support the unordered delivery of SCTP user messages.
 
-* It does not support partial reliability as defined in
-   {{RFC3758}}.
+   * It does not support partial reliability as defined in
+     {{RFC3758}}.
 
-* It only supports the usage of the same number of streams in both
+   * It only supports the usage of the same number of streams in both
       directions.
 
-* It uses a TLS connection for every bidirectional stream, which
+   * It uses a TLS connection for every bidirectional stream, which
       requires a substantial amount of resources and message exchanges
       if a large number of streams is used.
 
 ### Changes from RFC 6083
 
-The DTLS over SCTP solution defined in RFC 6083 had the following
-limitations:
+   The DTLS over SCTP solution defined in RFC 6083 had the following
+   limitations:
 
-* The maximum user message size is 2^14 (16384) bytes, which is a single
+   * The maximum user message size is 2^14 (16384) bytes, which is a single
       DTLS record limit.
 
-* DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
-  1.2 {{RFC8996}}. This creates additional limitation as discussed in
-  {{DTLS-version}}.
+   * DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
+     1.2 {{RFC8996}}. This creates additional limitation as discussed
+     in {{DTLS-version}}.
 
 This update that replaces RFC 6083 defines the following changes:
 
-* Removes the limitations on user messages sizes by defining a
+   * Removes the limitations on user messages sizes by defining a
      secure fragmentation mechanism.
 
-* Enable DTLS key-change without draining
+   * Enable DTLS key-change without draining
 
-* Mandates that more modern DTLS version are required (DTLS 1.2 or
+   * Mandates that more modern DTLS version are required (DTLS 1.2 or
      1.3)
 
-* Mandates support of modern HMAC algorithm (SHA-256) in the SCTP
+   * Mandates support of modern HMAC algorithm (SHA-256) in the SCTP
      authentication extension {{RFC4895}}.
 
-* Recommends support of {{RFC8260}} to enable interleaving of large
+   * Recommends support of {{RFC8260}} to enable interleaving of large
      SCTP user messages to avoid scheduling issues.
 
-* Applies stricter requirements on always using DTLS for all user
+   * Applies stricter requirements on always using DTLS for all user
      messages in the SCTP association.
 
-* Requires that SCTP-AUTH is applied to all SCTP Chunks that can be
+   * Requires that SCTP-AUTH is applied to all SCTP Chunks that can be
      authenticated.
 
-* Requires support of partial delivery of user messages.
+   * Requires support of partial delivery of user messages.
 
 ## DTLS Version {#DTLS-version}
 
-* The number of renegotiations in DTLS 1.2 is limited to 65534 compared to
-  unlimited in DTLS 1.0.
+   * The number of renegotiations in DTLS 1.2 is limited to 65534 compared to
+     unlimited in DTLS 1.0.
 
-Using DTLS 1.2 instead of using DTLS 1.0 limits the lifetime of a DTLS
-connection and the data volume which can be transferred over a DTLS
-connection.  This is caused by:
+   Using DTLS 1.2 instead of using DTLS 1.0 limits the lifetime of a
+   DTLS connection and the data volume which can be transferred over a
+   DTLS connection.  This is caused by:
 
    *  The number of renegotiations in DTLS 1.2 is limited to 65534
       compared to unlimited in DTLS 1.0.
@@ -232,7 +232,7 @@ connection.  This is caused by:
    *  While the AEAD limits in DTLS 1.3 does not formally apply to DTLS
       1.2 the mathematical limits apply equally well to DTLS 1.2.
 
-DTLS 1.3 comes with a large number of significant changes.
+   DTLS 1.3 comes with a large number of significant changes.
 
    *  Renegotiations are not supported and instead partly replaced by
       KeyUpdates. The number of KeyUpdates is limited to 2^64.
@@ -240,11 +240,11 @@ DTLS 1.3 comes with a large number of significant changes.
    *  Strict AEAD significantly limits on how much many packets can be
       sent before rekeying.
 
-Many applications using DTLS/SCTP are of semi-permanent nature and use
-SCTP associations with expected lifetimes of months or even years, and
-where there is a significant cost of bringing down the SCTP
-association in order to restart it. Such DTLS/SCTP usages that
-need:
+   Many applications using DTLS/SCTP are of semi-permanent nature and
+   use SCTP associations with expected lifetimes of months or even
+   years, and where there is a significant cost of bringing down the
+   SCTP association in order to restart it. Such DTLS/SCTP usages that
+   need:
 
    *  Periodic re-authentication and transfer of revocation information
       of both endpoints (not only the DTLS client).
@@ -254,57 +254,58 @@ need:
 
    *  Perform SCTP-AUTH re-keying.
 
-At the time of publication DTLS 1.3 does not support any of these,
-where DTLS 1.2 renegotiation functionality can provide this
-functionality in the context of DTLS/SCTP. To address these
-requirements from semi-permanent applications, this document use
-several overlapping DTLS connections with either DTLS 1.2 or
-1.3. Having uniform procedures reduces the impact when upgrading from
-1.2 to 1.3 and avoids using the renegotiation mechanism which is
-disabled by default in many DTLS implementations.
+   At the time of publication DTLS 1.3 does not support any of these,
+   where DTLS 1.2 renegotiation functionality can provide this
+   functionality in the context of DTLS/SCTP. To address these
+   requirements from semi-permanent applications, this document use
+   several overlapping DTLS connections with either DTLS 1.2 or
+   1.3. Having uniform procedures reduces the impact when upgrading
+   from 1.2 to 1.3 and avoids using the renegotiation mechanism which
+   is disabled by default in many DTLS implementations.
 
-To address known vulnerabilities in DTLS 1.2 this document describes
-and mandates implementation constraints on ciphers and protocol
-options. The DTLS 1.2 renegotiation mechanism is forbidden to be used
-as it creates need for additional mechanism to handle race conditions
-and interactions between using DTLS connections in parallel.
+   To address known vulnerabilities in DTLS 1.2 this document
+   describes and mandates implementation constraints on ciphers and
+   protocol options. The DTLS 1.2 renegotiation mechanism is forbidden
+   to be used as it creates need for additional mechanism to handle
+   race conditions and interactions between using DTLS connections in
+   parallel.
 
-In the rest of the document, unless the version of DTLS is
-specifically called out the text applies to both versions of DTLS.
+   In the rest of the document, unless the version of DTLS is
+   specifically called out the text applies to both versions of DTLS.
 
 ## Terminology
 
-This document uses the following terms:
+   This document uses the following terms:
 
-Association:  An SCTP association.
+   Association:  An SCTP association.
 
-Connection:  An DTLS connection. It is uniquely
-identified by a connection identifier.
+   Connection: An DTLS connection. It is uniquely identified by a
+   connection identifier.
 
-Stream: A unidirectional stream of an SCTP association.  It is uniquely
-identified by a stream identifier.
+   Stream: A unidirectional stream of an SCTP association.  It is
+   uniquely identified by a stream identifier.
 
 ## Abbreviations
 
-AEAD:  Authenticated Encryption with Associated Data
+   AEAD:  Authenticated Encryption with Associated Data
 
-DTLS:  Datagram Transport Layer Security
+   DTLS:  Datagram Transport Layer Security
 
-HMAC: Keyed-Hash Message Authentication Code
+   HMAC: Keyed-Hash Message Authentication Code
 
-MTU:  Maximum Transmission Unit
+   MTU:  Maximum Transmission Unit
 
-PPID:  Payload Protocol Identifier
+   PPID:  Payload Protocol Identifier
 
-SCTP:  Stream Control Transmission Protocol
+   SCTP:  Stream Control Transmission Protocol
 
-SCTP-AUTH: Authenticated Chunks for SCTP
+   SCTP-AUTH: Authenticated Chunks for SCTP
 
-TCP:  Transmission Control Protocol
+   TCP:  Transmission Control Protocol
 
-TLS:  Transport Layer Security
+   TLS:  Transport Layer Security
 
-ULP:  Upper Layer Protocol
+   ULP:  Upper Layer Protocol
 
 
 # Conventions
@@ -787,8 +788,9 @@ ULP:  Upper Layer Protocol
 
 ## DTLS Epochs {#epoch}
 
-   In general, DTLS implementations SHOULD discard records from earlier epochs.
-   However, in the context of a reliable communication this is not appropriate.
+   In general, DTLS implementations SHOULD discard records from
+   earlier epochs.  However, in the context of a reliable
+   communication this is not appropriate.
 
 ### DTLS 1.2 Considerations
 
@@ -796,9 +798,9 @@ ULP:  Upper Layer Protocol
 
 ### DTLS 1.3 Considerations
 
-   The procedures of Section 4.2.1 of {{I-D.ietf-tls-dtls13}} are irrelevant.
-   When receiving DTLS packets using epoch n, no DTLS packets from earlier
-   epochs are received.
+   The procedures of Section 4.2.1 of {{I-D.ietf-tls-dtls13}} are
+   irrelevant.  When receiving DTLS packets using epoch n, no DTLS
+   packets from earlier epochs are received.
 
 ## Handling of Endpoint-Pair Shared Secrets {#handling-endpoint-secret}
 
@@ -940,21 +942,21 @@ ULP:  Upper Layer Protocol
 ## RFC 6083 Fallback {#Fallback}
 
    This section discusses how an endpoint supporting this
-   specification can fallback to follow the DTLS/SCTP behavior in RFC6083.
-   It is recommended to define a setting that represents the
+   specification can fallback to follow the DTLS/SCTP behavior in
+   RFC6083.  It is recommended to define a setting that represents the
    policy to allow fallback or not. However, the possibility to use
    fallback is based on the ULP can operate using user messages that
    are no longer than 16384 bytes and where the security issues can be
    mitigated or considered acceptable. Fallback is NOT RECOMMEND to be
-   enabled as it enables downgrade attacks to weaker algorithms and versions
-   of DTLS.
+   enabled as it enables downgrade attacks to weaker algorithms and
+   versions of DTLS.
 
-   An SCTP endpoint that receives an INIT chunk or an INIT-ACK chunk that does
-   not contain the SCTP-Adaptation-Indication parameter with the  DTLS/SCTP
-   adaptation layer codepoint, see {{sec-IANA-ACP}}, may in certain cases
-   potentially perform a fallback to RFC 6083 behavior.
-   However, the fallback attempt should only be performed if policy says that
-   is acceptable.
+   An SCTP endpoint that receives an INIT chunk or an INIT-ACK chunk
+   that does not contain the SCTP-Adaptation-Indication parameter with
+   the DTLS/SCTP adaptation layer codepoint, see {{sec-IANA-ACP}}, may
+   in certain cases potentially perform a fallback to RFC 6083
+   behavior.  However, the fallback attempt should only be performed
+   if policy says that is acceptable.
 
    If fallback is allowed, it is possible that the client will send
    plain text user messages prior to DTLS handshake as it is allowed
