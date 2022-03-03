@@ -674,21 +674,6 @@ This update that replaces RFC 6083 defines the following changes:
    the SCTP association due to DTLS, it also avoids dependency on
    version specific DTLS mechanisms such as renegotiation in DTLS 1.2,
    which is disabled by default in many DTLS implementations, or
-<<<<<<< HEAD
-   post-handshake messages in DTLS 1.3, which does not allow periodic mutual
-   endpoint re-authentication or rekeying of SCTP-AUTH. Parallel DTLS
-   connections enable opening a new DTLS connection performing a
-   handshake, while the existing DTLS connection is kept in place.
-   In DTLS 1.3 the handshake MAY be a full handshake or a resumption
-   handshake and resumption can be done while the original
-   connection is still open. In DTLS 1.2 the handshake MUST be a
-   full handshake. On
-   handshake completion switch to the security context of the new DTLS
-   connection and then ensure delivery of all the SCTP chunks using
-   the old DTLS connections security context. When that has been
-   achieved close the old DTLS connection and discard the related
-   security context.
-=======
    post-handshake messages in DTLS 1.3, which does not allow periodic
    mutual endpoint re-authentication or re-keying of
    SCTP-AUTH. Parallel DTLS connections enable opening a new DTLS
@@ -701,7 +686,6 @@ This update that replaces RFC 6083 defines the following changes:
    delivery of all the SCTP chunks using the old DTLS connections
    security context. When that has been achieved close the old DTLS
    connection and discard the related security context.
->>>>>>> Correcting the parallel DTLS draining text.
 
    As specified in {{Mapping-DTLS}} the usage of DTLS connection ID is
    required to ensure that the receiver can correctly identify the
@@ -732,13 +716,8 @@ This update that replaces RFC 6083 defines the following changes:
    When the DTLS handshake has been completed, a new SCTP-AUTH key
    will be exported per {{handling-endpoint-secret}} and the new DTLS
    connection MUST be used for the DTLS protection operation of any
-<<<<<<< HEAD
    future protected ULP user message. The endpoint is RECOMMENDED to use
    the security context of the new DTLS connection for any DTLS
-=======
-   future protected SCTP user message. The endpoint is RECOMMENDED to
-   use the security context of the new DTLS connection for any DTLS
->>>>>>> Correcting the parallel DTLS draining text.
    protection operation occurring after the completed handshake. The
    new SCTP-AUTH key SHALL be used for any SCTP user message being
    sent after the DTLS handshake has completed. There is a possibility
