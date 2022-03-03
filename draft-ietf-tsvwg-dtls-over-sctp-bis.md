@@ -963,6 +963,50 @@ This update that replaces RFC 6083 defines the following changes:
    per RFC 6083.  So that needs to be part of the consideration for a
    policy allowing fallback.
 
+### Client Fallback
+
+   A DTLS/SCTP client supporting this specficiation encountering an
+   server not compatible with this specficiation MAY attempt RFC 6083
+   fallback per this procedure.
+
+   1. Fallback procedure, if enabled, is initiated when receiving an
+      SCTP INIT-ACK that does not contain the DTLS/SCTP Adaptation
+      Layer indication. If fallback is not enabled the SCTP handshake
+      is aborted.
+
+   2. The client checks that the SCTP INIT-ACK contained the necessary
+      chunks and parameters to establish SCTP-AUTH per RFC 6083 with
+      this endpoint. If not all necessary parameters or support
+      algorithms don't match the client MUST abort the
+      handshake. Otherwise it complets the SCTP handshake.
+
+   3. Client performs DTLS connection handshake per RFC 6083 over
+      established SCTP association. If succesfull authenticating the
+      targeted server the client has succesfull fallen back to use RFC
+      6083. If not terminate the SCTP association.
+
+### Server Fallback
+
+   A DTLS/SCTP Server that supports both this specification and RFC
+   6083 and where fallback has been enabled for the ULP can follow
+   this procedure.
+
+   1. When receving an SCTP INIT message without the DTLS/SCTP
+      adapation layer indicataion fallback procedure is initiated.
+
+   2. Verify that the SCTP INIT contains SCTP-AUTH parameters required
+      by RFC 6083 and compatible with this server. If that is not the
+      case abort the SCTP handshake.
+
+   3. Send an SCTP INIT ACK with the required SCTP-AUTH chunks and
+      parameters to the client.
+
+   4. Complete the SCTP Handshake. Await DTLS handshake per RFC 6083.
+      Plain text SCTP messages MAY be received.
+
+   5. Upon succesful completion of DTLS handshake succesfull fallback
+      to RFC 6083 have been accomplished.
+
 # Socket API Considerations {#socket-api}
 
    This section describes how the socket API defined in {{RFC6458}} is
