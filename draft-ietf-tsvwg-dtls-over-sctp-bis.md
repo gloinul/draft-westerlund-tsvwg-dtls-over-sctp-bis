@@ -545,10 +545,10 @@ This update that replaces RFC 6083 defines the following changes:
    As it is required to establish the DTLS connection at the beginning
    of the SCTP association, either of the peers should never send any
    SCTP user messages that are not protected by DTLS. So, the case
-   that an endpoint receives data that is not either DTLS messages on
-   Stream 0 or protected user messages in the form of a sequence of
-   DTLS Records on any stream is a protocol violation. The receiver
-   MAY terminate the SCTP association due to this protocol
+   that an endpoint receives data that is not either DTLS messages or
+   protected user messages in the form of a sequence of DTLS Records
+   on any stream is a protocol violation. The receiver MAY terminate
+   the SCTP association due to this protocol
    violation. Implementations that does not have a DTLS endpoint
    immediately ready on SCTP handshake completion will have to ensure
    correct caching of the messages until the DTLS endpoint is ready.
