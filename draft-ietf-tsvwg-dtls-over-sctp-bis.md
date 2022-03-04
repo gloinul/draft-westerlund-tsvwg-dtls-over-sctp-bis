@@ -958,6 +958,15 @@ This update that replaces RFC 6083 defines the following changes:
 
 # SCTP API Consideration {#api-considerations}
 
+   DTLS/SCTP to function as well as possible has certain needed
+   functionality on the API that the SCTP implementation provide to
+   the ULP. A DTLS/SCTP implementation will need to provide its own
+   API to the ULP, while itself using the SCTP API. This discussion is
+   focused on the needed functionality on the SCTP API.
+
+
+
+
 
 # Socket API Considerations {#socket-api}
 
