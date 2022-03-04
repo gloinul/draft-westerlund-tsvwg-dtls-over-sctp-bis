@@ -983,8 +983,6 @@ This update that replaces RFC 6083 defines the following changes:
    * Partial user messages transmission and reception.
 
 
-
-
 # Socket API Considerations {#socket-api}
 
    This section describes how the socket API defined in {{RFC6458}} is
