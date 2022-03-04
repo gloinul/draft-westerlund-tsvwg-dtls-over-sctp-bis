@@ -189,19 +189,17 @@ normative:
    * The maximum user message size is 2^14 (16384) bytes, which is a single
       DTLS record limit.
 
-<<<<<<< HEAD
    * DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
      1.2 {{RFC8996}}. This creates additional limitation as discussed
      in {{DTLS-version}}.
-=======
-* Non-user message DTLS records where limited to only be sent on
-  Stream 0 and requiring that stream to be in-order delivery which
-  could potentially impact applicaitons.
 
-* DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
-  1.2 {{RFC8996}}. This creates additional limitation as discussed in
-  {{DTLS-version}}.
->>>>>>> Proposed text for addressing Stream Usage for DTLS messages in a better way. Targeting to resolve issue #68.
+   * Non-user message DTLS records where limited to only be sent on
+     Stream 0 and requiring that stream to be in-order delivery which
+     could potentially impact applicaitons.
+
+   * DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
+     1.2 {{RFC8996}}. This creates additional limitation as discussed
+     in {{DTLS-version}}.
 
 This update that replaces RFC 6083 defines the following changes:
 
