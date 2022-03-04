@@ -701,7 +701,7 @@ This update that replaces RFC 6083 defines the following changes:
    When the DTLS handshake has been completed, a new SCTP-AUTH key
    will be exported per {{handling-endpoint-secret}} and the new DTLS
    connection MUST be used for the DTLS protection operation of any
-   future protected SCTP message. The endpoint is RECOMMENDED to use
+   future protected ULP user message. The endpoint is RECOMMENDED to use
    the security context of the new DTLS connection for any DTLS
    protection operation occurring after the completed handshake. The
    new SCTP-AUTH key SHALL be used for any SCTP message being sent
