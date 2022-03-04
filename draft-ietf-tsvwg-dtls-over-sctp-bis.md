@@ -219,9 +219,6 @@ This update that replaces RFC 6083 defines the following changes:
 
 ## DTLS Version {#DTLS-version}
 
-   * The number of renegotiations in DTLS 1.2 is limited to 65534 compared to
-     unlimited in DTLS 1.0.
-
    Using DTLS 1.2 instead of using DTLS 1.0 limits the lifetime of a
    DTLS connection and the data volume which can be transferred over a
    DTLS connection.  This is caused by:
