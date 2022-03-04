@@ -257,7 +257,7 @@ This update that replaces RFC 6083 defines the following changes:
    *  Periodic rerunning of Diffie-Hellman key-exchange to provide
       forward secrecy and mitigate static key exfiltration attacks.
 
-   *  Perform SCTP-AUTH re-keying.
+   *  Perform SCTP-AUTH rekeying.
 
    At the time of publication DTLS 1.3 does not support any of these,
    where DTLS 1.2 renegotiation functionality can provide this
@@ -650,7 +650,7 @@ This update that replaces RFC 6083 defines the following changes:
 
 ## Parallel DTLS connections
 
-   To enable SCTP-AUTH re-rekeying, periodic authentication of both
+   To enable SCTP-AUTH rekeying, periodic authentication of both
    endpoints, and force attackers to dynamic key extraction
    {{RFC7624}}, DTLS/SCTP per this specification defines the usage of
    parallel DTLS connections over the same SCTP association. This
@@ -659,7 +659,7 @@ This update that replaces RFC 6083 defines the following changes:
    version specific DTLS mechanisms such as renegotiation in DTLS 1.2,
    which is disabled by default in many DTLS implementations, or
    post-handshake messages in DTLS 1.3, which does not allow periodic mutual
-   endpoint re-authentication or re-keying of SCTP-AUTH. Parallel DTLS
+   endpoint re-authentication or rekeying of SCTP-AUTH. Parallel DTLS
    connections enable opening a new DTLS connection performing a
    handshake, while the existing DTLS connection is kept in place.
    In DTLS 1.3 the handshake MAY be a full handshake or a resumption
