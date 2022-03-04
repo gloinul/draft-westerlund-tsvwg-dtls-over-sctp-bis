@@ -846,7 +846,11 @@ ULP:  Upper Layer Protocol
    Association.
 
    2. Local DTLS/SCTP acknowledge the request, from this time on no
-   new data from local instance of ULP will be accepted.
+   new data from local instance of ULP will be accepted. In case a
+   DTLS connection handshake is ongoing this needs to either be
+   aborted or concluded at this step to ensure that the necessary
+   DTLS message exchange happens prior to draining any outstanding
+   data in the SCTP association from this endpoint.
 
    3. Local DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
@@ -858,8 +862,12 @@ ULP:  Upper Layer Protocol
 
    5. When receiving Close_notify on the last open DTLS connection,
    remote DTLS/SCTP instance informs its ULP that remote shutdown has
-   been initiated. No more ULP user message data to be sent to peer
-   can be accepted by DTLS/SCTP.
+   been initiated. When two parallel DTLS connections are in place it
+   is important to await Close_notify alert on both to not misstake a
+   rekeying. No more ULP user message data to be sent to peer can be
+   accepted by DTLS/SCTP. In case this endpoint has initiated and DTLS
+   connection handshake this MUST be aborted as the peer is unable to
+   respond.
 
    6. Remote DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
@@ -882,7 +890,7 @@ ULP:  Upper Layer Protocol
    The verification in step 3 and 6 that all user data message has been
    successfully delivered to the remote ULP can be provided by the
    SCTP stack that implements {{RFC6458}} by means of SCTP_SENDER_DRY
-   event (section 6.1.9 of {{RFC6458}})
+   event (section 6.1.9 of {{RFC6458}}).
 
    A successful SCTP shutdown will indicate successful delivery of all
    data. However, in cases of communication failures and extensive
