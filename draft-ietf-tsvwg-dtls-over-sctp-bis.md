@@ -964,6 +964,23 @@ This update that replaces RFC 6083 defines the following changes:
    API to the ULP, while itself using the SCTP API. This discussion is
    focused on the needed functionality on the SCTP API.
 
+   The following functionality is needed:
+
+   * Controlling SCPT-AUTH negotiation so that SHA-256 algorithm is
+     agreed on if supported, and determine if peer supports
+     it.
+
+   * Determine when all SCTP packets that uses an SCTP-auth key or
+     contains DTLS records associated to a particular DTLS connection
+     has been acknowledge in a non-renegable manor.
+
+   * Determine when all SCTP packets have been acknowledge in a
+     non-renegable manor.
+
+   * Negotiate the adaptation layer indication that indicates
+     DTLS/SCTP and determine if it was agreed or not.
+
+   * Partial user messages transmission and reception.
 
 
 
