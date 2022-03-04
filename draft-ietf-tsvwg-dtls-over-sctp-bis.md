@@ -594,7 +594,10 @@ This update that replaces RFC 6083 defines the following changes:
    messages. Thus, it is allowed to insert between protected user
    message fragments DTLS records of other types as the DTLS receiver
    will process these and not result in any user message data being
-   inserted into the ULP's user message.
+   inserted into the ULP's user message. However, DTLS messages of
+   other types than protected user message MUST be sent reliable, so
+   the DTLS record can only be interleaved in case the ULP user
+   message is sent as reliable.
 
    DTLS is capable of handling reordering of the DTLS
    records. However, depending on stream properties and which user
