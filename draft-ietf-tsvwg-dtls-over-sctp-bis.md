@@ -193,6 +193,14 @@ normative:
      1.2 {{RFC8996}}. This creates additional limitation as discussed
      in {{DTLS-version}}.
 
+   * Non-user message DTLS records where limited to only be sent on
+     Stream 0 and requiring that stream to be in-order delivery which
+     could potentially impact applicaitons.
+
+   * DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
+     1.2 {{RFC8996}}. This creates additional limitation as discussed
+     in {{DTLS-version}}.
+
 This update that replaces RFC 6083 defines the following changes:
 
    * Removes the limitations on user messages sizes by defining a
@@ -571,18 +579,40 @@ This update that replaces RFC 6083 defines the following changes:
 
 ## Stream Usage {#Stream-Usage}
 
-   DTLS records with a content type different from "application_data"
-   (e.g., "handshake", "alert", ...) MUST be transported on stream 0 with
-   unlimited reliability and with the ordered delivery feature.
+   DTLS 1.3 protects the actual content type of the DTLS record and
+   have therefore omitted the non-protected content type field. Thus,
+   it is not possible to determine which content type the DTLS record
+   has on SCTP level. For DTLS 1.2 ULP user messages will be carried
+   in DTLS records with content type "application_data".
 
-   DTLS records of content type "application_data", which carries the
-   protected user messages MAY be sent in SCTP messages on any stream,
-   including stream 0. On stream 0 the DTLS record containing the part
-   of protected message, as well as any DTLS messages that aren't
-   record protocol will be mixed, thus the additional head of line
-   blocking can occur. Therefore, applications are RECOMMENDED to send
-   its protected user messages using multiple streams, and on other
-   streams than stream 0.
+   DTLS Records carrying protected user message fragments MUST be sent
+   in the by ULP indicated SCTP stream and user message. The ULP has
+   no limitations in using SCTP facilities for stream and user
+   messages. DTLS records of other types MAY be sent on any stream. It
+   MAY also be sent in its own SCTP user message as well as
+   interleaved with other DTLS records carrying protected user
+   messages. Thus, it is allowed to insert between protected user
+   message fragments DTLS records of other types as the DTLS receiver
+   will process these and not result in any user message data being
+   inserted into the ULP's user message.
+
+   DTLS is capable of handling reordering of the DTLS
+   records. However, depending on stream properties and which user
+   message DTLS records of other types are sent in may impact in which
+   order and how quickly they are possible to process. Using a stream
+   with in-order delivery will ensure that the DTLS Records are
+   delivered in the order they are sent in user messages. Thus,
+   ensuring that if there are DTLS records that need to be delivered
+   in particular order it can be ensured. Alternatively, if it is
+   desired that a DTLS record is delvired as early as possible
+   avoiding in-order streams with queued messages and considering
+   stream priorities can result in faster delviery.
+
+   A simple solution avoiding any protocol issue are to send all DTLS
+   messages that are not protected user message fragments is to pick a
+   stream not used by the ULP, send the DTLS messages in their own
+   user messages with in order delivery. That mimics the RFC 6083
+   behavior without impacting the ULP.
 
 ## Chunk Handling
 
@@ -1226,6 +1256,15 @@ this specification.
    possible, it is RECOMMENDED that the peers have a policy only
    allowing DTLS/SCTP according to this specification.
 
+## Targeting DTLS Messages
+
+   The DTLS handshake messages and other control messages, i.e. not
+   application data can easily be identified when using DTLS 1.2 as
+   their content type is not encrypted. With DTLS 1.3 there is no
+   unprotected content type. {{Stream-Usage}} proposes a basic
+   behavior that would stil make it easily for anyone to detect the
+   DTLS messages that are not proteceted user messages.
+
 ## Authentication and Policy Decisions
 
    DTLS/SCTP MUST be mutually authenticated. Authentication is the
@@ -1356,6 +1395,14 @@ New Versions: Almost 10 years has passed since RFC 6083 was written,
    the end of usefulness. Use of DTLS 1.3 with long lived associations
    require parallel DTLS connections. Thus, this document mandates usage of
    relevant versions and algorithms.
+
+Allowing DTLS Messages on any stream: RFC6083 requires DTLS messages
+   that are not user message data to sent on stream 0 and that this
+   stream is used with in-order delivery. That can actually limit the
+   applications that can use DTLS/SCTP. In addition with DTLS 1.3
+   encrypting the actual message type it is anyway not available.
+   Therefore a more flexible rule set is used that relies on DTLS
+   handling reordering.
 
 Clarifications: Some implementation experiences have been gained that
    motivates additional clarifications on the specification.
