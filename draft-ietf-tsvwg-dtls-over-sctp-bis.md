@@ -193,23 +193,22 @@ normative:
      1.2 {{RFC8996}}. This creates additional limitation as discussed
      in {{DTLS-version}}.
 
-   * Non-user message DTLS records where limited to only be sent on
-     Stream 0 and requiring that stream to be in-order delivery which
-     could potentially impact applicaitons.
+   * DTLS messages that don't contain protected user message data
+     where limited to only be sent on Stream 0 and requiring that
+     stream to be in-order delivery which could potentially impact
+     applicaitons.
 
-   * DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
-     1.2 {{RFC8996}}. This creates additional limitation as discussed
-     in {{DTLS-version}}.
-
-This update that replaces RFC 6083 defines the following changes:
+   This specification defines the following changes compared with RFC
+   6083:
 
    * Removes the limitations on user messages sizes by defining a secure
      fragmentation mechanism. It is optional to support message sizes
      over 2^64-1 bytes.
 
-   * Enable DTLS key-change without draining
+   * Enable DTLS key-change without requiring draining all inflight
+     user message from SCTP.
 
-   * Mandates that more modern DTLS version are required (DTLS 1.2 or
+   * Mandates that more modern DTLS version are used (DTLS 1.2 or
      1.3)
 
    * Mandates support of modern HMAC algorithm (SHA-256) in the SCTP
