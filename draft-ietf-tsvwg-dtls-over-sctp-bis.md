@@ -442,7 +442,7 @@ This update that replaces RFC 6083 defines the following changes:
    decrypt individual records, sequences of records, or the whole
    user_message’ is left to the implementation. The output from the
    DTLS decryption(s) is the fragments m0, m1, m2 ...
-   The user_message is reassembled from decrypted DTLS records as 
+   The user_message is reassembled from decrypted DTLS records as
    user_message = m0 | m1 | m2 ... There are three failure cases an
    implementation needs to detect and then act on:
 
@@ -566,11 +566,12 @@ This update that replaces RFC 6083 defines the following changes:
    a separate Payload Protocol Identifier (PPID) and SHOULD NOT reuse
    the PPID that they registered for running directly over SCTP.
 
-   Using the same PPID does not harm as long as the application can
-   determine whether or not DTLS is used.  However, for protocol
-   analyzers, for example, it is much easier if a separate PPID is used.
-
-   This means, in particular, that there is no specific PPID for DTLS.
+   Using the same PPID does no harm as DTLS/SCTP requires all user
+   mesages being DTLS protected and knows that DTLS is used.  However,
+   for protocol analyzers, for example, it is much easier if a
+   separate PPID is used and avoids different behavior from
+   {{RFC6083}}. This means, in particular, that there is no specific
+   PPID for DTLS.
 
    Messages that are exchanged between DTLS/SCTP peers not containing
    ULP user messages shall use PPID=0 according to section 3.3.1 of
