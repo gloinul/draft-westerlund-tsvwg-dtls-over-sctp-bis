@@ -839,6 +839,11 @@ ULP:  Upper Layer Protocol
    acknowledgments and utilizes existing SCTP protocol behavior to
    ensure delivery of the protected user messages data.
 
+   Note, this proceudre currenlty only works for DTLS 1.3. For DTLS
+   1.2 users the remote endpoint will be closed for sending more data
+   with the reception of the close_notify in step 5, and step 6 will
+   not be possible and that data will be lost.
+
    The interaction between peers and protocol stacks shall be as
    follows:
 
