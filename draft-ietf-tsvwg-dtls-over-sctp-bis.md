@@ -886,13 +886,76 @@ This update that replaces RFC 6083 defines the following changes:
 ## Shutdown
 
    To prevent DTLS from discarding DTLS user messages while it is
-   shutting down, a CloseNotify message MUST only be sent after all
-   outstanding SCTP user messages have been acknowledged by the SCTP
-   peer in a non-revokable way.
+   shutting down, the below procedure has been defined. Its goal is to
+   avoid the need for APIs requiring per user message data level
+   acknowledgments and utilizes existing SCTP protocol behavior to
+   ensure delivery of the protected user messages data.
 
-   Prior to processing a received CloseNotify, all other received SCTP
-   user messages that are buffered in the SCTP layer MUST be read and
-   processed by DTLS.
+   Note, this proceudre currenlty only works for DTLS 1.3. For DTLS
+   1.2 users the remote endpoint will be closed for sending more data
+   with the reception of the close_notify in step 5, and step 6 will
+   not be possible and that data will be lost.
+
+   The interaction between peers and protocol stacks shall be as
+   follows:
+
+   1. Local instance of ULP asks for terminating the DTLS/SCTP
+   Association.
+
+   2. Local DTLS/SCTP acknowledge the request, from this time on no
+   new data from local instance of ULP will be accepted. In case a
+   DTLS connection handshake is ongoing this needs to be aborted
+   conclusively at this step to ensure that the necessary DTLS message
+   exchange happens prior to draining any outstanding data in the SCTP
+   association from this endpoint.
+
+   3. Local DTLS/SCTP finishes any protection operation on buffered
+   user messages and ensures that all protected user message data has
+   been successfully transferred to the remote ULP.
+
+   4. Local DTLS/SCTP sends DTLS Close_notify to remote instance of
+   DTLS/SCTP on each and all DTLS connections, keys and session
+   state are kept for processing packets received later on.
+
+   5. When receiving Close_notify on the last open DTLS connection,
+   remote DTLS/SCTP instance informs its ULP that remote shutdown has
+   been initiated. When two parallel DTLS connections are in place it
+   is important to await Close_notify alert on both to not misstake a
+   rekeying. No more ULP user message data to be sent to peer can be
+   accepted by DTLS/SCTP. In case this endpoint has initiated and DTLS
+   connection handshake this MUST be aborted as the peer is unable to
+   respond.
+
+   6. Remote DTLS/SCTP finishes any protection operation on buffered
+   user messages and ensures that all protected user message data has
+   been successfully transferred to the remote ULP.
+
+   7. Remote DTLS/SCTP sends Close_notify to Local DTLS/SCTP entity
+   for each and all DTLS connections.
+
+   8. When receiving Close_notify on the last open DTLS connection,
+   local DTLS/SCTP instance initiates the SCTP shutdown procedure
+   (section 9.2 of {{RFC4960}}).
+
+   9. Remote DTLS/SCTP replied to the SCTP shutdown procedure (section
+   9.2 of {{RFC4960}}).
+
+   10. Upon receiving the information that SCTP has closed the
+   Association, independently the local and remote DTLS/SCTP entities
+   destroy the DTLS connection.
+
+   The verification in step 3 and 6 that all user data message has been
+   successfully delivered to the remote ULP can be provided by the
+   SCTP stack that implements {{RFC6458}} by means of SCTP_SENDER_DRY
+   event (section 6.1.9 of {{RFC6458}}).
+
+   A successful SCTP shutdown will indicate successful delivery of all
+   data. However, in cases of communication failures and extensive
+   packet loss the SCTP shutdown procedure can time out and result in
+   SCTP association termination where its unknown if all data has been
+   delivered. The DTLS/SCPT should indicate to ULP successful
+   completion or failure to shutdown gracefully.
+
 
 # DTLS over SCTP Service {#Negotiation}
 
