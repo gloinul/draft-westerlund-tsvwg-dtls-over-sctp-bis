@@ -847,10 +847,10 @@ ULP:  Upper Layer Protocol
 
    2. Local DTLS/SCTP acknowledge the request, from this time on no
    new data from local instance of ULP will be accepted. In case a
-   DTLS connection handshake is ongoing this needs to either be
-   aborted or concluded at this step to ensure that the necessary
-   DTLS message exchange happens prior to draining any outstanding
-   data in the SCTP association from this endpoint.
+   DTLS connection handshake is ongoing this needs to be aborted
+   conclusively at this step to ensure that the necessary DTLS message
+   exchange happens prior to draining any outstanding data in the SCTP
+   association from this endpoint.
 
    3. Local DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
