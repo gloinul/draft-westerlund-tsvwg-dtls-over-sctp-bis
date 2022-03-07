@@ -441,8 +441,8 @@ This update that replaces RFC 6083 defines the following changes:
    individual records from the length of user_message’. Whether to
    decrypt individual records, sequences of records, or the whole
    user_message’ is left to the implementation. The output from the
-   DTLS decryption(s) is the fragments m0, m1, m2 ... When all DTLS
-   records have been decrypted, the user_message is reassembled as
+   DTLS decryption(s) is the fragments m0, m1, m2 ...
+   The user_message is reassembled from decrypted DTLS records as 
    user_message = m0 | m1 | m2 ... There are three failure cases an
    implementation needs to detect and then act on:
 
