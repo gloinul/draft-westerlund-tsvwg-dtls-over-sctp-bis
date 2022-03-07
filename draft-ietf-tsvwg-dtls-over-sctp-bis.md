@@ -967,8 +967,7 @@ This update that replaces RFC 6083 defines the following changes:
    The following functionality is needed:
 
    * Controlling SCPT-AUTH negotiation so that SHA-256 algorithm is
-     agreed on if supported, and determine if peer supports
-     it.
+     inlcuded, and determine that SHA-1 is not selected.
 
    * Determine when all SCTP packets that uses an SCTP-auth key or
      contains DTLS records associated to a particular DTLS connection
