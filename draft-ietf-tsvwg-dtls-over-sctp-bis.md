@@ -410,7 +410,7 @@ normative:
 
    DTLS Path MTU Discovery MUST NOT be used.  Since SCTP provides Path
    MTU discovery and fragmentation/reassembly for user messages, and
-   according to {{Msg-size}}, DTLS can send maximum sized DTLS
+   specified in {{Msg-size}}, DTLS can send maximum sized DTLS
    Records.
 
 ## Retransmission of Messages
