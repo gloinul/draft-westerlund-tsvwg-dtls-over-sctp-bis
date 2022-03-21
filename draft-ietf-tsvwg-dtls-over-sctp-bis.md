@@ -84,8 +84,8 @@ normative:
   RFC8260:
   RFC8446:
   RFC8996:
+  RFC9146:
   I-D.ietf-tls-dtls13:
-  I-D.ietf-tls-dtls-connection-id:
 
 --- abstract
 
@@ -494,7 +494,7 @@ normative:
    for terminating the DTLS connection and SCTP association.
 
    The DTLS Connection ID MUST be negotiated
-   ({{I-D.ietf-tls-dtls-connection-id}} or Section 9 of
+   ({{RFC9146}} or Section 9 of
    {{I-D.ietf-tls-dtls13}}). If DTLS 1.3 is used, the length field in
    the record layer MUST be included in all records. A 16-bit sequence
    number SHOULD be used rather than 8-bit to minimize issues with DTLS
@@ -525,7 +525,7 @@ normative:
    handling sequence number wraps through trial decoding with a lower
    values in the higher bits of the extended sequence number.
 
-   Section 4 of {{I-D.ietf-tls-dtls-connection-id}} states “If,
+   Section 4 of {{RFC9146}} states “If,
    however, an implementation chooses to receive different lengths of
    CID, the assigned CID values must be self-delineating since there
    is no other mechanism available to determine what connection (and
