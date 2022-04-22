@@ -525,22 +525,22 @@ normative:
    handling sequence number wraps through trial decoding with a lower
    values in the higher bits of the extended sequence number.
 
-   Section 4 of {{RFC9146}} states “If,
-   however, an implementation chooses to receive different lengths of
-   CID, the assigned CID values must be self-delineating since there
-   is no other mechanism available to determine what connection (and
-   thus, what CID length) is in use.”. As this solution requires
-   multiple connection IDs, using a zero-length CID will be highly
-   problematic as it could result in that any DTLS records with a zero
-   length CID ends up in another DTLS connection context, and there
-   fail the decryption and integrity verification. And in that case to
-   avoid losing the DTLS record, it would have to be forwarded to the
-   zero-length CID using DTLS Connection and decryption and validation
-   must be tried. Resulting in higher resource utilization. Thus, it
-   is RECOMMENDED to not use the zero length CID values and instead
-   use a single common length for the CID values. A single byte should
-   be sufficient, as reuse of old CIDs is possible as long as the
-   implementation ensure they are not used in near time to the
+   Section 4 of {{RFC9146}} states “If, however, an implementation
+   chooses to receive different lengths of CID, the assigned CID
+   values must be self-delineating since there is no other mechanism
+   available to determine what connection (and thus, what CID length)
+   is in use.”. As this solution requires multiple connection IDs,
+   using a zero-length CID will be highly problematic as it could
+   result in that any DTLS records with a zero length CID ends up in
+   another DTLS connection context, and there fail the decryption and
+   integrity verification. And in that case to avoid losing the DTLS
+   record, it would have to be forwarded to the zero-length CID using
+   DTLS Connection and decryption and validation must be
+   tried. Resulting in higher resource utilization. Thus, it is
+   REQUIRED to use non-zero length CID values, and instead RECOMMENDED
+   to use a single common length for the CID values. A single byte
+   should be sufficient, as reuse of old CIDs is possible as long as
+   the implementation ensure they are not used in near time to the
    previous usage.
 
 ## DTLS Connection Handling
