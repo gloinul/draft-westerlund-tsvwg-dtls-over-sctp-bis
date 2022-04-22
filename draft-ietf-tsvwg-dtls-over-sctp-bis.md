@@ -2,8 +2,8 @@
 docname: draft-ietf-tsvwg-dtls-over-sctp-bis-latest
 title: "Datagram Transport Layer Security (DTLS) over Stream Control Transmission Protocol (SCTP)"
 abbrev: DTLS over SCTP
+obsoletes:
 cat: std
-obsoletes: 6083
 ipr: trust200902
 wg: TSVWG
 area: Transport
@@ -103,9 +103,9 @@ normative:
    tampering or message forgery.
 
    Applications using DTLS over SCTP can use almost all transport
-   features provided by SCTP and its extensions. This document intends
-   to obsolete RFC 6083 and removes the 16 kB limitation due to DTLS
-   on user message size by defining a secure user message
+   features provided by SCTP and its extensions. This document is an
+   improved alternative to RFC 6083 and removes the 16 kB limitation
+   due to DTLS on user message size by defining a secure user message
    fragmentation so that multiple DTLS records can be used to protect
    a single user message. It further updates the DTLS versions to use,
    as well as the HMAC algorithms for SCTP-AUTH, and simplifies secure
