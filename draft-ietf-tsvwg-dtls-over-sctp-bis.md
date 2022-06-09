@@ -899,10 +899,11 @@ normative:
    acknowledgments and utilizes existing SCTP protocol behavior to
    ensure delivery of the protected user messages data.
 
-   Note, this proceudre currenlty only works for DTLS 1.3. For DTLS
-   1.2 users the remote endpoint will be closed for sending more data
-   with the reception of the close_notify in step 5, and step 6 will
-   not be possible and that data will be lost.
+   To support DTLS 1.2 close_notify behavior and avoid any uncertainty
+   related to rekeying, a ULP protocol message is defined with it own
+   PPID to enable the DTLS/SCTP layer to know that it is targeting the
+   remote DTLS/SCTP function and act on the request to close in a
+   controlled fashion.
 
    The interaction between peers and protocol stacks shall be as
    follows:
@@ -921,34 +922,33 @@ normative:
    user messages and ensures that all protected user message data has
    been successfully transferred to the remote ULP.
 
-   4. Local DTLS/SCTP sends DTLS Close_notify to remote instance of
-   DTLS/SCTP on each and all DTLS connections, keys and session
-   state are kept for processing packets received later on.
+   4. Local DTLS/SCTP sends DTLS/SCTP Controll Message
+   "SHUTDOWN_Request" {{SHUTDOWN-Request}} to its peer using stream 0
+   protected by a DTLS connection.
 
-   5. When receiving Close_notify on the last open DTLS connection,
-   remote DTLS/SCTP instance informs its ULP that remote shutdown has
-   been initiated. When two parallel DTLS connections are in place it
-   is important to await Close_notify alert on both to not misstake a
-   rekeying. No more ULP user message data to be sent to peer can be
-   accepted by DTLS/SCTP. In case this endpoint has initiated and DTLS
+   5. When receiving the SHUTDOWN-Request the remote DTLS/SCTP
+   instance informs its ULP that remote shutdown has been
+   initiated. No more ULP user message data to be sent to peer can be
+   accepted by DTLS/SCTP. In case this endpoint has initiated a DTLS
    connection handshake this MUST be aborted as the peer is unable to
-   respond.
+   respond to avoid additional case of draining.
 
    6. Remote DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
    been successfully transferred to the remote ULP.
 
-   7. Remote DTLS/SCTP sends Close_notify to Local DTLS/SCTP entity
-   for each and all DTLS connections.
+   7. Remote DTLS/SCTP sends DTLS Close_notify to Local DTLS/SCTP
+   entity for each and all DTLS connections. Then it initiates the
+   SCTP shutdown procedure (section 9.2 of {{RFC4960}}).
 
-   8. When receiving Close_notify on the last open DTLS connection,
-   local DTLS/SCTP instance initiates the SCTP shutdown procedure
-   (section 9.2 of {{RFC4960}}).
+   8. When the local DTLS/SCTP receivs a Close_notify on a DTLS
+   connection, in case it is DTLS 1.3 it SHALL send its corresponding
+   DTLS Close_Notify on each open DTLS connection. When the last open
+   DTLS connection has received Close_Notify and any if needed
+   corresponding Close_Notify have been sent the local DTLS/SCTP
+   initiates the SCTP shutdown procedure (section 9.2 of {{RFC4960}}).
 
-   9. Remote DTLS/SCTP replied to the SCTP shutdown procedure (section
-   9.2 of {{RFC4960}}).
-
-   10. Upon receiving the information that SCTP has closed the
+   9. Upon receiving the information that SCTP has closed the
    Association, independently the local and remote DTLS/SCTP entities
    destroy the DTLS connection.
 
@@ -963,6 +963,12 @@ normative:
    SCTP association termination where its unknown if all data has been
    delivered. The DTLS/SCTP should indicate to ULP successful
    completion or failure to shutdown gracefully.
+
+### DTLS/SCTP Controll Message {#SHUTDOWN-Request}
+
+   DTLS/SCTP Controll Message is defined as a single 32-bit field. The
+   value "1" is defined to mean request to client to initiate
+   controlled shutdown.
 
 
 # DTLS over SCTP Service {#Negotiation}
