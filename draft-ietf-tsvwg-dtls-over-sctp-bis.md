@@ -922,9 +922,9 @@ normative:
    user messages and ensures that all protected user message data has
    been successfully transferred to the remote ULP.
 
-   4. Local DTLS/SCTP sends DTLS/SCTP Controll Message
-   "SHUTDOWN_Request" {{SHUTDOWN-Request}} to its peer using stream 0
-   protected by a DTLS connection.
+   4. Local DTLS/SCTP sends a DTLS/SCTP Controll Message
+   {{Control-Message}} of type "SHUTDOWN_Request" {{SHUTDOWN-Request}}
+   to its peer.
 
    5. When receiving the SHUTDOWN-Request the remote DTLS/SCTP
    instance informs its ULP that remote shutdown has been
@@ -964,12 +964,27 @@ normative:
    delivered. The DTLS/SCTP should indicate to ULP successful
    completion or failure to shutdown gracefully.
 
-### DTLS/SCTP Controll Message {#SHUTDOWN-Request}
+# DTLS/SCTP Controll Message {#Control-Message}
 
-   DTLS/SCTP Controll Message is defined as a single 32-bit field. The
-   value "1" is defined to mean request to client to initiate
-   controlled shutdown.
+   DTLS/SCTP Controll Message is defined as its own upper layer
+   protocol identified by its own PPID. The controll message is single
+   32-bit unsigned integer value. Each message is sent as its own SCTP
+   message after having been protected by an open DTLS connection on
+   any SCTP stream.
 
+   The DTLS/SCTP implementation MUST consume all SCTP messages
+   received with the PPID value of TBD1. If the message is not 32-bit
+   long the message MUST be discarded and the error SHOULD be logged.
+   In case the message have value that are unknown the message is
+   discarded and the event SHOULD be logged.
+
+   A single actual controll message is defined in this specfication.
+
+## SHUTDOWN-Request {#SHUTDOWN-Request}
+
+   The value "1" is defined as a request to the peer to initiate
+   controlled shutdown. 
+   
 
 # DTLS over SCTP Service {#Negotiation}
 
