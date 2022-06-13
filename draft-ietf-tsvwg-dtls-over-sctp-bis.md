@@ -891,7 +891,7 @@ normative:
    soon as the computation is possible.  The exporter MUST use the
    label given in Section {{IANA-Consideration}} and no context.
 
-## Shutdown
+## Shutdown {#sec-shutdown}
 
    To prevent DTLS from discarding DTLS user messages while it is
    shutting down, the below procedure has been defined. Its goal is to
@@ -970,7 +970,8 @@ normative:
    protocol identified by its own PPID. The controll message is single
    32-bit unsigned integer value. Each message is sent as its own SCTP
    message after having been protected by an open DTLS connection on
-   any SCTP stream.
+   any SCTP stream and MUST be marked with SCTP Payload Protocol
+   Identifier (PPID) value TBD1 {{sec-IANA-PPID}}.
 
    The DTLS/SCTP implementation MUST consume all SCTP messages
    received with the PPID value of TBD1. If the message is not 32-bit
@@ -983,8 +984,8 @@ normative:
 ## SHUTDOWN-Request {#SHUTDOWN-Request}
 
    The value "1" is defined as a request to the peer to initiate
-   controlled shutdown. 
-   
+   controlled shutdown. This is used per step 4 and 5 in {{sec-shutdown}}.
+
 
 # DTLS over SCTP Service {#Negotiation}
 
@@ -1298,6 +1299,21 @@ struct sctp_assoc_value {
 | -------------------------- | ----------- | --------- |
 | 0x00000002 | DTLS/SCTP | \[RFC-TBD\] |
 {: #iana-ACP title="Adaptation Code Point"}
+
+
+RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
+this specification.
+
+## SCTP Payload Protocol Identifiers  {#sec-IANA-PPID}
+
+   This document registers one Payload Protocol Identifier (PPID) to
+   be used to idenfity the DTLS/SCTP control messages
+   {{Control-Message}}.
+
+| Value | SCTP PPID | Reference |
+| -------------------------- | ----------- | --------- |
+| TBD1 | DTLS/SCTP Controll Message | \[RFC-TBD\] |
+{: #iana-PPID title="SCTP Payload Protocol Identifier"}
 
 RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
 this specification.
