@@ -133,8 +133,9 @@ normative:
    forgery. DTLS/SCTP uses DTLS for mutual authentication, key
    exchange with forward secrecy for SCTP-AUTH, and
    confidentiality of user messages. DTLS/SCTP use SCTP and SCTP-AUTH
-   for integrity protection and replay protection of user messages.
-
+   for integrity protection and replay protection of all SCTP Chunks
+   that can be authenticated, including user messages.
+   
    Applications using DTLS over SCTP can use almost all transport
    features provided by SCTP and its extensions. DTLS/SCTP supports:
 
@@ -163,7 +164,7 @@ normative:
    limitations have been defined such that STARTTLS as specified in
    {{RFC3788}} is no longer supported.
 
-### Comparison with TLS for SCTP
+### Comparison with TLS over SCTP
 
    TLS, from which DTLS was derived, is designed to run on top of a
    byte-stream-oriented transport protocol providing a reliable, in-
@@ -241,7 +242,7 @@ normative:
    DTLS 1.3 comes with a large number of significant changes.
 
    *  Renegotiations are not supported and instead partly replaced by
-      KeyUpdates. The number of KeyUpdates is limited to 2^64.
+      KeyUpdates. The number of KeyUpdates is limited to 2^48.
 
    *  Strict AEAD significantly limits on how much many packets can be
       sent before rekeying.
