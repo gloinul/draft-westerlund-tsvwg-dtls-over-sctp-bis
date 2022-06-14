@@ -135,7 +135,7 @@ normative:
    confidentiality of user messages. DTLS/SCTP use SCTP and SCTP-AUTH
    for integrity protection and replay protection of all SCTP Chunks
    that can be authenticated, including user messages.
-   
+
    Applications using DTLS over SCTP can use almost all transport
    features provided by SCTP and its extensions. DTLS/SCTP supports:
 
