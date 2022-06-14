@@ -717,13 +717,13 @@ normative:
    When the DTLS handshake has been completed, the new DTLS connection
    MUST be used for the DTLS protection of any new ULP user messages,
    and SHOULD be switched to for protection of not yet protected user
-   message fragments.  Also after the completion of the DTLS handshake
-   a new SCTP-AUTH key will be exported per
-   {{handling-endpoint-secret}}. To enable the reciever to correctly
-   identify when the old DTLS conncetion is no longer in use the
-   SCTP-AUTH key used to protect a SCTP packet MUST NOT be from a
-   newer DTLS conncetion than what has been used to protect any
-   included user message.
+   message fragments of partially transmitted user messages.  Also
+   after the completion of the DTLS handshake a new SCTP-AUTH key will
+   be exported per {{handling-endpoint-secret}}. To enable the sender
+   and reciever to correctly identify when the old DTLS conncetion is
+   no longer in use, the SCTP-AUTH key used to protect a SCTP packet
+   MUST NOT be from a newer DTLS conncetion than what has been used to
+   protect any included user message.
 
    The SCTP API defined in {{RFC6458}} has limitation in changing the
    SCTP-AUTH key until the whole SCTP user message has been
@@ -737,7 +737,7 @@ normative:
    implementation is expected to be able to select key on SCTP packet
    basis.
 
-   The DTLS/SCTP endpoint will indicate to its peer when the previous
+   The DTLS/SCTP endpoint indicate to its peer when the previous
    DTLS connection and its context are no longer needed for receiving
    any more data from this endpoint. This is done by sending a
    DTLS/SCTP Control Message {{Control-Message}} of type
@@ -754,16 +754,18 @@ normative:
       in a non-renegable way.
 
    A DTLS/SCTP endpoint that fulfills the above conditions and have
-   received a Ready_To_Close message SHALL initiate closing of the
-   older DTLS connection by sending a DTLS close_notify and when
-   having received the close_notify terminate the DTLS connection and
-   expunge the associated security context and SCTP-AUTH key. Note
-   that it is not required for a DTLS/SCTP implementation that has
-   received a Ready_To_Close messsage to send that message itself when
-   it fulfills. However, in some situation both endpoints will fulfill
-   the conditions close enough in time that both endpoints will send
-   its Ready_To_Close, that works as both endpoints will then initiate
-   DTLS close_notify and terminate the DTLS connections. 
+   received a Ready_To_Close message SHALL initiate closing of this
+   DTLS connection by sending a DTLS close_notify and when having
+   received the close_notify terminate the DTLS connection and expunge
+   the associated security context and SCTP-AUTH key. Note that it is
+   not required for a DTLS/SCTP implementation that has received a
+   Ready_To_Close messsage to send that message itself when it
+   fulfills the condistions. However, in some situation both endpoints
+   will fulfill the conditions close enough in time that both
+   endpoints will send its Ready_To_Close prior to receiving the
+   indication from its peer, that works as both endpoints will then
+   initiate DTLS close_notify and terminate the DTLS connections upon
+   the reception of the peers close_notify.
 
    SCTP implementations exposing APIs like {{RFC6458}} fulfilling
    these conditions requires draining the SCTP association of all
@@ -1000,17 +1002,14 @@ normative:
    The value "1" is defined as a request to the peer to initiate
    controlled shutdown. This is used per step 4 and 5 in {{sec-shutdown}}.
 
-
-
-
 ## Ready To Close Indication {#Ready_To_Close}
 
-    The value "2" is defined as a indication to the peer that from its
-    perspective all SCTP packets with user message or using the
-    SCTP-AUTH key associated with the oldest DTLS connection has been
-    sent and acknowledged as received in a non-renegable way. This is
-    used in {{Parallel-Dtls}} to initate the closing of the DTLS
-    connections during rekeying.
+   The value "2" is defined as a indication to the peer that from its
+   perspective all SCTP packets with user message or using the
+   SCTP-AUTH key associated with the oldest DTLS connection has been
+   sent and acknowledged as received in a non-renegable way. This is
+   used in {{Parallel-Dtls}} to initate the closing of the DTLS
+   connections during rekeying.
 
 # DTLS over SCTP Service {#Negotiation}
 
