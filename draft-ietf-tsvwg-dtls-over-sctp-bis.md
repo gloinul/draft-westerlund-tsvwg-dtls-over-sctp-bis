@@ -366,8 +366,8 @@ normative:
    ({{Parallel-Dtls}}).
 
    The security operations and reassembly process requires that the
-   protected user message, i.e., with DTLS record overhead, is
-   buffered in the receiver. This buffer space will thus put a limit
+   protected user message, i.e., with DTLS record overhead, is stored
+   in the receiver's buffer. This buffer space will thus put a limit
    on the largest size of plain text user message that can be
    transferred securely. However, by mandating the use of the partial
    delivery of user messages from SCTP and assuming that no two
@@ -382,7 +382,7 @@ normative:
    the DTLS layer with transport overhead by using smaller DTLS
    records. However, for efficient operation and avoiding flow control
    stalls if user message fragments are not frequently and expiendtly
-   moved to upper layer memory buffers, the receiver buffer need to be
+   moved to upper layer memory buffers, the receiver buffer needs to be
    larger.
 
    The DTLS/SCTP implementation is expected to behave very similar to
