@@ -366,20 +366,24 @@ normative:
    ({{Parallel-Dtls}}).
 
    The security operations and reassembly process requires that the
-   protected user message, i.e., with DTLS record overhead, is buffered
-   in the receiver. This buffer space will thus put a limit on the
-   largest size of plain text user message that can be transferred
-   securely. However, by mandating the use of the partial delivery of
-   user messages from SCTP and assuming that no two messages received
-   on the same stream are interleaved (as it is the case when using
-   the API defined in {{RFC6458}}) the required buffering prior to
-   DTLS processing can be limited to a single DTLS record per used
-   incoming stream. This enables the DTLS/SCTP implementation to
-   provide the Upper Layer Protocol (ULP) with each DTLS record's
-   content when it has been decrypted and its integrity been verified
-   enabling partial user message delivery to the ULP. Implementations
-   can trade-off buffer memory requirements in the DTLS layer with
-   transport overhead by using smaller DTLS records.
+   protected user message, i.e., with DTLS record overhead, is
+   buffered in the receiver. This buffer space will thus put a limit
+   on the largest size of plain text user message that can be
+   transferred securely. However, by mandating the use of the partial
+   delivery of user messages from SCTP and assuming that no two
+   messages received on the same stream are interleaved (as it is the
+   case when using the API defined in {{RFC6458}}) the required
+   buffering prior to DTLS processing can be limited to a single DTLS
+   record per used incoming stream. This enables the DTLS/SCTP
+   implementation to provide the Upper Layer Protocol (ULP) with each
+   DTLS record's content when it has been decrypted and its integrity
+   been verified enabling partial user message delivery to the
+   ULP. Implementations can trade-off buffer memory requirements in
+   the DTLS layer with transport overhead by using smaller DTLS
+   records. However, for efficient operation and avoiding flow control
+   stalls if user message fragments are not frequently and expiendtly
+   moved to upper layer memory buffers, the receiver buffer need to be
+   larger.
 
    The DTLS/SCTP implementation is expected to behave very similar to
    just SCTP when it comes to handling of user messages and dealing
