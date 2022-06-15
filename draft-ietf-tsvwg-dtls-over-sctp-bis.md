@@ -620,7 +620,7 @@ normative:
    sent in user messages. Thus, ensuring that if there are DTLS
    records that need to be delivered in particular order it can be
    ensured. Alternatively, if it is desired that a DTLS record is
-   delvired as early as possible avoiding in-order streams with queued
+   deliverd as early as possible avoiding in-order streams with queued
    messages and considering stream priorities can result in faster
    delviery.
 
@@ -737,7 +737,7 @@ normative:
    implementation is expected to be able to select key on SCTP packet
    basis.
 
-   The DTLS/SCTP endpoint indicate to its peer when the previous
+   The DTLS/SCTP endpoint indicates to its peer when the previous
    DTLS connection and its context are no longer needed for receiving
    any more data from this endpoint. This is done by sending a
    DTLS/SCTP Control Message {{Control-Message}} of type
