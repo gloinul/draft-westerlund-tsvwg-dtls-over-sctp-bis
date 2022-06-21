@@ -632,7 +632,7 @@ normative:
    A simple solution avoiding any protocol issue are to send all DTLS
    messages that are not protected user message fragments is to pick a
    stream not used by the ULP, send the DTLS messages in their own
-   user messages with in order delivery. That mimics the RFC 6083
+   user messages with in-order delivery. That mimics the RFC 6083
    behavior without impacting the ULP.
 
 ## Chunk Handling
@@ -888,7 +888,7 @@ normative:
 
    After sending the DTLS Finished message, the active SCTP-AUTH key
    MUST be switched to the new one. When the endpoint has both sent
-   and received a closeNotify on the old DTLS connection then the
+   and received a close_notify on the old DTLS connection then the
    endpoint SHALL remove shared secret(s) related to old DTLS
    connection.
 
@@ -921,7 +921,7 @@ normative:
    ensure delivery of the protected user messages data.
 
    To support DTLS 1.2 close_notify behavior and avoid any uncertainty
-   related to rekeying, a ULP protocol message is defined with it own
+   related to rekeying, a ULP protocol message is defined with its own
    PPID to enable the DTLS/SCTP layer to know that it is targeting the
    remote DTLS/SCTP function and act on the request to close in a
    controlled fashion.
@@ -943,7 +943,7 @@ normative:
    user messages and ensures that all protected user message data has
    been successfully transferred to the remote ULP.
 
-   4. Local DTLS/SCTP sends a DTLS/SCTP Controll Message
+   4. Local DTLS/SCTP sends a DTLS/SCTP Control Message
    {{Control-Message}} of type "SHUTDOWN_Request" {{SHUTDOWN-Request}}
    to its peer.
 
@@ -958,15 +958,15 @@ normative:
    user messages and ensures that all protected user message data has
    been successfully transferred to the remote ULP.
 
-   7. Remote DTLS/SCTP sends DTLS Close_notify to Local DTLS/SCTP
+   7. Remote DTLS/SCTP sends DTLS close_notify to Local DTLS/SCTP
    entity for each and all DTLS connections. Then it initiates the
    SCTP shutdown procedure (section 9.2 of {{RFC9260}}).
 
-   8. When the local DTLS/SCTP receivs a Close_notify on a DTLS
+   8. When the local DTLS/SCTP receives a close_notify on a DTLS
    connection, in case it is DTLS 1.3 it SHALL send its corresponding
-   DTLS Close_Notify on each open DTLS connection. When the last open
-   DTLS connection has received Close_Notify and any if needed
-   corresponding Close_Notify have been sent the local DTLS/SCTP
+   DTLS close_notify on each open DTLS connection. When the last open
+   DTLS connection has received close_notify and any if needed
+   corresponding close_notify have been sent the local DTLS/SCTP
    initiates the SCTP shutdown procedure (section 9.2 of {{RFC9260}}).
 
    9. Upon receiving the information that SCTP has closed the
@@ -985,9 +985,9 @@ normative:
    delivered. The DTLS/SCTP should indicate to ULP successful
    completion or failure to shutdown gracefully.
 
-# DTLS/SCTP Controll Message {#Control-Message}
+# DTLS/SCTP Control Message {#Control-Message}
 
-   DTLS/SCTP Controll Message is defined as its own upper layer
+   DTLS/SCTP Control Message is defined as its own upper layer
    protocol identified by its own PPID. The controll message is single
    32-bit unsigned integer value. Each message is sent as its own SCTP
    message after having been protected by an open DTLS connection on
@@ -997,10 +997,10 @@ normative:
    The DTLS/SCTP implementation MUST consume all SCTP messages
    received with the PPID value of TBD1. If the message is not 32-bit
    long the message MUST be discarded and the error SHOULD be logged.
-   In case the message have value that are unknown the message is
+   In case the message has an unknown value the message is
    discarded and the event SHOULD be logged.
 
-   A single actual controll message is defined in this specfication.
+   A single actual controll message is defined in this specification.
 
 ## SHUTDOWN-Request {#SHUTDOWN-Request}
 
@@ -1009,11 +1009,11 @@ normative:
 
 ## Ready To Close Indication {#Ready_To_Close}
 
-   The value "2" is defined as a indication to the peer that from its
+   The value "2" is defined as an indication to the peer that from its
    perspective all SCTP packets with user message or using the
    SCTP-AUTH key associated with the oldest DTLS connection has been
    sent and acknowledged as received in a non-renegable way. This is
-   used in {{Parallel-Dtls}} to initate the closing of the DTLS
+   used in {{Parallel-Dtls}} to initiate the closing of the DTLS
    connections during rekeying.
 
 # DTLS over SCTP Service {#Negotiation}
@@ -1118,8 +1118,8 @@ normative:
 
 ### Client Fallback
 
-   A DTLS/SCTP client supporting this specficiation encountering an
-   server not compatible with this specficiation MAY attempt RFC 6083
+   A DTLS/SCTP client supporting this specification encountering an
+   server not compatible with this specification MAY attempt RFC 6083
    fallback per this procedure.
 
    1. Fallback procedure, if enabled, is initiated when receiving an
@@ -1131,21 +1131,21 @@ normative:
       chunks and parameters to establish SCTP-AUTH per RFC 6083 with
       this endpoint. If not all necessary parameters or support
       algorithms don't match the client MUST abort the
-      handshake. Otherwise it complets the SCTP handshake.
+      handshake. Otherwise it completes the SCTP handshake.
 
    3. Client performs DTLS connection handshake per RFC 6083 over
-      established SCTP association. If succesfull authenticating the
-      targeted server the client has succesfull fallen back to use
+      established SCTP association. If successful authenticating the
+      targeted server the client has successful fallen back to use
       RFC 6083. If not terminate the SCTP association.
 
 ### Server Fallback
 
    A DTLS/SCTP Server that supports both this specification and RFC
    6083 and where fallback has been enabled for the ULP can follow
-   this procedure.
+   this procedure.receiving
 
-   1. When receving an SCTP INIT message without the DTLS/SCTP
-      adapation layer indicataion fallback procedure is initiated.
+   1. When receiving an SCTP INIT message without the DTLS/SCTP
+      adaptation layer indication fallback procedure is initiated.
 
    2. Verify that the SCTP INIT contains SCTP-AUTH parameters required
       by RFC 6083 and compatible with this server. If that is not the
@@ -1157,7 +1157,7 @@ normative:
    4. Complete the SCTP Handshake. Await DTLS handshake per RFC 6083.
       Plain text SCTP messages MAY be received.
 
-   5. Upon succesful completion of DTLS handshake succesfull fallback
+   5. Upon successful completion of DTLS handshake successful fallback
       to RFC 6083 have been accomplished.
 
 
@@ -1172,7 +1172,7 @@ normative:
    The following functionality is needed:
 
    * Controlling SCPT-AUTH negotiation so that SHA-256 algorithm is
-     inlcuded, and determine that SHA-1 is not selected when the
+     inlcluded, and determine that SHA-1 is not selected when the
      association is established.
 
    * Determine when all SCTP packets that uses an SCTP-auth key or
@@ -1198,7 +1198,7 @@ normative:
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
-   {{RFC5061}} defined a IANA registry for Adaptation Code Points to
+   {{RFC5061}} defined an IANA registry for Adaptation Code Points to
    be used in the Adaptation Layer Indication parameter. The registry
    was at time of writing located:
    https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-27
@@ -1218,12 +1218,12 @@ this specification.
 ## SCTP Payload Protocol Identifiers  {#sec-IANA-PPID}
 
    This document registers one Payload Protocol Identifier (PPID) to
-   be used to idenfity the DTLS/SCTP control messages
+   be used to identify the DTLS/SCTP control messages
    {{Control-Message}}.
 
 | Value | SCTP PPID | Reference |
 | -------------------------- | ----------- | --------- |
-| TBD1 | DTLS/SCTP Controll Message | \[RFC-TBD\] |
+| TBD1 | DTLS/SCTP Control Message | \[RFC-TBD\] |
 {: #iana-PPID title="SCTP Payload Protocol Identifier"}
 
 RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
@@ -1353,13 +1353,13 @@ this specification.
 
 ## Targeting DTLS Messages
 
-   The DTLS handshake messages and other control messages, i.e. not
+   The DTLS handshake messages and other control messages, i.e., not
    application data can easily be identified when using DTLS 1.2 as
    their content type is not encrypted. With DTLS 1.3 there is no
-   unprotected content type. However, they will sent with an PPID of 0
+   unprotected content type. However, they will be sent with an PPID of 0
    if sent in their own SCTP user messages. {{Stream-Usage}} proposes
-   a basic behavior that will stil make it easily for anyone to
-   detect the DTLS messages that are not proteceted user messages.
+   a basic behavior that will still make it easily for anyone to
+   detect the DTLS messages that are not protected user messages.
 
 ## Authentication and Policy Decisions
 
@@ -1369,7 +1369,7 @@ this specification.
    possession of a key.  DTLS/SCTP MUST perform identity
    authentication. It is RECOMMENDED that DTLS/SCTP is used with
    certificate-based authentication. When certificates are used the
-   applicatication using DTLS/SCTP is reposible for certificate
+   application using DTLS/SCTP is responsible for certificate
    policies, certificate chain validation, and identity authentication
    (HTTPS does for example match the hostname with a subjectAltName of
    type dNSName). The application using DTLS/SCTP MUST define what the
@@ -1486,14 +1486,14 @@ Supporting Large User Messages: RFC 6083 allowed only user messages
 
 New Versions: Almost 10 years has passed since RFC 6083 was written,
    and significant evolution has happened in the area of DTLS and
-   security algorithms. Thus DTLS 1.3 is the newest version of DTLS
+   security algorithms. Thus, DTLS 1.3 is the newest version of DTLS
    and also the SHA-1 HMAC algorithm of RFC 4895 is getting towards
    the end of usefulness. Use of DTLS 1.3 with long lived associations
    require parallel DTLS connections. Thus, this document mandates usage of
    relevant versions and algorithms.
 
 Allowing DTLS Messages on any stream: RFC6083 requires DTLS messages
-   that are not user message data to sent on stream 0 and that this
+   that are not user message data to be sent on stream 0 and that this
    stream is used with in-order delivery. That can actually limit the
    applications that can use DTLS/SCTP. In addition with DTLS 1.3
    encrypting the actual message type it is anyway not available.
