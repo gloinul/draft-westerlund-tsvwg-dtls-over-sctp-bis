@@ -619,14 +619,15 @@ normative:
    DTLS is capable of handling reordering of the DTLS
    records. However, depending on stream properties and which user
    message DTLS records of other types are sent in may impact in which
-   order and how quickly they are possible to process. Using a stream
-   with in-order delivery will ensure that the DTLS Records are
-   delivered in the order they are sent in user messages. Thus,
-   ensuring that if there are DTLS records that need to be delivered
-   in particular order it can be ensured. Alternatively, if it is
-   desired that a DTLS record is delvired as early as possible
-   avoiding in-order streams with queued messages and considering
-   stream priorities can result in faster delviery.
+   order and how quickly they are possible to process. Using the same
+   stream with in-order delivery for the different messages will
+   ensure that the DTLS Records are delivered in the order they are
+   sent in user messages. Thus, ensuring that if there are DTLS
+   records that need to be delivered in particular order it can be
+   ensured. Alternatively, if it is desired that a DTLS record is
+   deliverd as early as possible avoiding in-order streams with queued
+   messages and considering stream priorities can result in faster
+   delviery.
 
    A simple solution avoiding any protocol issue are to send all DTLS
    messages that are not protected user message fragments is to pick a
@@ -686,10 +687,11 @@ normative:
    full handshake or a resumption handshake and resumption can be done
    while the original connection is still open. In DTLS 1.2 the
    handshake MUST be a full handshake. On handshake completion switch
-   to the security context of the new DTLS connection and then ensure
-   delivery of all the SCTP chunks using the old DTLS connections
-   security context. When that has been achieved close the old DTLS
-   connection and discard the related security context.
+   to the security context of the new DTLS connection for protection
+   of user message and then ensure delivery of all the SCTP chunks
+   using the old DTLS connections security context. When that has been
+   achieved close the old DTLS connection and discard the related
+   security context.
 
    As specified in {{Mapping-DTLS}} the usage of DTLS connection ID is
    required to ensure that the receiver can correctly identify the
@@ -717,26 +719,36 @@ normative:
    the peer identifies using the same identity as in the previous DTLS
    connection.
 
-   When the DTLS handshake has been completed, a new SCTP-AUTH key
-   will be exported per {{handling-endpoint-secret}} and the new DTLS
-   connection MUST be used for the DTLS protection operation of any
-   future protected ULP user message. The endpoint is RECOMMENDED to use
-   the security context of the new DTLS connection for any DTLS
-   protection operation occurring after the completed handshake. The
-   new SCTP-AUTH key SHALL be used for any SCTP user message being
-   sent after the DTLS handshake has completed. There is a possibility
-   to use the new SCTP-AUTH key for any SCTP packets part of an SCTP
-   user message that was initiated but not yet fully transmitted prior
-   to the completion of the new DTLS handshake, however the API
-   defined in {{RFC6458}} is not supporting switching the SCTP-AUTH
-   key on the sender side. Any SCTP-AUTH receiver implementation is
-   expected to be able to select key on SCTP packet basis.
+   When the DTLS handshake has been completed, the new DTLS connection
+   MUST be used for the DTLS protection of any new ULP user messages,
+   and SHOULD be switched to for protection of not yet protected user
+   message fragments of partially transmitted user messages.  Also
+   after the completion of the DTLS handshake a new SCTP-AUTH key will
+   be exported per {{handling-endpoint-secret}}. To enable the sender
+   and reciever to correctly identify when the old DTLS conncetion is
+   no longer in use, the SCTP-AUTH key used to protect a SCTP packet
+   MUST NOT be from a newer DTLS conncetion than what has been used to
+   protect any included user message.
 
-   The DTLS/SCTP endpoint will indicate to its peer when the previous
+   The SCTP API defined in {{RFC6458}} has limitation in changing the
+   SCTP-AUTH key until the whole SCTP user message has been
+   delivered. However, the DTLS/SCTP implementation can switch the
+   DTLS connection used to protect the user message fragments to a
+   newever, even if the older DTLS connections exported key is used
+   for the SCTP-AUTH. And for SCTP implementations where the SCTP-AUTH
+   key can be switched in the middle of a user message the SCTP-AUTH
+   key can be changed as soon the user message fragments have been
+   protected by the newer DTLS connection.  Any SCTP-AUTH receiver
+   implementation is expected to be able to select key on SCTP packet
+   basis.
+
+   The DTLS/SCTP endpoint indicates to its peer when the previous
    DTLS connection and its context are no longer needed for receiving
-   any more data from this endpoint. This is done by having DTLS to
-   send a DTLS close_notify alert. The endpoint MUST NOT send the
-   close_notify until the following two conditions are fulfilled:
+   any more data from this endpoint. This is done by sending a
+   DTLS/SCTP Control Message {{Control-Message}} of type
+   "Ready_To_Close" {{Ready_To_Close}} to its peer. The endpoint MUST
+   NOT send the Ready_To_Close until the following two conditions are
+   fulfilled:
 
    1. All SCTP packets containing part of any DTLS record or message
       protected using the security context of this DTLS connection
@@ -746,15 +758,19 @@ normative:
       security context of this DTLS connection have been acknowledged
       in a non-renegable way.
 
-   Note: For DTLS 1.2 receiving Close_notify will close the DTLS
-   connection for further writes and requires the immediate generation
-   of a Close_notify. Thus, this forces the DTLS/SCTP to protect any
-   buffered data on DTLS/SCTP layer not yet protected to use the new
-   DTLS connection. In addition the DTLS/SCTP layer will have to
-   buffer the close_notify generated by the shuting down DTLS
-   connection and also not discard the SCTP-AUTH key until it has
-   fulfilled the delivery of the data protected by the closing DTLS
-   connection security context.
+   A DTLS/SCTP endpoint that fulfills the above conditions and have
+   received a Ready_To_Close message SHALL initiate closing of this
+   DTLS connection by sending a DTLS close_notify and when having
+   received the close_notify terminate the DTLS connection and expunge
+   the associated security context and SCTP-AUTH key. Note that it is
+   not required for a DTLS/SCTP implementation that has received a
+   Ready_To_Close messsage to send that message itself when it
+   fulfills the condistions. However, in some situation both endpoints
+   will fulfill the conditions close enough in time that both
+   endpoints will send its Ready_To_Close prior to receiving the
+   indication from its peer, that works as both endpoints will then
+   initiate DTLS close_notify and terminate the DTLS connections upon
+   the reception of the peers close_notify.
 
    SCTP implementations exposing APIs like {{RFC6458}} fulfilling
    these conditions requires draining the SCTP association of all
@@ -896,7 +912,7 @@ normative:
    soon as the computation is possible.  The exporter MUST use the
    label given in Section {{IANA-Consideration}} and no context.
 
-## Shutdown
+## Shutdown {#sec-shutdown}
 
    To prevent DTLS from discarding DTLS user messages while it is
    shutting down, the below procedure has been defined. Its goal is to
@@ -904,10 +920,11 @@ normative:
    acknowledgments and utilizes existing SCTP protocol behavior to
    ensure delivery of the protected user messages data.
 
-   Note, this proceudre currenlty only works for DTLS 1.3. For DTLS
-   1.2 users the remote endpoint will be closed for sending more data
-   with the reception of the close_notify in step 5, and step 6 will
-   not be possible and that data will be lost.
+   To support DTLS 1.2 close_notify behavior and avoid any uncertainty
+   related to rekeying, a ULP protocol message is defined with it own
+   PPID to enable the DTLS/SCTP layer to know that it is targeting the
+   remote DTLS/SCTP function and act on the request to close in a
+   controlled fashion.
 
    The interaction between peers and protocol stacks shall be as
    follows:
@@ -926,34 +943,33 @@ normative:
    user messages and ensures that all protected user message data has
    been successfully transferred to the remote ULP.
 
-   4. Local DTLS/SCTP sends DTLS Close_notify to remote instance of
-   DTLS/SCTP on each and all DTLS connections, keys and session
-   state are kept for processing packets received later on.
+   4. Local DTLS/SCTP sends a DTLS/SCTP Controll Message
+   {{Control-Message}} of type "SHUTDOWN_Request" {{SHUTDOWN-Request}}
+   to its peer.
 
-   5. When receiving Close_notify on the last open DTLS connection,
-   remote DTLS/SCTP instance informs its ULP that remote shutdown has
-   been initiated. When two parallel DTLS connections are in place it
-   is important to await Close_notify alert on both to not misstake a
-   rekeying. No more ULP user message data to be sent to peer can be
-   accepted by DTLS/SCTP. In case this endpoint has initiated and DTLS
+   5. When receiving the SHUTDOWN-Request the remote DTLS/SCTP
+   instance informs its ULP that remote shutdown has been
+   initiated. No more ULP user message data to be sent to peer can be
+   accepted by DTLS/SCTP. In case this endpoint has initiated a DTLS
    connection handshake this MUST be aborted as the peer is unable to
-   respond.
+   respond to avoid additional case of draining.
 
    6. Remote DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
    been successfully transferred to the remote ULP.
 
-   7. Remote DTLS/SCTP sends Close_notify to Local DTLS/SCTP entity
-   for each and all DTLS connections.
+   7. Remote DTLS/SCTP sends DTLS Close_notify to Local DTLS/SCTP
+   entity for each and all DTLS connections. Then it initiates the
+   SCTP shutdown procedure (section 9.2 of {{RFC4960}}).
 
-   8. When receiving Close_notify on the last open DTLS connection,
-   local DTLS/SCTP instance initiates the SCTP shutdown procedure
-   (section 9.2 of {{RFC4960}}).
+   8. When the local DTLS/SCTP receivs a Close_notify on a DTLS
+   connection, in case it is DTLS 1.3 it SHALL send its corresponding
+   DTLS Close_Notify on each open DTLS connection. When the last open
+   DTLS connection has received Close_Notify and any if needed
+   corresponding Close_Notify have been sent the local DTLS/SCTP
+   initiates the SCTP shutdown procedure (section 9.2 of {{RFC4960}}).
 
-   9. Remote DTLS/SCTP replied to the SCTP shutdown procedure (section
-   9.2 of {{RFC4960}}).
-
-   10. Upon receiving the information that SCTP has closed the
+   9. Upon receiving the information that SCTP has closed the
    Association, independently the local and remote DTLS/SCTP entities
    destroy the DTLS connection.
 
@@ -969,6 +985,36 @@ normative:
    delivered. The DTLS/SCTP should indicate to ULP successful
    completion or failure to shutdown gracefully.
 
+# DTLS/SCTP Controll Message {#Control-Message}
+
+   DTLS/SCTP Controll Message is defined as its own upper layer
+   protocol identified by its own PPID. The controll message is single
+   32-bit unsigned integer value. Each message is sent as its own SCTP
+   message after having been protected by an open DTLS connection on
+   any SCTP stream and MUST be marked with SCTP Payload Protocol
+   Identifier (PPID) value TBD1 {{sec-IANA-PPID}}.
+
+   The DTLS/SCTP implementation MUST consume all SCTP messages
+   received with the PPID value of TBD1. If the message is not 32-bit
+   long the message MUST be discarded and the error SHOULD be logged.
+   In case the message have value that are unknown the message is
+   discarded and the event SHOULD be logged.
+
+   A single actual controll message is defined in this specfication.
+
+## SHUTDOWN-Request {#SHUTDOWN-Request}
+
+   The value "1" is defined as a request to the peer to initiate
+   controlled shutdown. This is used per step 4 and 5 in {{sec-shutdown}}.
+
+## Ready To Close Indication {#Ready_To_Close}
+
+   The value "2" is defined as a indication to the peer that from its
+   perspective all SCTP packets with user message or using the
+   SCTP-AUTH key associated with the oldest DTLS connection has been
+   sent and acknowledged as received in a non-renegable way. This is
+   used in {{Parallel-Dtls}} to initate the closing of the DTLS
+   connections during rekeying.
 
 # DTLS over SCTP Service {#Negotiation}
 
@@ -1164,6 +1210,21 @@ normative:
 | -------------------------- | ----------- | --------- |
 | 0x00000002 | DTLS/SCTP | \[RFC-TBD\] |
 {: #iana-ACP title="Adaptation Code Point"}
+
+
+RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
+this specification.
+
+## SCTP Payload Protocol Identifiers  {#sec-IANA-PPID}
+
+   This document registers one Payload Protocol Identifier (PPID) to
+   be used to idenfity the DTLS/SCTP control messages
+   {{Control-Message}}.
+
+| Value | SCTP PPID | Reference |
+| -------------------------- | ----------- | --------- |
+| TBD1 | DTLS/SCTP Controll Message | \[RFC-TBD\] |
+{: #iana-PPID title="SCTP Payload Protocol Identifier"}
 
 RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
 this specification.
