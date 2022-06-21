@@ -198,7 +198,7 @@ normative:
    * DTLS messages that don't contain protected user message data
      where limited to only be sent on Stream 0 and requiring that
      stream to be in-order delivery which could potentially impact
-     applicaitons.
+     applications.
 
    This specification defines the following changes compared with RFC
    6083:
@@ -351,7 +351,7 @@ normative:
    has much less overhead than DTLS 1.2 per record.
 
    The sequence of DTLS records is then fragmented into DATA or I-DATA
-   Chunks to fit the path MTU by SCTP. These changes ensures that
+   Chunks to fit the path MTU by SCTP. These changes ensure that
    DTLS/SCTP has the same capability as SCTP to support user messages
    of any size. However, to simplify implementations it is OPTIONAL to
    support user messages larger than 2^64-1 bytes. This is to allow
@@ -382,7 +382,7 @@ normative:
    ULP. Implementations can trade-off buffer memory requirements in
    the DTLS layer with transport overhead by using smaller DTLS
    records. However, for efficient operation and avoiding flow control
-   stalls if user message fragments are not frequently and expiendtly
+   stalls if user message fragments are not frequently and expediently
    moved to upper layer memory buffers, the receiver buffer needs to be
    larger.
 
@@ -505,16 +505,16 @@ normative:
    number SHOULD be used rather than 8-bit to minimize issues with
    DTLS record sequence number wrapping.
 
-   The ULP may use multiple messages simultanous, and the progress and
-   delivery of these messages are progressing indepentely, thus the
-   recieving DTLS/SCTP implementation may not receive records in order
+   The ULP may use multiple messages simultaneous, and the progress and
+   delivery of these messages are progressing independently, thus the
+   receiving DTLS/SCTP implementation may not receive records in order
    in case of packet loss. Assuming that the sender will send the DTLS
    records in order the DTLS records where created (which may not be
    certain in some implementations), then there is a risk that DTLS
    sequence number have wrapped if the amount of data in flight is
    more than the sequence number covers.  Thus, for 8-bit sequence
    number space with 16384 bytes records the receiver window only
-   needs to be 256*16384 = 4,194,304 bytes for this risk to defintely
+   needs to be 256*16384 = 4,194,304 bytes for this risk to definitely
    exist. While a 16-bit sequence number should not have any sequence
    number wraps for receiver windows up to 1 Gbyte. The DTLS/SCTP may
    not be tightly integrated and the DTLS records may not be requested
@@ -551,7 +551,7 @@ normative:
 ## DTLS Connection Handling
 
    DTLS/SCTP is negotiated on SCTP level as an adaptation layer
-   {{Negotiation}}. After a succesful negotiation of the DTLS/SCTP
+   {{Negotiation}}. After a successful negotiation of the DTLS/SCTP
    during SCTP association establishment, a DTLS connection MUST be
    established prior to transmission of any ULP user messages. All
    DTLS connections are terminated when the SCTP association is
@@ -565,12 +565,12 @@ normative:
    protected user messages in the form of a sequence of DTLS Records
    on any stream is a protocol violation. The receiver MAY terminate
    the SCTP association due to this protocol
-   violation. Implementations that does not have a DTLS endpoint
+   violation. Implementations that do not have a DTLS endpoint
    immediately ready on SCTP handshake completion will have to ensure
    correct caching of the messages until the DTLS endpoint is ready.
 
    Whenever a mutual authentication, updated security parameters,
-   rerun of Diffie-Hellman key-exchange , or SCTP-AUTH rekeying is
+   rerun of Diffie-Hellman key-exchange, or SCTP-AUTH rekeying is
    needed, a new DTLS connection is instead setup in parallel with the
    old connection (i.e., there may be up to two simultaneous DTLS
    connections within one association).
@@ -583,7 +583,7 @@ normative:
    the PPID that they registered for running directly over SCTP.
 
    Using the same PPID does no harm as DTLS/SCTP requires all user
-   mesages being DTLS protected and knows that DTLS is used.  However,
+   messages being DTLS protected and knows that DTLS is used.  However,
    for protocol analyzers, for example, it is much easier if a
    separate PPID is used and avoids different behavior from
    {{RFC6083}}. This means, in particular, that there is no specific
@@ -625,9 +625,9 @@ normative:
    sent in user messages. Thus, ensuring that if there are DTLS
    records that need to be delivered in particular order it can be
    ensured. Alternatively, if it is desired that a DTLS record is
-   deliverd as early as possible avoiding in-order streams with queued
+   delivered as early as possible avoiding in-order streams with queued
    messages and considering stream priorities can result in faster
-   delviery.
+   delivery.
 
    A simple solution avoiding any protocol issue are to send all DTLS
    messages that are not protected user message fragments is to pick a
@@ -725,9 +725,9 @@ normative:
    message fragments of partially transmitted user messages.  Also
    after the completion of the DTLS handshake a new SCTP-AUTH key will
    be exported per {{handling-endpoint-secret}}. To enable the sender
-   and reciever to correctly identify when the old DTLS conncetion is
+   and receiver to correctly identify when the old DTLS connection is
    no longer in use, the SCTP-AUTH key used to protect a SCTP packet
-   MUST NOT be from a newer DTLS conncetion than what has been used to
+   MUST NOT be from a newer DTLS connection than what has been used to
    protect any included user message.
 
    The SCTP API defined in {{RFC6458}} has limitation in changing the
@@ -765,7 +765,7 @@ normative:
    the associated security context and SCTP-AUTH key. Note that it is
    not required for a DTLS/SCTP implementation that has received a
    Ready_To_Close messsage to send that message itself when it
-   fulfills the condistions. However, in some situation both endpoints
+   fulfills the conditions. However, in some situation both endpoints
    will fulfill the conditions close enough in time that both
    endpoints will send its Ready_To_Close prior to receiving the
    indication from its peer, that works as both endpoints will then
@@ -773,7 +773,7 @@ normative:
    the reception of the peers close_notify.
 
    SCTP implementations exposing APIs like {{RFC6458}} fulfilling
-   these conditions requires draining the SCTP association of all
+   these conditions require draining the SCTP association of all
    outstanding data after having completed all the user messages using
    the previous SCTP-AUTH key identifier. Relying on the
    SCTP_SENDER_DRY_EVENT to know when delivery has been accomplished.
@@ -813,16 +813,16 @@ normative:
    such as rekeying (with ephemeral Diffie-Hellman) as well as mutual
    reauthentication.
 
-   This specification do not allow usage of DTLS 1.2 renegotiation to
+   This specification does not allow usage of DTLS 1.2 renegotiation to
    avoid race conditions and corner cases in the interaction between
    the parallel DTLS connection mechanism and the keying of
-   SCTP-AUTH. In addtion renegotiation is also disabled in
+   SCTP-AUTH. In addition renegotiation is also disabled in
    implementation, as well as dealing with the epoch change reliable
-   have similar or worse applicaiton impact.
+   have similar or worse application impact.
 
    This specification also recommends against using DTLS 1.3 KeyUpdate
    and instead rely on parallel DTLS connections. For DTLS 1.3 there
-   isn’t feature parity. It also have the issue that a DTLS
+   isn’t feature parity. It also has the issue that a DTLS
    implementation following the RFC may assume a too limited window
    for SCTP where the previous epoch’s security context is maintained
    and thus changes to epoch handling ({{epoch}}) are necessary. Thus,
