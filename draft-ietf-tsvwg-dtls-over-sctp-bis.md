@@ -277,6 +277,10 @@ normative:
    race conditions and interactions between using DTLS connections in
    parallel.
 
+   Secure negotiation of the DTLS version is handled by the DTLS
+   handshake. If the endpoints do not support a common DTLS version
+   the DTLS handshake will be aborted.
+
    In the rest of the document, unless the version of DTLS is
    specifically called out the text applies to both versions of DTLS.
 
@@ -686,7 +690,9 @@ normative:
    connection is kept in place.  In DTLS 1.3 the handshake MAY be a
    full handshake or a resumption handshake and resumption can be done
    while the original connection is still open. In DTLS 1.2 the
-   handshake MUST be a full handshake. On handshake completion switch
+   handshake MUST be a full handshake. The new parallel connection MUST
+   use the same DTLS version as the existing connection.
+   On handshake completion switch
    to the security context of the new DTLS connection for protection
    of user message and then ensure delivery of all the SCTP chunks
    using the old DTLS connections security context. When that has been
