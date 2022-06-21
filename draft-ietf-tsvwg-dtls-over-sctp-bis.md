@@ -75,7 +75,6 @@ normative:
   RFC2119:
   RFC3758:
   RFC4895:
-  RFC4960:
   RFC5705:
   RFC6347:
   RFC7627:
@@ -86,6 +85,7 @@ normative:
   RFC8996:
   RFC9146:
   RFC9147:
+  RFC9260:
 
 
 --- abstract
@@ -121,7 +121,7 @@ normative:
    This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
    DTLS 1.3 {{RFC9147}}, over the Stream Control
-   Transmission Protocol (SCTP), as defined in {{RFC4960}} with
+   Transmission Protocol (SCTP), as defined in {{RFC9260}} with
    Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
 
    This specification provides mutual authentication of endpoints,
@@ -154,7 +154,7 @@ normative:
 
    The method described in this document requires that the SCTP
    implementation supports the optional feature of fragmentation of
-   SCTP user messages as defined in {{RFC4960}}. The implementation is
+   SCTP user messages as defined in {{RFC9260}}. The implementation is
    required to have an SCTP API (for example the one described in
    {{RFC6458}}) that supports partial user message delivery and also
    recommended that I-DATA chunks as defined in {{RFC8260}} is used to
@@ -430,7 +430,7 @@ normative:
 ## Mapping of DTLS Records {#Mapping-DTLS}
 
    The SCTP implementation MUST support fragmentation of user messages
-   using DATA {{RFC4960}}, and optionally I-DATA {{RFC8260}} chunks.
+   using DATA {{RFC9260}}, and optionally I-DATA {{RFC8260}} chunks.
 
    DTLS/SCTP works as a shim layer between the user message API and
    SCTP. On the sender side a user message is split
@@ -591,7 +591,7 @@ normative:
 
    Messages that are exchanged between DTLS/SCTP peers not containing
    ULP user messages shall use PPID=0 according to section 3.3.1 of
-   {{RFC4960}} as no application identifier can be specified by the
+   {{RFC9260}} as no application identifier can be specified by the
    upper layer for this payload data.
 
 ## Stream Usage {#Stream-Usage}
@@ -960,14 +960,14 @@ normative:
 
    7. Remote DTLS/SCTP sends DTLS Close_notify to Local DTLS/SCTP
    entity for each and all DTLS connections. Then it initiates the
-   SCTP shutdown procedure (section 9.2 of {{RFC4960}}).
+   SCTP shutdown procedure (section 9.2 of {{RFC9260}}).
 
    8. When the local DTLS/SCTP receivs a Close_notify on a DTLS
    connection, in case it is DTLS 1.3 it SHALL send its corresponding
    DTLS Close_Notify on each open DTLS connection. When the last open
    DTLS connection has received Close_Notify and any if needed
    corresponding Close_Notify have been sent the local DTLS/SCTP
-   initiates the SCTP shutdown procedure (section 9.2 of {{RFC4960}}).
+   initiates the SCTP shutdown procedure (section 9.2 of {{RFC9260}}).
 
    9. Upon receiving the information that SCTP has closed the
    Association, independently the local and remote DTLS/SCTP entities
@@ -1054,7 +1054,7 @@ normative:
    parameters, the Association will start with support of DTLS/SCTP.
    The set of options indicated are the DTLS/SCTP Mandatory Options.
    No data transfer is permitted before DTLS handshake is
-   complete. Chunk bundling is permitted according to {{RFC4960}}. The
+   complete. Chunk bundling is permitted according to {{RFC9260}}. The
    DTLS handshake will enable authentication of both the peers.
 
    The extension described in this document is given by the following
@@ -1232,7 +1232,7 @@ this specification.
 # Security Considerations {#sec-Consideration}
 
    The security considerations given in {{RFC9147}},
-   {{RFC4895}}, and {{RFC4960}} also apply to this document.
+   {{RFC4895}}, and {{RFC9260}} also apply to this document.
 
 ## Cryptographic Considerations
 
