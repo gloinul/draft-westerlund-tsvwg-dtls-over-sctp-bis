@@ -1455,8 +1455,6 @@ this specification.
 
    * The use of the Adaptation Layer Indication.
 
-   * Socket API extension
-
    * Many editorial improvements.
 
 # Acknowledgments
