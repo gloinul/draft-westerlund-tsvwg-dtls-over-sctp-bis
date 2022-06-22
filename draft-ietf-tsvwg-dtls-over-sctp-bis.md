@@ -852,22 +852,6 @@ normative:
    SCTP user messages that are buffered in the SCTP layer and can be
    delivered to the DTLS layer MUST be read and processed by DTLS.
 
-## DTLS Epochs {#epoch}
-
-   In general, DTLS implementations SHOULD discard records from
-   earlier epochs.  However, in the context of a reliable
-   communication this is not appropriate.
-
-### DTLS 1.2 Considerations
-
-   Epochs will not be used as renegotiation is disallowed.
-
-### DTLS 1.3 Considerations
-
-   The procedures of Section 4.2.1 of {{RFC9147}} are
-   irrelevant.  When receiving DTLS packets using epoch n, no DTLS
-   packets from earlier epochs are received.
-
 ## Handling of Endpoint-Pair Shared Secrets {#handling-endpoint-secret}
 
    SCTP-AUTH {{RFC4895}} is keyed using Endpoint-Pair Shared
