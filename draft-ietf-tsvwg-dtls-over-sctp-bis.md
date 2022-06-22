@@ -731,8 +731,8 @@ normative:
    be exported per {{handling-endpoint-secret}}. To enable the sender
    and reciever to correctly identify when the old DTLS conncetion is
    no longer in use, the SCTP-AUTH key used to protect a SCTP packet
-   MUST NOT be from a newer DTLS conncetion than what has been used to
-   protect any included user message.
+   MUST NOT be from a newer DTLS conncetion than produced any included
+   DTLS record fragment.
 
    The SCTP API defined in {{RFC6458}} has limitation in changing the
    SCTP-AUTH key until the whole SCTP user message has been
@@ -741,15 +741,15 @@ normative:
    newever, even if the older DTLS connections exported key is used
    for the SCTP-AUTH. And for SCTP implementations where the SCTP-AUTH
    key can be switched in the middle of a user message the SCTP-AUTH
-   key can be changed as soon the user message fragments have been
-   protected by the newer DTLS connection.  Any SCTP-AUTH receiver
-   implementation is expected to be able to select key on SCTP packet
-   basis.
+   key should be changed as soon as all DTLS record fragments included
+   in an SCTP packet have been protected by the newer DTLS connection.
+   Any SCTP-AUTH receiver implementation is expected to be able to
+   select key on SCTP packet basis.
 
-   The DTLS/SCTP endpoint indicates to its peer when the previous
-   DTLS connection and its context are no longer needed for receiving
-   any more data from this endpoint. This is done by sending a
-   DTLS/SCTP Control Message {{Control-Message}} of type
+   The DTLS/SCTP endpoint timely indicates to its peer when the
+   previous DTLS connection and its context are no longer needed for
+   receiving any more data from this endpoint. This is done by sending
+   a DTLS/SCTP Control Message {{Control-Message}} of type
    "Ready_To_Close" {{Ready_To_Close}} to its peer. The endpoint MUST
    NOT send the Ready_To_Close until the following two conditions are
    fulfilled:
@@ -764,18 +764,18 @@ normative:
 
    A DTLS/SCTP endpoint that fulfills the above conditions for the
    SCTP packets it sends and have received a Ready_To_Close message
-   SHALL initiate closing of this DTLS connection by sending a DTLS
-   close_notify. Then when it have received the peer's close_notify
-   terminate the DTLS connection and expunge the associated security
-   context and SCTP-AUTH key. Note that it is not required for a
-   DTLS/SCTP implementation that has received a Ready_To_Close
-   messsage to send that message itself when it fulfills the
-   condistions. However, in some situation both endpoints will fulfill
-   the conditions close enough in time that both endpoints will send
-   its Ready_To_Close prior to receiving the indication from its peer,
-   that works as both endpoints will then initiate DTLS close_notify
-   and terminate the DTLS connections upon the reception of the peers
-   close_notify.
+   SHALL immediately initiate closing of this DTLS connection by
+   sending a DTLS close_notify. Then when it have received the peer's
+   close_notify terminate the DTLS connection and expunge the
+   associated security context and SCTP-AUTH key. Note that it is not
+   required for a DTLS/SCTP implementation that has received a
+   Ready_To_Close messsage to send that message itself when it
+   fulfills the condistions. However, in some situation both endpoints
+   will fulfill the conditions close enough in time that both
+   endpoints will send its Ready_To_Close prior to receiving the
+   indication from its peer, that works as both endpoints will then
+   initiate DTLS close_notify and terminate the DTLS connections upon
+   the reception of the peers close_notify.
 
    SCTP implementations exposing APIs like {{RFC6458}} fulfilling
    these conditions requires draining the SCTP association of all
