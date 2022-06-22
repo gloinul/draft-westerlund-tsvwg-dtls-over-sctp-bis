@@ -93,7 +93,7 @@ normative:
    This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol to protect user messages sent over the
    Stream Control Transmission Protocol (SCTP). It is an improved
-   update of the existing rfc6083.
+   alternative to the existing rfc6083.
 
    DTLS over SCTP provides mutual authentication, confidentiality,
    integrity protection, and replay protection for applications that
@@ -105,7 +105,7 @@ normative:
    Applications using DTLS over SCTP can use almost all transport
    features provided by SCTP and its extensions. This document is an
    improved alternative to RFC 6083 and removes the 16 kB limitation
-   due to DTLS on user message size by defining a secure user message
+   on protected user message size by defining a secure user message
    fragmentation so that multiple DTLS records can be used to protect
    a single user message. It further updates the DTLS versions to use,
    as well as the HMAC algorithms for SCTP-AUTH, and simplifies secure
@@ -358,13 +358,15 @@ normative:
    implementation to assume that 64-bit length fields and offset
    pointers will be sufficient.
 
-   Another implementation dependent exception to the support of any
+   Another implementation dependent limitation to the support of any
    user message size is the SCTP-API defined in {{RFC6458}}. That API
    does not allow changing the SCTP-AUTH key used to send a particular
    user message. Thus, the user message size must be limited such that
    completion of the user message can occur within a short time frame
    from the establishment of the new DTLS connection
-   ({{Parallel-Dtls}}).
+   ({{Parallel-Dtls}}). However, this is not an interoperability issue
+   as it is the sender side's API that limits what can be sent and
+   thus the limitation can be communicated locally.
 
    The security operations and reassembly process requires that the
    protected user message, i.e., with DTLS record overhead, is stored
@@ -373,18 +375,17 @@ normative:
    transferred securely. However, by mandating the use of the partial
    delivery of user messages from SCTP and assuming that no two
    messages received on the same stream are interleaved (as it is the
-   case when using the API defined in {{RFC6458}}) the required
-   buffering prior to DTLS processing can be limited to a single DTLS
-   record per used incoming stream. This enables the DTLS/SCTP
-   implementation to provide the Upper Layer Protocol (ULP) with each
-   DTLS record's content when it has been decrypted and its integrity
-   been verified enabling partial user message delivery to the
-   ULP. Implementations can trade-off buffer memory requirements in
-   the DTLS layer with transport overhead by using smaller DTLS
-   records. However, for efficient operation and avoiding flow control
-   stalls if user message fragments are not frequently and expiendtly
-   moved to upper layer memory buffers, the receiver buffer needs to be
-   larger.
+   case when using the API defined in {{RFC6458}}) the minimally
+   required buffering prior to DTLS processing is a single DTLS record
+   per used incoming stream. This enables the DTLS/SCTP implementation
+   to provide the Upper Layer Protocol (ULP) with each DTLS record's
+   content when it has been decrypted and its integrity been verified
+   enabling partial user message delivery to the ULP. Implementations
+   can trade-off buffer memory requirements in the DTLS layer with
+   transport overhead by using smaller DTLS records. However, for
+   efficient operation and avoiding flow control stalls if user
+   message fragments are not frequently and expiendtly moved to upper
+   layer memory buffers, the receiver buffer needs to be larger.
 
    The DTLS/SCTP implementation is expected to behave very similar to
    just SCTP when it comes to handling of user messages and dealing
@@ -551,7 +552,7 @@ normative:
 ## DTLS Connection Handling
 
    DTLS/SCTP is negotiated on SCTP level as an adaptation layer
-   {{Negotiation}}. After a succesful negotiation of the DTLS/SCTP
+   ({{Negotiation}}). After a succesful negotiation of the DTLS/SCTP
    during SCTP association establishment, a DTLS connection MUST be
    established prior to transmission of any ULP user messages. All
    DTLS connections are terminated when the SCTP association is
@@ -586,13 +587,14 @@ normative:
    mesages being DTLS protected and knows that DTLS is used.  However,
    for protocol analyzers, for example, it is much easier if a
    separate PPID is used and avoids different behavior from
-   {{RFC6083}}. This means, in particular, that there is no specific
-   PPID for DTLS.
+   {{RFC6083}}.
 
    Messages that are exchanged between DTLS/SCTP peers not containing
    ULP user messages shall use PPID=0 according to section 3.3.1 of
    {{RFC9260}} as no application identifier can be specified by the
-   upper layer for this payload data.
+   upper layer for this payload data. With the exception for the
+   DTLS/SCTP Control Messagess ({{Control-Message}}) that uses its own
+   PPID.
 
 ## Stream Usage {#Stream-Usage}
 
@@ -633,7 +635,9 @@ normative:
    messages that are not protected user message fragments is to pick a
    stream not used by the ULP, send the DTLS messages in their own
    user messages with in order delivery. That mimics the RFC 6083
-   behavior without impacting the ULP.
+   behavior without impacting the ULP. However, it assumes that there
+   are available streams to be used based on the SCTP association
+   handshake allowed streams (Section 5.1.1 of {{RFC9260}}).
 
 ## Chunk Handling
 
@@ -758,19 +762,20 @@ normative:
       security context of this DTLS connection have been acknowledged
       in a non-renegable way.
 
-   A DTLS/SCTP endpoint that fulfills the above conditions and have
-   received a Ready_To_Close message SHALL initiate closing of this
-   DTLS connection by sending a DTLS close_notify and when having
-   received the close_notify terminate the DTLS connection and expunge
-   the associated security context and SCTP-AUTH key. Note that it is
-   not required for a DTLS/SCTP implementation that has received a
-   Ready_To_Close messsage to send that message itself when it
-   fulfills the condistions. However, in some situation both endpoints
-   will fulfill the conditions close enough in time that both
-   endpoints will send its Ready_To_Close prior to receiving the
-   indication from its peer, that works as both endpoints will then
-   initiate DTLS close_notify and terminate the DTLS connections upon
-   the reception of the peers close_notify.
+   A DTLS/SCTP endpoint that fulfills the above conditions for the
+   SCTP packets it sends and have received a Ready_To_Close message
+   SHALL initiate closing of this DTLS connection by sending a DTLS
+   close_notify. Then when it have received the peer's close_notify
+   terminate the DTLS connection and expunge the associated security
+   context and SCTP-AUTH key. Note that it is not required for a
+   DTLS/SCTP implementation that has received a Ready_To_Close
+   messsage to send that message itself when it fulfills the
+   condistions. However, in some situation both endpoints will fulfill
+   the conditions close enough in time that both endpoints will send
+   its Ready_To_Close prior to receiving the indication from its peer,
+   that works as both endpoints will then initiate DTLS close_notify
+   and terminate the DTLS connections upon the reception of the peers
+   close_notify.
 
    SCTP implementations exposing APIs like {{RFC6458}} fulfilling
    these conditions requires draining the SCTP association of all
@@ -816,8 +821,8 @@ normative:
    This specification do not allow usage of DTLS 1.2 renegotiation to
    avoid race conditions and corner cases in the interaction between
    the parallel DTLS connection mechanism and the keying of
-   SCTP-AUTH. In addtion renegotiation is also disabled in
-   implementation, as well as dealing with the epoch change reliable
+   SCTP-AUTH. In addtion renegotiation is also disabled in some
+   implementations, as well as dealing with the epoch change reliable
    have similar or worse applicaiton impact.
 
    This specification also recommends against using DTLS 1.3 KeyUpdate
@@ -886,11 +891,11 @@ normative:
    n+1, unless n= 65535, in which case the new Shared Key Identifier
    is 1.
 
-   After sending the DTLS Finished message, the active SCTP-AUTH key
-   MUST be switched to the new one. When the endpoint has both sent
-   and received a closeNotify on the old DTLS connection then the
-   endpoint SHALL remove shared secret(s) related to old DTLS
-   connection.
+   After sending the DTLS Finished message, the new SCTP-AUTH key can
+   be used according to {{Parallel-Dtls}}. When the endpoint has both
+   sent and received a close_notify on the old DTLS connection then
+   the endpoint SHALL remove the shared secret and the SCTP-AUTH key
+   related to old DTLS connection.
 
 ### DTLS 1.2 Considerations
 
@@ -921,13 +926,14 @@ normative:
    ensure delivery of the protected user messages data.
 
    To support DTLS 1.2 close_notify behavior and avoid any uncertainty
-   related to rekeying, a ULP protocol message is defined with it own
-   PPID to enable the DTLS/SCTP layer to know that it is targeting the
-   remote DTLS/SCTP function and act on the request to close in a
-   controlled fashion.
+   related to rekeying, a DTLS/SCTP protocol message
+   ({{Control-Message}}) sent as protected SCTP user message is
+   defined with it own PPID to enable the DTLS/SCTP layer to know that
+   it is targeting the remote DTLS/SCTP function and act on the
+   request to close in a controlled fashion.
 
-   The interaction between peers and protocol stacks shall be as
-   follows:
+   The interaction between peers (local and remote) and protocol
+   stacks is as follows:
 
    1. Local instance of ULP asks for terminating the DTLS/SCTP
    Association.
@@ -941,37 +947,37 @@ normative:
 
    3. Local DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
-   been successfully transferred to the remote ULP.
+   been successfully transferred to the remote peer.
 
    4. Local DTLS/SCTP sends a DTLS/SCTP Controll Message
    {{Control-Message}} of type "SHUTDOWN_Request" {{SHUTDOWN-Request}}
    to its peer.
 
-   5. When receiving the SHUTDOWN-Request the remote DTLS/SCTP
-   instance informs its ULP that remote shutdown has been
-   initiated. No more ULP user message data to be sent to peer can be
-   accepted by DTLS/SCTP. In case this endpoint has initiated a DTLS
-   connection handshake this MUST be aborted as the peer is unable to
-   respond to avoid additional case of draining.
+   5. The remote DTLS/SCTP when receiving the SHUTDOWN-Request informs
+   its ULP that shutdown has been initiated. No more ULP user
+   message data to be sent to peer can be accepted by DTLS/SCTP. In
+   case this endpoint has initiated a DTLS connection handshake this
+   MUST be aborted as the peer is unable to respond to avoid
+   additional case of draining.
 
    6. Remote DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
    been successfully transferred to the remote ULP.
 
-   7. Remote DTLS/SCTP sends DTLS Close_notify to Local DTLS/SCTP
-   entity for each and all DTLS connections. Then it initiates the
+   7. Remote DTLS/SCTP sends DTLS close_notify to Local DTLS/SCTP
+   for each and all DTLS connections. Then it initiates the
    SCTP shutdown procedure (section 9.2 of {{RFC9260}}).
 
-   8. When the local DTLS/SCTP receivs a Close_notify on a DTLS
+   8. When the local DTLS/SCTP receivs a close_notify on a DTLS
    connection, in case it is DTLS 1.3 it SHALL send its corresponding
-   DTLS Close_Notify on each open DTLS connection. When the last open
-   DTLS connection has received Close_Notify and any if needed
-   corresponding Close_Notify have been sent the local DTLS/SCTP
+   DTLS close_Notify on each open DTLS connection. When the last open
+   DTLS connection has received close_Notify and any if needed
+   corresponding close_Notify have been sent the local DTLS/SCTP
    initiates the SCTP shutdown procedure (section 9.2 of {{RFC9260}}).
 
    9. Upon receiving the information that SCTP has closed the
    Association, independently the local and remote DTLS/SCTP entities
-   destroy the DTLS connection.
+   destroy the DTLS connection completing the shutdown.
 
    The verification in step 3 and 6 that all user data message has been
    successfully delivered to the remote ULP can be provided by the
