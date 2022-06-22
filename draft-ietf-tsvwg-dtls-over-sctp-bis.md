@@ -831,7 +831,7 @@ normative:
    isn’t feature parity. It also has the issue that a DTLS
    implementation following the RFC may assume a too limited window
    for SCTP where the previous epoch’s security context is maintained
-   and thus changes to epoch handling ({{epoch}}) are necessary. Thus,
+   and thus changes to epoch handling would be necessary. Thus,
    unless the below specified more application impacting draining is
    used there exist risk of losing data that the sender will have
    assumed has been reliably delivered.
