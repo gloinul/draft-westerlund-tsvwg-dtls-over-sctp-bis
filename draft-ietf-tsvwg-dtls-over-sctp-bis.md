@@ -28,7 +28,6 @@ author:
 informative:
   RFC3436:
   RFC3788:
-  RFC5061:
   RFC6083:
   RFC6125:
   RFC6458:
@@ -75,6 +74,7 @@ normative:
   RFC2119:
   RFC3758:
   RFC4895:
+  RFC5061:
   RFC5705:
   RFC6347:
   RFC7627:
@@ -993,12 +993,13 @@ normative:
 
 # DTLS/SCTP Controll Message {#Control-Message}
 
-   DTLS/SCTP Controll Message is defined as its own upper layer
-   protocol identified by its own PPID. The controll message is single
-   32-bit unsigned integer value. Each message is sent as its own SCTP
-   message after having been protected by an open DTLS connection on
-   any SCTP stream and MUST be marked with SCTP Payload Protocol
-   Identifier (PPID) value TBD1 {{sec-IANA-PPID}}.
+   The DTLS/SCTP Controll Message is defined as its own upper layer
+   protocol for DTLS/SCTP identified by its own PPID. The controll
+   message is single 32-bit unsigned integer value in network byte
+   order. Each message is sent as its own SCTP user message after
+   having been protected by an open DTLS connection on any SCTP stream
+   and MUST be marked with SCTP Payload Protocol Identifier (PPID)
+   value TBD1 {{sec-IANA-PPID}}.
 
    The DTLS/SCTP implementation MUST consume all SCTP messages
    received with the PPID value of TBD1. If the message is not 32-bit
@@ -1006,7 +1007,7 @@ normative:
    In case the message have value that are unknown the message is
    discarded and the event SHOULD be logged.
 
-   A single actual controll message is defined in this specfication.
+   Two controll messages are defined in this specfication.
 
 ## SHUTDOWN-Request {#SHUTDOWN-Request}
 
@@ -1019,7 +1020,7 @@ normative:
    perspective all SCTP packets with user message or using the
    SCTP-AUTH key associated with the oldest DTLS connection has been
    sent and acknowledged as received in a non-renegable way. This is
-   used in {{Parallel-Dtls}} to initate the closing of the DTLS
+   used per {{Parallel-Dtls}} to initate the closing of the DTLS
    connections during rekeying.
 
 # DTLS over SCTP Service {#Negotiation}
@@ -1038,9 +1039,9 @@ normative:
    At the initialization of the association, a sender of the INIT or
    INIT ACK chunk that intends to use DTLS/SCTP as specified in this
    specification MUST include an Adaptation Layer Indication Parameter
-   with the IANA assigned value TBD ({{sec-IANA-ACP}}) to inform its
-   peer that it is able to support DTLS over SCTP per this
-   specification.
+   {{RFC5061}} with the IANA assigned value TBD
+   ({{sec-IANA-ACP}}) to inform its peer that it is able to support
+   DTLS over SCTP per this specification.
 
 
 ## DTLS over SCTP Initialization {#DTLS-init}
@@ -1050,7 +1051,7 @@ normative:
 
    RANDOM: defined in {{RFC4895}}
 
-   CHUNKS: list of permitted chunks, defined in {{RFC4895}}
+   CHUNKS: defined in {{RFC4895}}
 
    HMAC-ALGO: defined in {{RFC4895}}
 
@@ -1183,10 +1184,10 @@ normative:
 
    * Determine when all SCTP packets that uses an SCTP-auth key or
      contains DTLS records associated to a particular DTLS connection
-     has been acknowledge in a non-renegable manor.
+     has been acknowledged non-renegable.
 
-   * Determine when all SCTP packets have been acknowledge in a
-     non-renegable manor.
+   * Determine when all SCTP packets have been acknowledged
+     non-renegable.
 
    * Negotiate the adaptation layer indication that indicates
      DTLS/SCTP and determine if it was agreed or not.
@@ -1200,7 +1201,7 @@ normative:
 
    RFC 6083 defined a TLS Exporter Label registry as described in
    {{RFC5705}}. IANA is requested to update the reference for the
-   label "EXPORTER_DTLS_OVER_SCTP" to this specification.
+   label "EXPORTER_DTLS_OVER_SCTP" to also include this specification.
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
@@ -1225,7 +1226,7 @@ this specification.
 
    This document registers one Payload Protocol Identifier (PPID) to
    be used to idenfity the DTLS/SCTP control messages
-   {{Control-Message}}.
+   ({{Control-Message}}).
 
 | Value | SCTP PPID | Reference |
 | -------------------------- | ----------- | --------- |
@@ -1460,8 +1461,6 @@ this specification.
    this draft. Michael's contributions include:
 
    * The use of the Adaptation Layer Indication.
-
-   * Socket API extension
 
    * Many editorial improvements.
 
