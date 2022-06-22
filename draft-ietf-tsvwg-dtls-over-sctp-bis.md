@@ -24,7 +24,7 @@ author:
    name: Claudio Porfiri
    org: Ericsson
    email: claudio.porfiri@ericsson.com
-
+- 
 informative:
   RFC3436:
   RFC3788:
@@ -96,20 +96,22 @@ normative:
    update of the existing rfc6083.
 
    DTLS over SCTP provides mutual authentication, confidentiality,
-   integrity protection, and replay protection for applications that
-   use SCTP as their transport protocol and allows client/server
+   integrity protection and replay protection for applications that
+   use SCTP as their transport protocol. It allows client/server
    applications to communicate in a way that is designed to give
    communications privacy and to prevent eavesdropping and detect
    tampering or message forgery.
 
    Applications using DTLS over SCTP can use almost all transport
-   features provided by SCTP and its extensions. This document is an
-   improved alternative to RFC 6083 and removes the 16 kB limitation
-   due to DTLS on user message size by defining a secure user message
-   fragmentation so that multiple DTLS records can be used to protect
-   a single user message. It further updates the DTLS versions to use,
-   as well as the HMAC algorithms for SCTP-AUTH, and simplifies secure
-   implementation by some stricter requirements on the establishment
+   features provided by SCTP and its extensions.
+   
+   This document is an improved alternative to RFC 6083, it removes 
+   the 16 kB limitation due to DTLS maximum record size on user message 
+   dimension by defining a secure user message fragmentation so that
+   multiple DTLS records can be used to protect a single user message. 
+   It further updates the DTLS versions to use as well as the HMAC 
+   algorithms for SCTP-AUTH and simplifies secure implementation by 
+   introducing some stricter requirements on the establishment
    procedures.
 
 --- middle
@@ -125,14 +127,14 @@ normative:
    Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
 
    This specification provides mutual authentication of endpoints,
-   confidentiality, integrity protection, and replay protection of
+   confidentiality, integrity protection and replay protection of
    user messages for applications that use SCTP as their transport
    protocol.  Thus, it allows client/server applications to communicate
-   in a way that is designed to give communications privacy and to
-   prevent eavesdropping and detect tampering or message
+   in a way that is designed to provide communications privacy and to
+   prevent eavesdropping and to detect tampering or message
    forgery. DTLS/SCTP uses DTLS for mutual authentication, key
-   exchange with forward secrecy for SCTP-AUTH, and
-   confidentiality of user messages. DTLS/SCTP use SCTP and SCTP-AUTH
+   exchange with forward secrecy for SCTP-AUTH and
+   confidentiality of user messages. DTLS/SCTP uses SCTP and SCTP-AUTH
    for integrity protection and replay protection of all SCTP Chunks
    that can be authenticated, including user messages.
 
@@ -150,15 +152,15 @@ normative:
    * the dynamic address reconfiguration extension as defined in
       {{RFC5061}}.
 
-   * User messages of any size.
+   * User messages of arbitrary size.
 
    The method described in this document requires that the SCTP
    implementation supports the optional feature of fragmentation of
    SCTP user messages as defined in {{RFC9260}}. The implementation is
    required to have an SCTP API (for example the one described in
    {{RFC6458}}) that supports partial user message delivery and also
-   recommended that I-DATA chunks as defined in {{RFC8260}} is used to
-   efficiently implement and support larger user messages.
+   recommended suporting I-DATA chunks as defined in {{RFC8260}} in
+   order to efficiently implement and support larger user messages.
 
    To simplify implementation and reduce the risk for security holes,
    limitations have been defined such that STARTTLS as specified in
@@ -185,7 +187,7 @@ normative:
 
 ### Changes from RFC 6083
 
-   The DTLS over SCTP solution defined in RFC 6083 had the following
+   The DTLS over SCTP solution defined in RFC 6083 has the following
    limitations:
 
    * The maximum user message size is 2^14 (16384) bytes, which is a single
@@ -207,7 +209,7 @@ normative:
      fragmentation mechanism. It is optional to support message sizes
      over 2^64-1 bytes.
 
-   * Enable DTLS key-change without requiring draining all inflight
+   * Enables DTLS key-change without requiring to drain all inflight
      user message from SCTP.
 
    * Mandates that more modern DTLS version are used (DTLS 1.2 or
@@ -217,9 +219,9 @@ normative:
      authentication extension {{RFC4895}}.
 
    * Recommends support of {{RFC8260}} to enable interleaving of large
-     SCTP user messages to avoid scheduling issues.
+     SCTP user messages for avoiding scheduling issues.
 
-   * Applies stricter requirements on always using DTLS for all user
+   * Applies stricter requirements on mandating DTLS encryption for all user
      messages in the SCTP association.
 
    * Requires that SCTP-AUTH is applied to all SCTP Chunks that can be
@@ -249,8 +251,8 @@ normative:
 
    Many applications using DTLS/SCTP are of semi-permanent nature and
    use SCTP associations with expected lifetimes of months or even
-   years, and where there is a significant cost of bringing down the
-   SCTP association in order to restart it. Such DTLS/SCTP usages that
+   years; in some applications there is a significant cost of bringing down the
+   SCTP association in order to restart it. Such DTLS/SCTP usages 
    need:
 
    *  Periodic re-authentication and transfer of revocation information
@@ -264,7 +266,7 @@ normative:
    At the time of publication DTLS 1.3 does not support any of these,
    where DTLS 1.2 renegotiation functionality can provide this
    functionality in the context of DTLS/SCTP. To address these
-   requirements from semi-permanent applications, this document use
+   requirements from semi-permanent applications, this document uses
    several overlapping DTLS connections with either DTLS 1.2 or
    1.3. Having uniform procedures reduces the impact when upgrading
    from 1.2 to 1.3 and avoids using the renegotiation mechanism which
@@ -273,12 +275,12 @@ normative:
    To address known vulnerabilities in DTLS 1.2 this document
    describes and mandates implementation constraints on ciphers and
    protocol options. The DTLS 1.2 renegotiation mechanism is forbidden
-   to be used as it creates need for additional mechanism to handle
+   as it creates need for additional mechanism for handling
    race conditions and interactions between using DTLS connections in
    parallel.
 
    Secure negotiation of the DTLS version is handled by the DTLS
-   handshake. If the endpoints do not support a common DTLS version
+   handshake. If the endpoints don't support a common DTLS version
    the DTLS handshake will be aborted.
 
    In the rest of the document, unless the version of DTLS is
