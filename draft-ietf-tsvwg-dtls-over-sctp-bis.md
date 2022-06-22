@@ -93,7 +93,7 @@ normative:
    This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol to protect user messages sent over the
    Stream Control Transmission Protocol (SCTP). It is an improved
-   update of the existing rfc6083.
+   update of the existing RFC 6083.
 
    DTLS over SCTP provides mutual authentication, confidentiality,
    integrity protection, and replay protection for applications that
@@ -520,7 +520,7 @@ normative:
    number space with 16384 bytes records the receiver window only
    needs to be 256*16384 = 4,194,304 bytes for this risk to definitely
    exist. While a 16-bit sequence number should not have any sequence
-   number wraps for receiver windows up to 1 Gbyte. The DTLS/SCTP may
+   number wraps for receiver windows up to 1 GB. The DTLS/SCTP may
    not be tightly integrated and the DTLS records may not be requested
    to be sent in strict sequence order, in these case additional
    guard ranges are needed.
@@ -594,7 +594,7 @@ normative:
    PPID for DTLS.
 
    Messages that are exchanged between DTLS/SCTP peers not containing
-   ULP user messages shall use PPID=0 according to section 3.3.1 of
+   ULP user messages shall use PPID = 0 according to section 3.3.1 of
    {{RFC9260}} as no application identifier can be specified by the
    upper layer for this payload data.
 
@@ -889,7 +889,7 @@ normative:
    secret is derived using the TLS-Exporter. The shared secret
    identifiers form a sequence. If the previous shared secret used
    Shared Key Identifier n, the new one MUST use Shared Key Identifier
-   n+1, unless n= 65535, in which case the new Shared Key Identifier
+   n+1, unless n = 65535, in which case the new Shared Key Identifier
    is 1.
 
    After sending the DTLS Finished message, the active SCTP-AUTH key
@@ -900,9 +900,9 @@ normative:
 
 ### DTLS 1.2 Considerations
 
-    Whenever a new DTLS connection is established, a 64-byte
-    endpoint-pair shared secret is derived using the TLS-Exporter
-    described in {{RFC5705}}.
+   Whenever a new DTLS connection is established, a 64-byte
+   endpoint-pair shared secret is derived using the TLS-Exporter
+   described in {{RFC5705}}.
 
    The 64-byte shared secret MUST be provided to the SCTP stack as
    soon as the computation is possible.  The exporter MUST use the
