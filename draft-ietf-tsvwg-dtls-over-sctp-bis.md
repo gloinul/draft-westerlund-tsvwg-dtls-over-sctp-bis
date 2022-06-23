@@ -827,9 +827,9 @@ normative:
    This specification does not allow usage of DTLS 1.2 renegotiation to
    avoid race conditions and corner cases in the interaction between
    the parallel DTLS connection mechanism and the keying of
-   SCTP-AUTH. In addtion renegotiation is also disabled in some
+   SCTP-AUTH. In addition renegotiation is also disabled in some
    implementations, as well as dealing with the epoch change reliable
-   have similar or worse applicaiton impact.
+   have similar or worse application impact.
 
    This specification also recommends against using DTLS 1.3 KeyUpdate
    and instead rely on parallel DTLS connections. For DTLS 1.3 there
