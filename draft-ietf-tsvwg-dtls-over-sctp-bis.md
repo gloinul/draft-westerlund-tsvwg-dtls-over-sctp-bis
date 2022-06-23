@@ -362,15 +362,19 @@ normative:
    implementation to assume that 64-bit length fields and offset
    pointers will be sufficient.
 
-   Another implementation dependent limitation to the support of any
-   user message size is the SCTP-API defined in {{RFC6458}}. That API
-   does not allow changing the SCTP-AUTH key used to send a particular
-   user message. Thus, the user message size must be limited such that
-   completion of the user message can occur within a short time frame
-   from the establishment of the new DTLS connection
-   ({{Parallel-Dtls}}). However, this is not an interoperability issue
-   as it is the sender side's API that limits what can be sent and
-   thus the limitation can be communicated locally.
+   The SCTP-API defined in {{RFC6458}} results in an implementation
+   limitation when it comes to support any user message sizes. That
+   API does not allow the changing of the SCTP-AUTH key used to
+   protect the sending of a particular user message. Thus, user
+   messages that will be transmitted over periods of time on the order
+   or longer than the interval between rekeying can't be
+   supported. Beyond delaying the completion of a rekeying until the
+   message has been transmitted, the session can deadlock if the DTLS
+   connection used to protect this long user message reaches the limit
+   of number of bytes transmitted with a particular key. However, this
+   is not an interoperability issue as it is the sender side's API
+   that limits what can be sent and thus the sender implementation will
+   have to address this issue.
 
    The security operations and reassembly process requires that the
    protected user message, i.e., with DTLS record overhead, is stored
