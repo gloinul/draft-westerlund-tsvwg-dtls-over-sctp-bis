@@ -1010,7 +1010,7 @@ normative:
    perspective all SCTP packets with user message or using the
    SCTP-AUTH key associated with the oldest DTLS connection has been
    sent and acknowledged as received in a non-renegable way. This is
-   used per {{Parallel-Dtls}} to initate the closing of the DTLS
+   used per {{Parallel-Dtls}} to initiate the closing of the DTLS
    connections during rekeying.
 
 # DTLS over SCTP Service {#Negotiation}
