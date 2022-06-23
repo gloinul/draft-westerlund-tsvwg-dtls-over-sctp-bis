@@ -958,11 +958,11 @@ normative:
    for each and all DTLS connections. Then it initiates the
    SCTP shutdown procedure (section 9.2 of {{RFC9260}}).
 
-   8. When the local DTLS/SCTP receivs a close_notify on a DTLS
+   8. When the local DTLS/SCTP receives a close_notify on a DTLS
    connection, in case it is DTLS 1.3 it SHALL send its corresponding
-   DTLS close_Notify on each open DTLS connection. When the last open
-   DTLS connection has received close_Notify and any if needed
-   corresponding close_Notify have been sent the local DTLS/SCTP
+   DTLS close_notify on each open DTLS connection. When the last open
+   DTLS connection has received close_notify and any if needed
+   corresponding close_notify have been sent the local DTLS/SCTP
    initiates the SCTP shutdown procedure (section 9.2 of {{RFC9260}}).
 
    9. Upon receiving the information that SCTP has closed the
