@@ -78,11 +78,11 @@ normative:
   RFC5705:
   RFC6347:
   RFC7627:
-  RFC7540:
   RFC8174:
   RFC8260:
   RFC8446:
   RFC8996:
+  RFC9113:
   RFC9146:
   RFC9147:
   RFC9260:
@@ -340,7 +340,7 @@ normative:
 
 ##  Cipher Suites and Cryptographic Parameters
 
-   For DTLS 1.2, the cipher suites forbidden by {{RFC7540}} MUST NOT
+   For DTLS 1.2, the cipher suites forbidden by {{RFC9113}} MUST NOT
    be used. For all versions of DTLS, cryptographic parameters giving
    confidentiality and forward secrecy MUST be used.
 
@@ -1246,8 +1246,8 @@ this specification.
 
    When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, DTLS 1.2 MUST be
    configured to disable options known to provide insufficient
-   security. HTTP/2 {{RFC7540}} gives good minimum requirements based
-   on the attacks that where publicly known in 2015. DTLS 1.3
+   security. HTTP/2 {{RFC9113}} gives good minimum requirements based
+   on the attacks that where publicly known in 2022. DTLS 1.3
    {{RFC9147}} only define strong algorithms without major
    weaknesses at the time of publication. Many of the TLS registries
    have a "Recommended" column. Parameters not marked as "Y" are NOT
