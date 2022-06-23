@@ -949,7 +949,7 @@ normative:
    user messages and ensures that all protected user message data has
    been successfully transferred to the remote peer.
 
-   4. Local DTLS/SCTP sends a DTLS/SCTP Controll Message
+   4. Local DTLS/SCTP sends a DTLS/SCTP Control Message
    {{Control-Message}} of type "SHUTDOWN_Request" {{SHUTDOWN-Request}}
    to its peer.
 
@@ -991,10 +991,10 @@ normative:
    delivered. The DTLS/SCTP should indicate to ULP successful
    completion or failure to shutdown gracefully.
 
-# DTLS/SCTP Controll Message {#Control-Message}
+# DTLS/SCTP Control Message {#Control-Message}
 
-   The DTLS/SCTP Controll Message is defined as its own upper layer
-   protocol for DTLS/SCTP identified by its own PPID. The controll
+   The DTLS/SCTP Control Message is defined as its own upper layer
+   protocol for DTLS/SCTP identified by its own PPID. The control
    message is single 32-bit unsigned integer value in network byte
    order. Each message is sent as its own SCTP user message after
    having been protected by an open DTLS connection on any SCTP stream
@@ -1007,7 +1007,7 @@ normative:
    In case the message have value that are unknown the message is
    discarded and the event SHOULD be logged.
 
-   Two controll messages are defined in this specfication.
+   Two control messages are defined in this specfication.
 
 ## SHUTDOWN-Request {#SHUTDOWN-Request}
 
@@ -1230,7 +1230,7 @@ this specification.
 
 | Value | SCTP PPID | Reference |
 | -------------------------- | ----------- | --------- |
-| TBD1 | DTLS/SCTP Controll Message | \[RFC-TBD\] |
+| TBD1 | DTLS/SCTP Control Message | \[RFC-TBD\] |
 {: #iana-PPID title="SCTP Payload Protocol Identifier"}
 
 RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
