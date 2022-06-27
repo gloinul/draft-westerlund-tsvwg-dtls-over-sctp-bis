@@ -352,16 +352,16 @@ normative:
    messages. This specification defines how to fragment the user
    messages into DTLS records, where each DTLS record allows a
    maximum of 2^14 protected bytes. Each DTLS record adds some
-   overhead, thus using records of maximum possible size are
+   overhead, thus using records of maximum possible size is
    recommended to minimize the transmitted overhead. DTLS 1.3
    has much less overhead than DTLS 1.2 per record.
 
-   The sequence of DTLS records is then fragmented into DATA or I-DATA
-   Chunks to fit the path MTU by SCTP. These changes ensure that
+   The DTLS records are fragmented into DATA or I-DATA
+   Chunks to fit the path MTU by SCTP. This ensures that
    DTLS/SCTP has the same capability as SCTP to support user messages
    of any size. However, to simplify implementations it is OPTIONAL to
-   support user messages larger than 2^64-1 bytes. This is to allow
-   implementation to assume that 64-bit length fields and offset
+   support user messages larger than 2^64-1 bytes so that
+   implementations can assume that 64-bit length fields and offset
    pointers will be sufficient.
 
    Another implementation dependent exception to the support of any
@@ -373,8 +373,8 @@ normative:
    ({{Parallel-Dtls}}).
 
    The security operations and reassembly process requires that the
-   protected user message, i.e., with DTLS record overhead, is stored
-   in the receiver's buffer. This buffer space will thus put a limit
+   protected user message, i.e., including DTLS record overhead, is stored
+   in the receiver's buffer. This buffer space will thus set a limit
    on the largest size of plain text user message that can be
    transferred securely. However, by mandating the use of the partial
    delivery of user messages from SCTP and assuming that no two
