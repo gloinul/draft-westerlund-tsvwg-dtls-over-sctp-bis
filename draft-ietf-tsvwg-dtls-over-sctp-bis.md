@@ -288,35 +288,48 @@ normative:
 
    This document uses the following terms:
 
-   Association:  An SCTP association.
+   Association:
+   : An SCTP association.
 
-   Connection: An DTLS connection. It is uniquely identified by a
+   Connection:
+   : A DTLS connection. It is uniquely identified by a
    connection identifier.
 
-   Stream: A unidirectional stream of an SCTP association.  It is
+   Stream:
+   : A unidirectional stream of an SCTP association.  It is
    uniquely identified by a stream identifier.
 
 ## Abbreviations
 
-   AEAD:  Authenticated Encryption with Associated Data
+   AEAD:
+   : Authenticated Encryption with Associated Data
 
-   DTLS:  Datagram Transport Layer Security
+   DTLS:
+   : Datagram Transport Layer Security
 
-   HMAC: Keyed-Hash Message Authentication Code
+   HMAC:
+   : Keyed-Hash Message Authentication Code
 
-   MTU:  Maximum Transmission Unit
+   MTU:
+   : Maximum Transmission Unit
 
-   PPID:  Payload Protocol Identifier
+   PPID:
+   : Payload Protocol Identifier
 
-   SCTP:  Stream Control Transmission Protocol
+   SCTP:
+   : Stream Control Transmission Protocol
 
-   SCTP-AUTH: Authenticated Chunks for SCTP
+   SCTP-AUTH:
+   : Authenticated Chunks for SCTP
 
-   TCP:  Transmission Control Protocol
+   TCP:
+   : Transmission Control Protocol
 
-   TLS:  Transport Layer Security
+   TLS:
+   : Transport Layer Security
 
-   ULP:  Upper Layer Protocol
+   ULP:
+   : Upper Layer Protocol
 
 
 # Conventions
