@@ -1267,27 +1267,27 @@ this specification.
    SCTP-AUTH key is rekeyed when a new DTLS connection is set up at
    which point a new SCTP-AUTH key is derived using the TLS-Exporter.
 
-   (D)TLS 1.3 {{RFC8446}} discusses forward secrecy from EC(DHE),
+   (D)TLS 1.3 {{RFC8446}} discusses forward secrecy from (EC)DHE,
    KeyUpdate, and tickets/resumption. Forward secrecy limits the
    effect of key leakage in one direction (compromise of a key at
    time T2 does not compromise some key at time T1 where T1 < T2).
    Protection in the other direction (compromise at time T1 does not
-   compromise keys at time T2) can be achieved by rerunning EC(DHE).
+   compromise keys at time T2) can be achieved by rerunning (EC)DHE.
    If a long-term authentication key has been compromised, a full
-   handshake with EC(DHE) gives protection against passive
+   handshake with (EC)DHE gives protection against passive
    attackers. If the resumption_master_secret has been compromised,
-   a resumption handshake with EC(DHE) gives protection against passive
-   attackers and a full handshake with EC(DHE) gives protection against
+   a resumption handshake with (EC)DHE gives protection against passive
+   attackers and a full handshake with (EC)DHE gives protection against
    active attackers. If a traffic secret has been compromised, any
-   handshake with EC(DHE) gives protection against active attackers.
+   handshake with (EC)DHE gives protection against active attackers.
 
    The document “Confidentiality in the Face of Pervasive Surveillance:
    A Threat Model and Problem Statement” {{RFC7624}} defines key
    exfiltration as the transmission of cryptographic keying material
    for an encrypted communication from a collaborator, deliberately or
    unwittingly, to an attacker. Using the terms in RFC 7624, forward
-   secrecy without rerunning EC(DHE) still allows an attacker to do
-   static key exfiltration. Rerunning EC(DHE) forces and attacker to
+   secrecy without rerunning (EC)DHE still allows an attacker to do
+   static key exfiltration. Rerunning (EC)DHE forces and attacker to
    dynamic key exfiltration (or content exfiltration).
 
    When using DTLS 1.3 {{RFC9147}}, AEAD limits and
