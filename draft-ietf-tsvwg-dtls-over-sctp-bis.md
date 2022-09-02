@@ -24,7 +24,7 @@ author:
    name: Claudio Porfiri
    org: Ericsson
    email: claudio.porfiri@ericsson.com
--
+
 informative:
   RFC3436:
   RFC3788:
@@ -207,7 +207,7 @@ normative:
      fragmentation mechanism. It is optional to support message sizes
      over 2^64-1 bytes.
 
-   * Updates DTLS keys without requiring draining all inflight
+   * Update DTLS key without requiring draining all in-flight
      user message from SCTP.
 
    * Mandates that more modern DTLS version are used (DTLS 1.2 or
