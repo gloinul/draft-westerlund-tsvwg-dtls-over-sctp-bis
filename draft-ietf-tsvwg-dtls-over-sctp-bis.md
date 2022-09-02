@@ -575,7 +575,8 @@ normative:
    on any stream is a protocol violation. The receiver MAY terminate
    the SCTP association due to this protocol
    violation. Implementations that do not have a DTLS endpoint
-   immediately ready on SCTP handshake completion will have to ensure
+   in a state where application_data record can be accepted
+   on SCTP handshake completion, will have to ensure
    correct caching of the messages until the DTLS endpoint is ready.
 
    Whenever a mutual authentication, updated security parameters,
