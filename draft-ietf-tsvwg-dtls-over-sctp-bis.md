@@ -249,7 +249,7 @@ normative:
 
    Many applications using DTLS/SCTP are of semi-permanent nature.
    Semi-permanent term comes from telecom and referres to connections
-   that start at a certain time and are never closed.
+   that start at a certain time and are rarely closed.
    Semi-permanent connections use SCTP associations with expected
    lifetimes of months or even years where there is a significant
    cost for bringing them down in order to restart it.
