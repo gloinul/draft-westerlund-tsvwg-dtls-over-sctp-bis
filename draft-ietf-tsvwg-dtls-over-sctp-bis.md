@@ -247,11 +247,13 @@ normative:
    *  Strict AEAD significantly limits on how much many packets can be
       sent before rekeying.
 
-   Many applications using DTLS/SCTP are of semi-permanent nature and
-   use SCTP associations with expected lifetimes of months or even
-   years, and where there is a significant cost of bringing down the
-   SCTP association in order to restart it. Such DTLS/SCTP usages that
-   need:
+   Many applications using DTLS/SCTP are of semi-permanent nature.
+   Semi-permanent term comes from telecom and referres to connections
+   that start at a certain time and are rarely closed.
+   Semi-permanent connections use SCTP associations with expected
+   lifetimes of months or even years where there is a significant
+   cost for bringing them down in order to restart it.
+   Such DTLS/SCTP usages that need:
 
    *  Periodic re-authentication and transfer of revocation information
       of both endpoints (not only the DTLS client).
