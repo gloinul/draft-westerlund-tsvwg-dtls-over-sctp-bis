@@ -188,7 +188,7 @@ normative:
    The DTLS over SCTP solution defined in RFC 6083 had the following
    limitations:
 
-   * The maximum user message size is 2^14 (16384) bytes, which is a single
+   * The maximum user message size is 2<sup>14</sup> (16384) bytes, which is a single
       DTLS record limit.
 
    * DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
@@ -205,7 +205,7 @@ normative:
 
    * Removes the limitations on user messages sizes by defining a secure
      fragmentation mechanism. It is optional to support message sizes
-     over 2^64-1 bytes.
+     over 2<sup>64</sup>-1 bytes.
 
    * Enable DTLS key-change without requiring draining all in-flight
      user message from SCTP.
@@ -242,16 +242,18 @@ normative:
    DTLS 1.3 comes with a large number of significant changes.
 
    *  Renegotiations are not supported and instead partly replaced by
-      KeyUpdates. The number of KeyUpdates is limited to 2^48.
+      KeyUpdates. The number of KeyUpdates is limited to 2<sup>48</sup>.
 
    *  Strict AEAD significantly limits on how much many packets can be
       sent before rekeying.
 
-   Many applications using DTLS/SCTP are of semi-permanent nature and
-   use SCTP associations with expected lifetimes of months or even
-   years, and where there is a significant cost of bringing down the
-   SCTP association in order to restart it. Such DTLS/SCTP usages
-   need:
+   Many applications using DTLS/SCTP are of semi-permanent nature.
+   Semi-permanent term comes from telecom and referres to connections
+   that start at a certain time and are rarely closed.
+   Semi-permanent connections use SCTP associations with expected
+   lifetimes of months or even years where there is a significant
+   cost for bringing them down in order to restart it.
+   Such DTLS/SCTP usages that need:
 
    *  Periodic re-authentication and transfer of revocation information
       of both endpoints (not only the DTLS client).
@@ -288,35 +290,48 @@ normative:
 
    This document uses the following terms:
 
-   Association:  An SCTP association.
+   Association:
+   : An SCTP association.
 
-   Connection: A DTLS connection. It is uniquely identified by a
+   Connection:
+   : A DTLS connection. It is uniquely identified by a
    connection identifier.
 
-   Stream: A unidirectional stream of an SCTP association.  It is
+   Stream:
+   : A unidirectional stream of an SCTP association.  It is
    uniquely identified by a stream identifier.
 
 ## Abbreviations
 
-   AEAD:  Authenticated Encryption with Associated Data
+   AEAD:
+   : Authenticated Encryption with Associated Data
 
-   DTLS:  Datagram Transport Layer Security
+   DTLS:
+   : Datagram Transport Layer Security
 
-   HMAC: Keyed-Hash Message Authentication Code
+   HMAC:
+   : Keyed-Hash Message Authentication Code
 
-   MTU:  Maximum Transmission Unit
+   MTU:
+   : Maximum Transmission Unit
 
-   PPID:  Payload Protocol Identifier
+   PPID:
+   : Payload Protocol Identifier
 
-   SCTP:  Stream Control Transmission Protocol
+   SCTP:
+   : Stream Control Transmission Protocol
 
-   SCTP-AUTH: Authenticated Chunks for SCTP
+   SCTP-AUTH:
+   : Authenticated Chunks for SCTP
 
-   TCP:  Transmission Control Protocol
+   TCP:
+   : Transmission Control Protocol
 
-   TLS:  Transport Layer Security
+   TLS:
+   : Transport Layer Security
 
-   ULP:  Upper Layer Protocol
+   ULP:
+   : Upper Layer Protocol
 
 
 # Conventions
@@ -349,8 +364,8 @@ normative:
    DTLS/SCTP, automatically fragments and reassembles user
    messages. This specification defines how to fragment the user
    messages into DTLS records, where each DTLS record allows a
-   maximum of 2^14 protected bytes. Each DTLS record adds some
-   overhead, thus using records of maximum possible size is
+   maximum of 2<sup>14</sup> protected bytes. Each DTLS record adds some
+   overhead, thus using records of maximum possible size are
    recommended to minimize the transmitted overhead. DTLS 1.3
    has much less overhead than DTLS 1.2 per record.
 
@@ -358,7 +373,7 @@ normative:
    Chunks to fit the path MTU by SCTP. These changes ensure that
    DTLS/SCTP has the same capability as SCTP to support user messages
    of any size. However, to simplify implementations it is OPTIONAL to
-   support user messages larger than 2^64-1 bytes. This is to allow
+   support user messages larger than 2<sup>64</sup>-1 bytes. This is to allow
    implementation to assume that 64-bit length fields and offset
    pointers will be sufficient.
 
@@ -443,7 +458,7 @@ normative:
 
    DTLS/SCTP works as a shim layer between the user message API and
    SCTP. On the sender side a user message is split
-   into fragments m0, m1, m2, each no larger than 2^14 = 16384
+   into fragments m0, m1, m2, each no larger than 2<sup>14</sup> = 16384
    bytes.
 
 ~~~~~~~~~~~
@@ -1270,27 +1285,27 @@ this specification.
    SCTP-AUTH key is rekeyed when a new DTLS connection is set up at
    which point a new SCTP-AUTH key is derived using the TLS-Exporter.
 
-   (D)TLS 1.3 {{RFC8446}} discusses forward secrecy from EC(DHE),
+   (D)TLS 1.3 {{RFC8446}} discusses forward secrecy from (EC)DHE,
    KeyUpdate, and tickets/resumption. Forward secrecy limits the
    effect of key leakage in one direction (compromise of a key at
    time T2 does not compromise some key at time T1 where T1 < T2).
    Protection in the other direction (compromise at time T1 does not
-   compromise keys at time T2) can be achieved by rerunning EC(DHE).
+   compromise keys at time T2) can be achieved by rerunning (EC)DHE.
    If a long-term authentication key has been compromised, a full
-   handshake with EC(DHE) gives protection against passive
+   handshake with (EC)DHE gives protection against passive
    attackers. If the resumption_master_secret has been compromised,
-   a resumption handshake with EC(DHE) gives protection against passive
-   attackers and a full handshake with EC(DHE) gives protection against
+   a resumption handshake with (EC)DHE gives protection against passive
+   attackers and a full handshake with (EC)DHE gives protection against
    active attackers. If a traffic secret has been compromised, any
-   handshake with EC(DHE) gives protection against active attackers.
+   handshake with (EC)DHE gives protection against active attackers.
 
    The document “Confidentiality in the Face of Pervasive Surveillance:
    A Threat Model and Problem Statement” {{RFC7624}} defines key
    exfiltration as the transmission of cryptographic keying material
    for an encrypted communication from a collaborator, deliberately or
    unwittingly, to an attacker. Using the terms in RFC 7624, forward
-   secrecy without rerunning EC(DHE) still allows an attacker to do
-   static key exfiltration. Rerunning EC(DHE) forces and attacker to
+   secrecy without rerunning (EC)DHE still allows an attacker to do
+   static key exfiltration. Rerunning (EC)DHE forces and attacker to
    dynamic key exfiltration (or content exfiltration).
 
    When using DTLS 1.3 {{RFC9147}}, AEAD limits and
