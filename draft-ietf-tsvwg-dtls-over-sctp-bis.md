@@ -560,7 +560,7 @@ normative:
 ## DTLS Connection Handling
 
    DTLS/SCTP is negotiated on SCTP level as an adaptation layer
-   ({{Negotiation}}). After a successful negotiation of the DTLS/SCTP
+   ({{Negotiation}}). After a successful negotiation of the DTLS/SCTP adaptation layer
    during SCTP association establishment, a DTLS connection MUST be
    established prior the transmission of any ULP user messages. All
    DTLS connections are terminated when the SCTP association is
@@ -639,10 +639,10 @@ normative:
    messages and considering stream priorities can result in faster
    delivery.
 
-   A simple solution avoiding any protocol issue for sending all DTLS
-   messages that are not protected user message fragments is to pick a
-   stream not used by the ULP, send the DTLS messages in their own
-   user messages with in order delivery. That mimics the RFC 6083
+   A simple solution avoiding any protocol issue with sending DTLS
+   messages, that are not protected user message fragments, is to pick a
+   stream not used by the ULP, and send the DTLS messages in their own
+   SCTP user messages with in order delivery. That mimics the RFC 6083
    behavior without impacting the ULP. However, it assumes that there
    are available streams to be used based on the SCTP association
    handshake allowed streams (Section 5.1.1 of {{RFC9260}}).
@@ -693,16 +693,19 @@ normative:
    which is disabled by default in many DTLS implementations, or
    post-handshake messages in DTLS 1.3, which does not allow periodic
    mutual endpoint re-authentication or re-keying of
-   SCTP-AUTH. Parallel DTLS connections enable opening a new DTLS
+   SCTP-AUTH.
+
+   Parallel DTLS connections enable opening a new DTLS
    connection performing an handshake, while the existing DTLS
    connection is kept in place.  In DTLS 1.3 the handshake MAY be a
    full handshake or a resumption handshake, and resumption can be done
    while the original connection is still open. In DTLS 1.2 the
    handshake MUST be a full handshake. The new parallel connection MUST
    use the same DTLS version as the existing connection.
-   On handshake completion, DTLS/SCTP shall switch
-   to the security context of the new DTLS connection for protection
-   of user message and then ensure delivery of all the SCTP chunks
+
+   On DTLS handshake completion, DTLS/SCTP starts using
+   the security context of the new DTLS connection for protection
+   of ULP user messages and then ensure delivery of all the SCTP chunks
    using the old DTLS connections security context. When that has been
    achieved DTLS/SCTP shall close the old DTLS connection and discard
    the related security context.
