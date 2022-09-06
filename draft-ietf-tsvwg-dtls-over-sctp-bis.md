@@ -1212,7 +1212,7 @@ normative:
 ## TLS Exporter Label
 
    IANA added a value to the TLS Exporter Label registry as described in
-   {{RFC5705}}.  The label is "EXPORTER-EXT-DTLS-OVER-SCTP".
+   {{RFC5705}}.  The label is "EXPORTER-DTLS-OVER-SCTP-EXT".
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
