@@ -207,7 +207,7 @@ normative:
      fragmentation mechanism. It is optional to support message sizes
      over 2<sup>64</sup>-1 bytes.
 
-   * Enable DTLS key-change without requiring draining all inflight
+   * Update DTLS key material without requiring draining all in-flight
      user message from SCTP.
 
    * Mandates that more modern DTLS version are used (DTLS 1.2 or
