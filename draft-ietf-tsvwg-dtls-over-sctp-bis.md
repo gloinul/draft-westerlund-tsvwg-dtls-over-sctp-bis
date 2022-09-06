@@ -1090,7 +1090,7 @@ normative:
 ## Client Use Case
 
    When a client initiates an SCTP Association with DTLS protection,
-   i.e., the SCTP INIT containing DTSL/SCTP Mandatory Options, it can
+   i.e., the SCTP INIT containing DTLS/SCTP Mandatory Options, it can
    receive an INIT-ACK also containing DTLS/SCTP Mandatory Options, in
    that case the Association will proceed as specified in the previous
    {{DTLS-init}} section.  If the peer replies with an INIT-ACK not
@@ -1187,7 +1187,7 @@ normative:
 
    The following functionality is needed:
 
-   * Controlling SCPT-AUTH negotiation so that SHA-256 algorithm is
+   * Controlling SCTP-AUTH negotiation so that SHA-256 algorithm is
      inlcluded, and determine that SHA-1 is not selected when the
      association is established.
 
