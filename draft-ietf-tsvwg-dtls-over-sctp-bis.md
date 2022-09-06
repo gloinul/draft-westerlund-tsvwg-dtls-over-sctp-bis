@@ -207,7 +207,7 @@ normative:
      fragmentation mechanism. It is optional to support message sizes
      over 2<sup>64</sup>-1 bytes.
 
-   * Enable DTLS key-change without requiring draining all in-flight
+   * Update DTLS key material without requiring draining all in-flight
      user message from SCTP.
 
    * Mandates that more modern DTLS version are used (DTLS 1.2 or
@@ -590,7 +590,8 @@ normative:
    on any stream is a protocol violation. The receiver MAY terminate
    the SCTP association due to this protocol
    violation. Implementations that do not have a DTLS endpoint
-   immediately ready after SCTP handshake completion will have to ensure
+   in a state where application_data record can be accepted
+   on SCTP handshake completion, will have to ensure
    correct caching of the messages until the DTLS endpoint is ready.
 
    Whenever a mutual authentication, updated security parameters,
@@ -1093,7 +1094,7 @@ normative:
 ## Client Use Case
 
    When a client initiates an SCTP Association with DTLS protection,
-   i.e. the SCTP INIT containing DTSL/SCTP Mandatory Options, it can
+   i.e., the SCTP INIT containing DTLS/SCTP Mandatory Options, it can
    receive an INIT-ACK also containing DTLS/SCTP Mandatory Options, in
    that case the Association will proceed as specified in the previous
    {{DTLS-init}} section.  If the peer replies with an INIT-ACK not
@@ -1189,9 +1190,8 @@ normative:
    the needed functionality on the SCTP API.
 
    The following functionality is needed:
-
-   * Controlling SCPT-AUTH negotiation so that SHA-256 algorithm is
-     included and determining that SHA-1 is not selected when the
+   * Controlling SCTP-AUTH negotiation so that SHA-256 algorithm is
+     inlcluded, and determine that SHA-1 is not selected when the
      association is established.
 
    * Determining when all SCTP packets that uses an SCTP-auth key or
