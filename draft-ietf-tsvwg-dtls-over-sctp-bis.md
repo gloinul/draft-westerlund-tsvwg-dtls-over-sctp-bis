@@ -173,28 +173,30 @@ the upper layer protocol with some additions for controlling the DTLS/SCTP
 security parameters and policies. This minimizes the impact on the SCTP
 implementation and wire image.
 
-~~~ aasvg
+~~~~~~~~~~~
 +---------------------+
 |                     |
 |         ULP         |
 |                     |
 +---------------------+ <- SCTP API + Security Parameters
-| DTLS/SCTP  +------+ |
-| Adaptation | DTLS | |
-| Layer      +------+ |
+|                     |
+| DTLS/SCTP           |          +------+
+| Adaptation          +----------| DTLS |
+| Layer               |          +------+
+|                     |
 +---------------------+ <- SCTP API + SCTP-AUTH API
 |                     |
 |  SCTP + SCTP-AUTH   |
 |                     |
 +---------------------+
 
-~~~
+~~~~~~~~~~~
 {: #dtls-sctp-layering title="DTLS/SCTP layering in regards to SCTP and upper layer protocol"}
 
 DTLS/SCTP performs protection operations on ULP data as it is provided to
-DTLS/SCTP as whole or a part of a SCTP user messages to be transported to the
+DTLS/SCTP, as whole or a part of a SCTP user messages to be transported to the
 peer. The protection operation means that the ULP user message data is
-fragmented into suitable fragments that can fit in a single DTLS record. Each
+split into suitable fragments that can fit into a single DTLS record. Each
 fragment is encrypted and provided with authentication tag by DTLS. The
 protected user message fragments are then transmitted as a SCTP user
 message. SCTP-AUTH provides authentication of the SCTP packets and prevents
@@ -203,26 +205,26 @@ protected user message can be de-protected in the receiver in order and
 reassembled.
 
 SCTP's capability for multi-stream concurrent transmission of different SCTP
-user messages, and where each SCTP user message can potentially be very large
-results in some challenges for any changes of the keys used to protect the ULP
-data and the need for sufficient large DTLS sequence numbers to ensure succesful
-decryption. SCTP-AUTH API defined in {{RFC6458}} provides additional limitations
-that needs to be considered if supported. These issues and the limitations they
-result in will be discussed in more detail below.
+user messages, where each SCTP user message can potentially be very large,
+results in some challenges for any change of the keys used to protect the ULP
+data, and requires sufficient large DTLS sequence numbers to ensure succesful
+decryption. SCTP-AUTH API, defined in {{RFC6458}}, provides additional limitations
+that needs to be considered when supported. These issues and the related limitations
+will be discussed more in details below.
 
-RFC6083 dealt with the above issues by requiring that the peers drained all
+RFC6083 dealt with the above limittions by requiring that the peers drained all
 outstanding data before updating the key to prevent issues. This can have
 significant impact on a ULP that requires timely and frequent exchange of user
 messages. This specification uses another solution to these problems assuming a
 sufficient capable SCTP and SCTP-AUTH implementations and with rich enough APIs.
 
-To ensure that current keying material is not prematurely discarded on
-renegotiation or key-update, we use a solution based on establishing a second
+The solution that ensures the current keying material for not being prematurely discarded on
+renegotiation or key-update, is based on establishing a second
 DTLS connection over the SCTP association. This createa parallel DTLS
-connections, and where the DTLS connection ID feature is used to identify the
+connections, where the DTLS connection ID feature is used to identify the
 originating connection for each DTLS record or message. When a new DTLS
 connection has been established and its keying material is made available the
-sender starts using this to protect the ULP data. When all protected user
+sender starts using it to protect the ULP data. When all protected user
 message fragments have been delivered in a non-renegable way then the old DTLS
 connection can be terminated and the associated keying material discarded.
 
