@@ -506,7 +506,9 @@ connection can be terminated and the associated keying material discarded.
    DTLS Path MTU Discovery MUST NOT be used.  Since SCTP provides Path
    MTU discovery and fragmentation/reassembly for user messages as
    specified in {{Msg-size}}, DTLS can send maximum sized DTLS
-   Records.
+   Records. The maximum record size may be limited by the DTLS
+   implementation, in such case it's recommended to choose the
+   largest possible value as permitted by the DTLS implementation.
 
 ## Retransmission of Messages
 
