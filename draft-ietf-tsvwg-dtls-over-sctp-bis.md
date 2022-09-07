@@ -475,7 +475,9 @@ connection can be terminated and the associated keying material discarded.
    layer memory buffers, the receiver buffer needs to be larger.
    Implementations can trade-off buffer memory requirements in the DTLS layer with
    transport overhead by using smaller DTLS records, this is possible by
-   using the record size limit extension for DTLS according to {{RFC8449}}.
+   using the record size limit extension for DTLS according to {{RFC8449}},
+   in such case DTLS/SCTP layer must be informed so that ULP messages
+   can be split accordingly.
 
    The DTLS/SCTP implementation is expected to behave very similar to
    just SCTP when it comes to handling of user messages and dealing
