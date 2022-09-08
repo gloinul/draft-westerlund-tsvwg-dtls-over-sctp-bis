@@ -473,11 +473,14 @@ connection can be terminated and the associated keying material discarded.
    efficient operation and avoiding flow control stalls if user
    message fragments are not frequently and expiendtly moved to upper
    layer memory buffers, the receiver buffer needs to be larger.
+
    Implementations can trade-off buffer memory requirements in the DTLS layer with
-   transport overhead by using smaller DTLS records, this is possible by
-   using the record size limit extension for DTLS according to {{RFC8449}},
-   in such case DTLS/SCTP layer must be informed so that ULP messages
-   can be split accordingly.
+   transport overhead by using smaller DTLS records, in this case the
+   record size limit extension for DTLS according to {{RFC8449}} MUST be
+   used, the negotiated record size SHALL be communicated to DTLS/SCTP
+   so that ULP messages can be split accordingly and then the record
+   size it SHALL NOT be renegotiated nor changed during the lifetime of
+   the Association.
 
    The DTLS/SCTP implementation is expected to behave very similar to
    just SCTP when it comes to handling of user messages and dealing
