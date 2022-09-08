@@ -81,6 +81,7 @@ normative:
   RFC8174:
   RFC8260:
   RFC8446:
+  RFC8449:
   RFC8996:
   RFC9113:
   RFC9146:
@@ -351,6 +352,14 @@ connection can be terminated and the associated keying material discarded.
    In the rest of the document, unless the version of DTLS is
    specifically called out, the text applies to both versions of DTLS.
 
+   DTLS/SCTP requires the maximum DTLS record size to be known and not
+   being changed during the lifetime of the Association.
+   It is mandated that DTLS supports the maximum record size of 2<sup>14</sup> bytes.
+   DTLS/SCTP MAY exploit maximum DTLS record size due to implementation
+   choice, in such case maximum record size MUST be negotiated according
+   to {{RFC8449}}, the negotiated value MUST be known to DTLS/SCTP and
+   SHALL NOT be changed during the Association lifetime.
+
 ## Terminology
 
    This document uses the following terms:
@@ -506,9 +515,7 @@ connection can be terminated and the associated keying material discarded.
    DTLS Path MTU Discovery MUST NOT be used.  Since SCTP provides Path
    MTU discovery and fragmentation/reassembly for user messages as
    specified in {{Msg-size}}, DTLS can send maximum sized DTLS
-   Records. The maximum record size may be limited by the DTLS
-   implementation, in such case it's recommended to choose the
-   largest possible value as permitted by the DTLS implementation.
+   Records.
 
 ## Retransmission of Messages
 
