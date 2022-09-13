@@ -477,8 +477,8 @@ connection can be terminated and the associated keying material discarded.
    Implementations can trade-off buffer memory requirements in the DTLS layer with
    transport overhead by using smaller DTLS records, in this case the
    record size limit extension for DTLS according to {{RFC8449}} MUST be
-   used, the negotiated record size SHALL be communicated to DTLS/SCTP,
-   and the maximum record size SHALL NOT be renegotiated during the lifetime of
+   used and the negotiated record size SHALL be communicated to DTLS/SCTP.
+   The maximum record size SHALL NOT be renegotiated during the lifetime of
    the Association.
 
    The DTLS/SCTP implementation is expected to behave very similar to
