@@ -355,9 +355,9 @@ connection can be terminated and the associated keying material discarded.
    DTLS/SCTP requires the maximum DTLS record size to be known and not
    being changed during the lifetime of the Association.
    It is mandated that DTLS supports the maximum record size of 2<sup>14</sup> bytes.
-   DTLS/SCTP MAY exploit maximum DTLS record size due to implementation
-   choice, in such case maximum record size MUST be negotiated according
-   to {{RFC8449}}, the negotiated value MUST be known to DTLS/SCTP and
+   DTLS/SCTP MAY exploit maximum DTLS record size less than  2<sup>14</sup> bytes
+   due to implementation choice, in such case maximum record size MUST be negotiated
+   according to {{RFC8449}}, the negotiated value MUST be known to DTLS/SCTP and
    SHALL NOT be changed during the Association lifetime.
 
 ## Terminology
