@@ -81,6 +81,7 @@ normative:
   RFC8174:
   RFC8260:
   RFC8446:
+  RFC8449:
   RFC8996:
   RFC9113:
   RFC9146:
@@ -482,7 +483,7 @@ terminated and the associated keying material discarded.
 ## DTLS Connection Identifier
 
    The DTLS Connection ID MUST be negotiated ({{RFC9146}} or Section 9 of
-   {{RFC9147}}). 
+   {{RFC9147}}).
 
    Section 4 of {{RFC9146}} states “If, however, an implementation
    chooses to receive different lengths of CID, the assigned CID
@@ -504,19 +505,19 @@ terminated and the associated keying material discarded.
 
 
 ## DTLS Sequence number size
- 
+
    16-bit sequence number SHOULD be used rather than 8-bit to avoid limitations
    in number of infligth DTLS records. Overlapping sequence number due to
    wrapping of the extend sequence number needs to be prevented as it otherwise
    can lead to decryption failure that result in failure of the transport
    service.
-   
+
 
 ## Message Sizes {#Msg-size}
 
    If DTLS 1.3 is used, the length field in the record layer MUST
    be included in all records.
-   
+
    DTLS/SCTP, automatically fragments and reassembles user
    messages. This specification defines how to fragment the user
    messages into DTLS records, where each DTLS record allows a
@@ -1143,7 +1144,7 @@ terminated and the associated keying material discarded.
    of number of bytes transmitted with a particular key. However, this is not an
    interoperability issue as it is the sender side's API that limits what can be
    sent and thus the sender implementation will have to address this issue.
-   
+
 
 # DTLS/SCTP Control Message {#Control-Message}
 
