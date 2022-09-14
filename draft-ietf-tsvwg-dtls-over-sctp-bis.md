@@ -1111,7 +1111,7 @@ terminated and the associated keying material discarded.
 
    To avoid failures in DTLS record decryption it is necessary to ensure that
    the sequence number space never wraps for the DTLS records that are
-   outstanding between the DTLS encryption and Decryption. As discussed in
+   outstanding between the DTLS encryption and decryption. As discussed in
    {{buffering}} the amount of packets this include is a combination of any
    buffering in the endpoint and the amount of data in the SCTP sender/receiver
    buffer for the transmission.
@@ -1124,16 +1124,21 @@ terminated and the associated keying material discarded.
    the DTLS encryption until the DTLS Decryption in its sender and receiver
    implementation.
 
+   If the receiver implementation keeps with the assumpption to timely decrypt
+   DTLS records after it has been completely received, the tracking of when a
+   records has been fully received can maintain a good view of the total number
+   of outstanding records in regards to the DTLS sequence number space and
+   prevent wrapping of the sequence number space by not protecting additional
+   user message fragements until further DTLS records has been ackonwledged.
 
-   Implementation that offers SCTP receiver window sizes that are larger than
-   half of the product between available sequence numbers and maximum DTLS
-   record size MUST be capable of handling sequence number wraps through trial
-   decoding with lower values in the higher bits of the extended sequence
-   number. The half is chosen to ensure that ULP that uses an average user
-   message size that are at least half the DTLS maximum record size will
-   function. Senders that transmitts user messages of lower average size across
-   no more than the last 65535 user messages MUST ensure that it does not have
-   more outstanding
+   Assuming a that a quarter of the sequence number space is used as safety
+   margin it will limit the number of simultanous in-flight DTLS records to
+   approximately 48000, and thus also the number of simultanos user
+   messages. Technically, if the DTLS implementation supports trial decoding,
+   overlap of the sequence number but that results in both implementation
+   requirements, need to signal the window it supports, and additional
+   decryption overhead due to trial decoding and will be left for future
+   extension.
 
 ### SCTP API Limitations
 
