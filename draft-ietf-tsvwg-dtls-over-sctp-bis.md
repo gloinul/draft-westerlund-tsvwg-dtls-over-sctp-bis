@@ -564,7 +564,7 @@ terminated and the associated keying material discarded.
    due to implementation choice, in such case maximum record size MUST be negotiated
    according to {{RFC8449}}. The negotiated value MUST be known to DTLS/SCTP and
    SHALL NOT be changed during the Association lifetime.
-   
+
 ## Replay Protection
 
    SCTP-AUTH {{RFC4895}} does not have explicit replay
