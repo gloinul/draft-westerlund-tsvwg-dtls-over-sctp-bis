@@ -1133,12 +1133,19 @@ terminated and the associated keying material discarded.
 
    Assuming a that a quarter of the sequence number space is used as safety
    margin it will limit the number of simultanous in-flight DTLS records to
-   approximately 48000, and thus also the number of simultanos user
-   messages. Technically, if the DTLS implementation supports trial decoding,
-   overlap of the sequence number but that results in both implementation
-   requirements, need to signal the window it supports, and additional
-   decryption overhead due to trial decoding and will be left for future
-   extension.
+   49152, and thus also the number of simultanos user messages. Technically, if
+   the DTLS implementation supports trial decoding, overlap of the sequence
+   number but that results in both implementation requirements, need to signal
+   the window it supports, and additional decryption overhead due to trial
+   decoding and will be left for future extension.
+
+   So what size of SCTP receiver window this limitation correspond to is highly
+   dependent on the SCTP user message size. If all SCTP user message are large,
+   e.g. 1 MB, then most DTLS Records will be close to maxmimum DTLS record
+   size. Thus, the SCTP receiver window size required before this becomes an
+   issue becomes fairly close to 49152 times 16384, i.e. approximately 800
+   MB. While SCTP user messages of 100 bytes would only need a receiver window
+   of approximately 5 MB.
 
 ### SCTP API Limitations
 
