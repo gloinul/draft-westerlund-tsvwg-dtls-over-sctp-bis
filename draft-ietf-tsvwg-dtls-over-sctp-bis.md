@@ -520,11 +520,14 @@ terminated and the associated keying material discarded.
 
    DTLS/SCTP, automatically fragments and reassembles user
    messages. This specification defines how to fragment the user
-   messages into DTLS records, where each DTLS record allows a
-   maximum of 2<sup>14</sup> protected bytes. Each DTLS record adds some
-   overhead, thus using records of maximum possible size are
-   recommended to minimize the transmitted overhead. DTLS 1.3
-   has much less overhead than DTLS 1.2 per record.
+   messages into DTLS records, where each DTLS record allows a maximum
+   of 2<sup>14</sup> protected bytes. It is mandated that DTLS
+   supports the maximum record size of 2<sup>14</sup> bytes.
+   DTLS/SCTP MAY exploit maximum DTLS record size less than
+   2<sup>14</sup> bytes due to implementation choice, in such case
+   maximum record size MUST be negotiated according to
+   {{RFC8449}}. The negotiated value MUST be known to DTLS/SCTP and
+   SHALL NOT be changed during the Association lifetime.
 
    The sequence of DTLS records is then fragmented into DATA or I-DATA
    Chunks to fit the path MTU by SCTP. These changes ensure that
@@ -559,12 +562,7 @@ terminated and the associated keying material discarded.
    processing. Making it the ULP responsible for handling any resource
    contention related to large user messages.
 
-   It is mandated that DTLS supports the maximum record size of 2<sup>14</sup> bytes.
-   DTLS/SCTP MAY exploit maximum DTLS record size less than  2<sup>14</sup> bytes
-   due to implementation choice, in such case maximum record size MUST be negotiated
-   according to {{RFC8449}}. The negotiated value MUST be known to DTLS/SCTP and
-   SHALL NOT be changed during the Association lifetime.
-   
+
 ## Replay Protection
 
    SCTP-AUTH {{RFC4895}} does not have explicit replay
