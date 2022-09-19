@@ -1414,7 +1414,10 @@ this specification.
    might be motivated by new attacks.
 
    Allowing new connections can enable denial-of-service attacks.
-   The endpoints SHOULD limit the frequency of new connections.
+   The endpoints SHOULD limit the frequency of new connections, taking
+   into account that no more than two DTLS connections can exist at the
+   same time and that the DTLS connection can only be closed after
+   "Ready_To_Close" {{Ready_To_Close}} indication.
 
    When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, the TLS Session
    Hash and Extended Master Secret Extension {{RFC7627}} MUST be used to
