@@ -1073,16 +1073,22 @@ connection can be terminated and the associated keying material discarded.
 
    The DTLS/SCTP Control Message is defined as its own upper layer
    protocol for DTLS/SCTP identified by its own PPID. The control
-   message is two 32-bit unsigned integer value in network byte
-   order.
+   message is sent in network byte order.
+
+   The first 32 bit are split in two 16-bit integer where the first
+   contains the Control Message Number and the next 16-bit integer
+   contains the length of the optional Variable Parameter.
+   Granularity of Variable Parameter is 32-bit with trailing zeroes.
 
 ~~~~~~~~~~~
  0                   1                   2                   3
  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                      Control Message No                       |
+|       Control Message No      |      Parameter Length         |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                      DTLS Connection ID                       |
+\                                                               \
+/                      Variable Parameter                       /
+\                                                               \
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ~~~~~~~~~~~
 
@@ -1103,7 +1109,7 @@ connection can be terminated and the associated keying material discarded.
 
    The value "1" is defined as a request to the peer to initiate
    controlled shutdown. This is used per step 4 and 5 in {{sec-shutdown}}.
-   Control Message 1 "Shutdown request" has DTLS Connection ID parameter = 0.
+   Control Message 1 "Shutdown request" has Parameter Length = 0.
 
 ## Ready To Close Indication {#Ready_To_Close}
 
@@ -1113,8 +1119,9 @@ connection can be terminated and the associated keying material discarded.
    sent and acknowledged as received in a non-renegable way. This is
    used per {{Parallel-Dtls}} to initiate the closing of the DTLS
    connections during rekeying.
-   Control Message 2 "Ready To Close" has DTLS Connection ID parameter
-   equal to the DTLS Connection ID that is to be closed.
+   Control Message 2 "Ready To Close" has has Parameter Length equal
+   to the size of the DTLS Connection ID parameter in bytes.
+   The Variable Parameter contains the DTLS Connection ID that is to be closed.
 
 # DTLS over SCTP Service {#Negotiation}
 
