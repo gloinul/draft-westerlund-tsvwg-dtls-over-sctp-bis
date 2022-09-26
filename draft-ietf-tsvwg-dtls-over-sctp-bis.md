@@ -480,6 +480,9 @@ terminated and the associated keying material discarded.
    be used. For all versions of DTLS, cryptographic parameters giving
    confidentiality and forward secrecy MUST be used.
 
+## Authentication
+   DTLS handshake MUST use mutual authentication.
+
 ## DTLS Connection Identifier
 
    The DTLS Connection ID MUST be negotiated ({{RFC9146}} or Section 9 of
@@ -511,7 +514,6 @@ terminated and the associated keying material discarded.
    wrapping of the extend sequence number needs to be prevented as it otherwise
    can lead to decryption failure that result in failure of the transport
    service.
-
 
 ## Message Sizes {#Msg-size}
 
