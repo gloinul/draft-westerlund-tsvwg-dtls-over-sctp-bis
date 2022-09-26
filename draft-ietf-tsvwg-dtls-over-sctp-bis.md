@@ -424,6 +424,9 @@ connection can be terminated and the associated keying material discarded.
    be used. For all versions of DTLS, cryptographic parameters giving
    confidentiality and forward secrecy MUST be used.
 
+## Authentication
+   DTLS handshake MUST use mutual authentication.
+
 ## Message Sizes {#Msg-size}
 
    DTLS/SCTP, automatically fragments and reassembles user
