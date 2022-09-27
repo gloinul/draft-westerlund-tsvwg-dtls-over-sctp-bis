@@ -424,6 +424,15 @@ connection can be terminated and the associated keying material discarded.
    be used. For all versions of DTLS, cryptographic parameters giving
    confidentiality and forward secrecy MUST be used.
 
+   There are potential for aligning used hash algorithms between
+   SCTP-AUTH and the DTLS cipher suit. If the otherwise considered to
+   be used SCTP-AUTH hash algorithms and DTLS Cipher suits have
+   matching hashing algorithms it is RECOMMENDED to indicate a
+   preference for such algorithms. Note, however as the SCTP-AUTH
+   hashing algorithm is chosen during SCTP association handshake it
+   can't be changed once it is know what is supported in DTLS by the
+   peer endpoint.
+
 ## Authentication
    DTLS handshake MUST use mutual authentication.
 
