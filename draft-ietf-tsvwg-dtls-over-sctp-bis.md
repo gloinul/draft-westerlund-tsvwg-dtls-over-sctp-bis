@@ -427,6 +427,52 @@ connection can be terminated and the associated keying material discarded.
 ## Authentication
    DTLS handshake MUST use mutual authentication.
 
+
+## Renegotiation and KeyUpdate
+
+   DTLS 1.2 renegotiation enables rekeying (with ephemeral Diffie-
+   Hellman) of DTLS as well as mutual reauthentication and transfer of
+   revocation information inside an DTLS 1.2 connection. Renegotiation
+   has been removed from DTLS 1.3 and partly replaced with
+   post-handshake messages such as KeyUpdate. The parallel DTLS
+   connection solution was specified due to lack of necessary features
+   with DTLS 1.3 considered needed for long lived SCTP associations,
+   such as rekeying (with ephemeral Diffie-Hellman) as well as mutual
+   reauthentication.
+
+   This specification does not allow usage of DTLS 1.2 renegotiation to
+   avoid race conditions and corner cases in the interaction between
+   the parallel DTLS connection mechanism and the keying of
+   SCTP-AUTH. In addition, renegotiation is also disabled in some
+   implementations, as well as dealing with the epoch change reliable
+   have similar or worse application impact.
+
+   This specification also recommends against using DTLS 1.3 KeyUpdate
+   and instead rely on parallel DTLS connections. For DTLS 1.3 there
+   isn’t feature parity. It also has the issue that a DTLS
+   implementation following the RFC may assume a too limited window
+   for SCTP where the previous epoch’s security context is maintained
+   and thus changes to epoch handling would be necessary. Thus,
+   unless the below specified more application impacting draining is
+   used, there exist risk of losing data that the sender will have
+   assumed has been reliably delivered.
+
+### DTLS 1.2 Considerations
+
+   The endpoint MUST NOT use DTLS 1.2 renegotiation.
+
+### DTLS 1.3 Considerations
+
+   Before sending a KeyUpdate message, the DTLS endpoint MUST ensure
+   that all DTLS messages have been acknowledged by the SCTP peer in a
+   non-revocable way.  After sending the KeyUpdate message, it stops
+   sending DTLS messages until the corresponding Ack message has been
+   processed.
+
+   Prior to processing a received KeyUpdate message, all other received
+   SCTP user messages that are buffered in the SCTP layer and can be
+   delivered to the DTLS layer MUST be read and processed by DTLS.
+
 ## Message Sizes {#Msg-size}
 
    DTLS/SCTP, automatically fragments and reassembles user
@@ -902,51 +948,6 @@ connection can be terminated and the associated keying material discarded.
    DTLS connection prior to the receiver having received the data can
    result in failure case 1 described in {{Mapping-DTLS}}, which likely
    result in SCTP association termination.
-
-## Renegotiation and KeyUpdate
-
-   DTLS 1.2 renegotiation enables rekeying (with ephemeral Diffie-
-   Hellman) of DTLS as well as mutual reauthentication and transfer of
-   revocation information inside an DTLS 1.2 connection. Renegotiation
-   has been removed from DTLS 1.3 and partly replaced with
-   post-handshake messages such as KeyUpdate. The parallel DTLS
-   connection solution was specified due to lack of necessary features
-   with DTLS 1.3 considered needed for long lived SCTP associations,
-   such as rekeying (with ephemeral Diffie-Hellman) as well as mutual
-   reauthentication.
-
-   This specification does not allow usage of DTLS 1.2 renegotiation to
-   avoid race conditions and corner cases in the interaction between
-   the parallel DTLS connection mechanism and the keying of
-   SCTP-AUTH. In addition, renegotiation is also disabled in some
-   implementations, as well as dealing with the epoch change reliable
-   have similar or worse application impact.
-
-   This specification also recommends against using DTLS 1.3 KeyUpdate
-   and instead rely on parallel DTLS connections. For DTLS 1.3 there
-   isn’t feature parity. It also has the issue that a DTLS
-   implementation following the RFC may assume a too limited window
-   for SCTP where the previous epoch’s security context is maintained
-   and thus changes to epoch handling would be necessary. Thus,
-   unless the below specified more application impacting draining is
-   used, there exist risk of losing data that the sender will have
-   assumed has been reliably delivered.
-
-### DTLS 1.2 Considerations
-
-   The endpoint MUST NOT use DTLS 1.2 renegotiation.
-
-### DTLS 1.3 Considerations
-
-   Before sending a KeyUpdate message, the DTLS endpoint MUST ensure
-   that all DTLS messages have been acknowledged by the SCTP peer in a
-   non-revocable way.  After sending the KeyUpdate message, it stops
-   sending DTLS messages until the corresponding Ack message has been
-   processed.
-
-   Prior to processing a received KeyUpdate message, all other received
-   SCTP user messages that are buffered in the SCTP layer and can be
-   delivered to the DTLS layer MUST be read and processed by DTLS.
 
 ## Handling of Endpoint-Pair Shared Secrets {#handling-endpoint-secret}
 
