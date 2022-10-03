@@ -1013,6 +1013,17 @@ connection can be terminated and the associated keying material discarded.
    it is targeting the remote DTLS/SCTP function and act on the
    request to close in a controlled fashion.
 
+   The shutdown procedure is initiated by any of the two peers,
+   targeting the closure of the SCTP Association and the DTLS channels.
+   In order to ensure that shutdown is completed without data lost,
+   DTLS/SCTP must control that both SCTP Tx buffers are empty first,
+   then it must ensure that all data in SCTP Rx buffer has been fetched
+   and delivered to ULP and finally it shall shutdown the DTLS connections
+   and the SCTP Association.
+
+   The shutdown procedure is transparent for DTLS, it will continue
+   working as usual during the whole shutdown procedure.
+
    The interaction between peers (local and remote) and protocol
    stacks is as follows:
 
@@ -1020,11 +1031,7 @@ connection can be terminated and the associated keying material discarded.
    Association.
 
    2. Local DTLS/SCTP acknowledges the request, from this time on no
-   new data from local instance of ULP will be accepted. In case a
-   DTLS connection handshake is ongoing this needs to be aborted
-   conclusively at this step to ensure that the necessary DTLS message
-   exchange happens prior to draining any outstanding data in the SCTP
-   association from this endpoint.
+   new data from local instance of ULP will be accepted.
 
    3. Local DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
@@ -1036,10 +1043,7 @@ connection can be terminated and the associated keying material discarded.
 
    5. The remote DTLS/SCTP, when receiving the SHUTDOWN-Request, informs
    its ULP that shutdown has been initiated. No more ULP user
-   message data to be sent to the peer can be accepted by DTLS/SCTP. In
-   case this endpoint has initiated a DTLS connection handshake this
-   MUST be aborted as the peer is unable to respond to avoid
-   additional case of draining.
+   message data to be sent to the peer can be accepted by DTLS/SCTP.
 
    6. Remote DTLS/SCTP finishes any protection operation on buffered
    user messages and ensures that all protected user message data has
