@@ -447,15 +447,12 @@ connection can be terminated and the associated keying material discarded.
    implementations, as well as dealing with the epoch change reliable
    have similar or worse application impact.
 
-   This specification also recommends against using DTLS 1.3 KeyUpdate
+   This specification also forbidds against using DTLS 1.3 KeyUpdate
    and instead rely on parallel DTLS connections. For DTLS 1.3 there
    isn’t feature parity. It also has the issue that a DTLS
    implementation following the RFC may assume a too limited window
    for SCTP where the previous epoch’s security context is maintained
-   and thus changes to epoch handling would be necessary. Thus,
-   unless the below specified more application impacting draining is
-   used, there exist risk of losing data that the sender will have
-   assumed has been reliably delivered.
+   and thus changes to epoch handling would be necessary.
 
 ### DTLS 1.2 Considerations
 
@@ -463,15 +460,9 @@ connection can be terminated and the associated keying material discarded.
 
 ### DTLS 1.3 Considerations
 
-   Before sending a KeyUpdate message, the DTLS endpoint MUST ensure
-   that all DTLS messages have been acknowledged by the SCTP peer in a
-   non-revocable way.  After sending the KeyUpdate message, it stops
-   sending DTLS messages until the corresponding Ack message has been
-   processed.
-
-   Prior to processing a received KeyUpdate message, all other received
-   SCTP user messages that are buffered in the SCTP layer and can be
-   delivered to the DTLS layer MUST be read and processed by DTLS.
+   The DTLS 1.3 endpoint MUST NOT send any KeyUpdate message. The
+   endpoint MUST instead initiate a new DTLS connection before the old
+   one reaches the used cipher suit's key life time.
 
 ## Message Sizes {#Msg-size}
 
