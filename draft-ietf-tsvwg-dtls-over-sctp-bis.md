@@ -81,6 +81,7 @@ normative:
   RFC8174:
   RFC8260:
   RFC8446:
+  RFC8449:
   RFC8996:
   RFC9113:
   RFC9146:
@@ -479,13 +480,18 @@ connection can be terminated and the associated keying material discarded.
    required buffering prior to DTLS processing is a single DTLS record
    per used incoming stream. This enables the DTLS/SCTP implementation
    to provide the Upper Layer Protocol (ULP) with each DTLS record's
-   content when it has been decrypted and its integrity been verified
-   enabling partial user message delivery to the ULP. Implementations
-   can trade-off buffer memory requirements in the DTLS layer with
-   transport overhead by using smaller DTLS records. However, for
+   content, when it has been decrypted and its integrity been verified,
+   enabling partial user message delivery to the ULP.  However, for
    efficient operation and avoiding flow control stalls if user
    message fragments are not frequently and expiendtly moved to upper
    layer memory buffers, the receiver buffer needs to be larger.
+
+   Implementations can trade-off buffer memory requirements in the DTLS layer with
+   transport overhead by using smaller DTLS records, in this case the
+   record size limit extension for DTLS according to {{RFC8449}} MUST be
+   used and the negotiated record size SHALL be communicated to DTLS/SCTP.
+   The maximum record size SHALL NOT be renegotiated during the lifetime of
+   the Association.
 
    The DTLS/SCTP implementation is expected to behave very similar to
    just SCTP when it comes to handling of user messages and dealing
