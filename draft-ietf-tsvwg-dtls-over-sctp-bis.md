@@ -486,7 +486,7 @@ connection can be terminated and the associated keying material discarded.
    processing. Making it the ULP responsible for handling any resource
    contention related to large user messages.
 
-   It is mandated that DTLS supports the maximum record size of 2<sup>14</sup> bytes.
+   It is mandated that DTLS supports the maximum record size of 2<sup>14</sup> bytes for ULP user message data.
    DTLS/SCTP MAY exploit maximum DTLS record size less than  2<sup>14</sup> bytes
    due to implementation choice, in such case maximum record size MUST be negotiated
    according to {{RFC8449}}. The negotiated value MUST be known to DTLS/SCTP and
