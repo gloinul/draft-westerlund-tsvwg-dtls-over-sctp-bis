@@ -1014,15 +1014,12 @@ connection can be terminated and the associated keying material discarded.
    request to close in a controlled fashion.
 
    The shutdown procedure is initiated by any of the two peers,
-   targeting the closure of the SCTP Association and the DTLS channels.
-   In order to ensure that shutdown is completed without data lost,
-   DTLS/SCTP must control that both SCTP Tx buffers are empty first,
-   then it must ensure that all data in SCTP Rx buffer has been fetched
-   and delivered to ULP and finally it shall shutdown the DTLS connections
-   and the SCTP Association.
-
-   The shutdown procedure is transparent for DTLS, it will continue
-   working as usual during the whole shutdown procedure.
+   targeting the closure of the SCTP Association and the DTLS
+   connections.  In order to ensure that shutdown is completed without
+   data lost, DTLS/SCTP must control that both SCTP Tx buffers are
+   empty first, then it must ensure that all data in SCTP Rx buffer
+   has been fetched and delivered to ULP and finally it shall shutdown
+   the DTLS connections and the SCTP Association.
 
    The interaction between peers (local and remote) and protocol
    stacks is as follows:
@@ -1038,7 +1035,7 @@ connection can be terminated and the associated keying material discarded.
    been successfully transferred to the remote peer.
 
    4. Local DTLS/SCTP sends a DTLS/SCTP Control Message
-   {{Control-Message}} of type "SHUTDOWN_Request" {{SHUTDOWN-Request}}
+   ({{Control-Message}}) of type "SHUTDOWN_Request" ({{SHUTDOWN-Request}})
    to its peer.
 
    5. The remote DTLS/SCTP, when receiving the SHUTDOWN-Request, informs
