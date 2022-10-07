@@ -1288,9 +1288,13 @@ connection can be terminated and the associated keying material discarded.
 
 ## TLS Exporter Label
 
-   RFC 6083 defined a TLS Exporter Label registry as described in
-   {{RFC5705}}. IANA is requested to update the reference for the
-   label "EXPORTER_DTLS_OVER_SCTP" to also include this specification.
+   IANA added a value to the TLS Exporter Label registry as described in
+   {{RFC5705}}.  The label is "EXPORTER-DTLS-OVER-SCTP-EXT".
+
+| Value | DTLS-OK | Recommended | Reference |
+| ----- | ------- | ----------- | --------- |
+| EXPORTER-DTLS-OVER-SCTP-EXT | Y | Y | \[RFC-TBD\] |
+{: #iana-TLS title="TLS Exporter Label"}
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
