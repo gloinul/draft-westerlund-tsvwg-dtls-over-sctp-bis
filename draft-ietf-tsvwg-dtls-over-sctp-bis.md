@@ -474,6 +474,12 @@ terminated and the associated keying material discarded.
    It is expected that DTLS/SCTP as described in this document will work with
    future versions of DTLS.
 
+   Only one version of DTLS MUST be used during
+   the lifetime of an SCTP Association, meaning that the procedure for
+   replacing the DTLS version in use requires the existing Association to be terminated
+   and a new Association with the desired DTLS version to be instantiated.
+
+
 ##  Cipher Suites and Cryptographic Parameters
 
    For DTLS 1.2, the cipher suites forbidden by {{RFC9113}} MUST NOT
