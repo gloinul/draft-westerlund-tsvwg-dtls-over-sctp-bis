@@ -1622,10 +1622,9 @@ this specification.
    the tickets can be used for resumption as long as they are valid, which
    is up to seven days. The nodes in a resumed connection have the
    same roles (client or server) as in the connection where the ticket
-   was issued. In DTLS/SCTP, there are no significant performance
-   benefits with resumption and an implementation can chose to never
-   issue any tickets. If tickets and resumption are used it is enough
-   to issue a single ticket per connection.
+   was issued. Resumption can have significant latency benefits for
+   quickly restarting a broken DTLS/SCTP association. If tickets and
+   resumption are used it is enough to issue a single ticket per connection.
 
 ## Privacy Considerations
 
