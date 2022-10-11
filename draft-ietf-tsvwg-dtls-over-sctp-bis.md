@@ -1007,8 +1007,7 @@ terminated and the associated keying material discarded.
 ## Handling of Endpoint Pair Shared Secrets {#handling-endpoint-secret}
 
    SCTP-AUTH {{RFC4895}} is keyed using endpoint pair shared
-   secrets. In DTLS/SCTP, DTLS is used to establish these secrets and each endpoint
-   MUST use the same HMAC Identifier in all AUTH chunks during the SCTP association.
+   secrets. In DTLS/SCTP, DTLS is used to establish these secrets.
    The endpoint pair shared secrets MUST be provided to the SCTP stack as
    soon as the computation is possible. The endpoints MUST NOT use another
    mechanism for establishing endpoint pair shared secrets for SCTP-AUTH.
