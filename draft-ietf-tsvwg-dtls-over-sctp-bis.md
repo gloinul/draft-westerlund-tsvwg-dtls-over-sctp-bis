@@ -1384,6 +1384,25 @@ terminated and the associated keying material discarded.
    5. Upon successful completion of DTLS handshake successful fallback
       to RFC 6083 have been accomplished.
 
+### Authenticated Fallback
+
+A DTLS/SCTP implementation supporting this document MUST include the dtls_sctp_ext extention in all DTLS Client Hello used in DTLS/SCTP irrespectively if this document or RFC 6083 is being used. A DTLS/SCTP implementation supporting this document MUST abort the SCTP association if the dtls_sctp_ext extention is received in DTLS/SCTP according to RFC 6083 is used. This mechanism provides authenticated fallback to RFC 6083.
+
+The dtls_sctp_ext extention is defined as follows:
+
+~~~~~~~~~~~~~~~~~~~~~~~
+enum {
+    dtls_sctp_ext(TBD), (65535)
+} ExtensionType;
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Clients MAY send this extention in ClientHello. It contains the following structure:
+
+~~~~~~~~~~~~~~~~~~~~~~~
+struct {
+    Empty;
+} DTLSOverSCTPExt;
+~~~~~~~~~~~~~~~~~~~~~~~
 
 # SCTP API Consideration {#api-considerations}
 
