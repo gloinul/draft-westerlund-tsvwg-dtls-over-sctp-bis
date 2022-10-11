@@ -1004,55 +1004,56 @@ terminated and the associated keying material discarded.
    result in failure case 1 described in {{Mapping-DTLS}}, which likely
    result in SCTP association termination.
 
-## Handling of Endpoint-Pair Shared Secrets {#handling-endpoint-secret}
+## Handling of Endpoint Pair Shared Secrets {#handling-endpoint-secret}
 
-   SCTP-AUTH {{RFC4895}} is keyed using Endpoint-Pair Shared
-   Secrets. In SCTP associations where DTLS is used, DTLS is used to
-   establish these secrets. The endpoints MUST NOT use another
-   mechanism for establishing shared secrets for SCTP-AUTH.
-   The endpoint-pair shared secret for Shared Key Identifier 0 is
+   SCTP-AUTH {{RFC4895}} is keyed using endpoint pair shared
+   secrets. In DTLS/SCTP, DTLS is used to establish these secrets and each endpoint
+   MUST use the same HMAC Identifier in all AUTH chunks during the SCTP association.
+   The endpoint pair shared secrets MUST be provided to the SCTP stack as
+   soon as the computation is possible. The endpoints MUST NOT use another
+   mechanism for establishing endpoint pair shared secrets for SCTP-AUTH.
+   The endpoint pair shared secret for Shared Key Identifier 0 is
    empty and MUST be used when establishing the first DTLS connection.
 
-   The initial DTLS connection will be used to establish a new shared
-   secret as specified per DTLS version below, and which MUST use
-   shared key identifier 1. After sending the DTLS Finished message
-   for the initial DTLS connection, the active SCTP-AUTH key MUST be
-   switched from key identifier 0 to key identifier 1. Once the
-   initial Finished message from the peer has been processed by DTLS,
-   the SCTP-AUTH key with Shared Key Identifier 0 MUST be removed.
+   The initial DTLS connection will be used to establish a new endpoint pair shared
+   secret which MUST use shared key identifier 1. The endpoint pair shared
+   secret are derived using the TLS exporter interface using the ASCII string
+   "EXPORTER-DTLS-OVER-SCTP-EXT" with no terminating NUL, no context, and length
+   64. 
+   
+   ~~~~~~~~~~~
+   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-EXT", , 64)
+   ~~~~~~~~~~~
 
-   When a subsequent DTLS connection is setup, a new a 64-byte shared
-   secret is derived using the TLS-Exporter. The shared secret
-   identifiers form a sequence. If the previous shared secret used
+   When a subsequent DTLS connection is setup, a new 64-byte endpoint pair shared
+   secret is derived using the TLS-Exporter as defined above. The Shared Key
+   Identifiers form a sequence. If the previous endpoint pair shared secret used
    Shared Key Identifier n, the new one MUST use Shared Key Identifier
    n+1, unless n = 65535, in which case the new Shared Key Identifier
    is 1.
 
-   After sending the DTLS Finished message, the new SCTP-AUTH key can
-   be used according to {{Parallel-Dtls}}. When the endpoint has both
-   sent and received a close_notify on the old DTLS connection then
-   the endpoint SHALL remove the shared secret and the SCTP-AUTH key
-   related to old DTLS connection.
-
 ### DTLS 1.2 Considerations
 
-   Whenever a new DTLS connection is established, a 64-byte
-   endpoint-pair shared secret is derived using the TLS-Exporter
-   described in {{RFC5705}}.
-
-   The 64-byte shared secret MUST be provided to the SCTP stack as
-   soon as the computation is possible.  The exporter MUST use the
-   label given in {{IANA-Consideration}} and no context.
+   Whenever a new DTLS connection is established, a 64-byte endpoint pair shared secret
+   is derived using the TLS-Exporter described in {{RFC5705}}.
+   
+   After sending the DTLS Finished message
+   for the initial DTLS connection, the active SCTP-AUTH key MUST be
+   switched from key identifier 0 to key identifier 1. Once the
+   initial Finished message from the peer has been processed by DTLS,
+   the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
+      
+   When the endpoint has both
+   sent and received a close_notify on the old DTLS connection then
+   the endpoint SHALL remove the SCTP-AUTH endpoint pair shared
+   secret derived from the old DTLS connection.
 
 ### DTLS 1.3 Considerations
 
-   When the exporter_secret can be computed, a 64-byte shared secret
-   is derived from it and provided as a new endpoint-pair shared
-   secret by using the TLS-Exporter described in {{RFC8446}}.
-
-   The 64-byte shared secret MUST be provided to the SCTP stack as
-   soon as the computation is possible.  The exporter MUST use the
-   label given in Section {{IANA-Consideration}} and no context.
+   Whenever a new exporter_secret can be computed, a 64-byte endpoint pair shared secret
+   is derived using the TLS-Exporter described in Section 7.5 of {{RFC8446}}.
+   
+   TBD.... Finished and close_notify works differently in DTLS 1.3
 
 ## Shutdown {#sec-shutdown}
 
