@@ -1019,13 +1019,17 @@ terminated and the associated keying material discarded.
    soon as the computation is possible. The endpoints MUST NOT use another
    mechanism for establishing endpoint pair shared secrets for SCTP-AUTH.
    The endpoint pair shared secret for Shared Key Identifier 0 is
-   empty and MUST be used when establishing the first DTLS connection.
+   empty and MUST be used by both endpoints when establishing the first DTLS connection.
 
    The initial DTLS connection will be used to establish two new endpoint pair shared
-   secrets which MUST use shared key identifier 1. The endpoint pair shared
+   secrets which MUST use shared key identifier 1 and 2. The endpoint pair shared
    secrets are derived using the TLS exporter interface using the ASCII strings
    "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" and "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE"
-   with no terminating NUL, no context, and length 64.
+   with no terminating NUL, no context, and length 64. Keys derived with the label
+   "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" are used by the TLS client for sending SCTP-AUTH
+   and always have an odd Shared Key Identifier. Keys derived with the label
+   "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE" are used by the TLS server for sending SCTP-AUTH
+   and always have an even Shared Key Identifier.    
 
    ~~~~~~~~~~~
    TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE", , 64)
@@ -1033,11 +1037,11 @@ terminated and the associated keying material discarded.
    ~~~~~~~~~~~
 
    When a subsequent DTLS connection is setup, two new 64-byte endpoint pair shared
-   secret is derived using the TLS-Exporter as defined above. The Shared Key
-   Identifiers form a sequence. If the previous endpoint pair shared secret used
-   Shared Key Identifier n, the new one MUST use Shared Key Identifier
-   n+1, unless n = 65535, in which case the new Shared Key Identifier
-   is 1.
+   secrets are derived using the TLS-Exporter as defined above. The Shared Key
+   Identifiers form a sequence. If the previous endpoint pair shared secrets used
+   Shared Key Identifiers 2n-1 and 2n, the new one MUST use Shared Key Identifier
+   2n+1 and 2n+2, unless 2n = 65534, in which case the new Shared Key Identifiers
+   are 1 and 2.
 
 ### DTLS 1.2 Considerations
 
