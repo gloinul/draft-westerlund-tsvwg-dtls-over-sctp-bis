@@ -94,7 +94,7 @@ normative:
    This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol to protect user messages sent over the
    Stream Control Transmission Protocol (SCTP). It is an improved
-   alternative to the existing rfc6083.
+   alternative to the existing RFC 6083.
 
    DTLS over SCTP provides mutual authentication, confidentiality,
    integrity protection, and replay protection for applications that
