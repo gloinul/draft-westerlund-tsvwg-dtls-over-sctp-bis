@@ -109,10 +109,12 @@ normative:
    improved alternative to RFC 6083 and removes the 16 kB limitation
    on protected user message size by defining a secure user message
    fragmentation so that multiple DTLS records can be used to protect
-   a single user message. It further updates the DTLS versions to use,
-   as well as the HMAC algorithms for SCTP-AUTH, and simplifies secure
-   implementation by some stricter requirements on the establishment
-   procedures.
+   a single user message. It further contains a large number of security
+   fixes and improvements. It updates the DTLS versions and SCTP-AUTH HMAC
+   algorithms to use. It mitigates reflection and data replay attacks in
+   RFC 6083 and limits replay of authenticated control chunks. It simplifies
+   secure implementation by some stricter requirements on the establishment
+   procedures as well as rekeying to align with zero trust principles.
 
 --- middle
 
