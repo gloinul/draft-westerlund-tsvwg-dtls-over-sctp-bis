@@ -324,7 +324,7 @@ terminated and the associated keying material discarded.
      applications.
 
    * An on-path attacker can reflect the authenticated part of a SCTP
-     packet back to the sender as well as replaying chunks.   
+     packet back to the sender as well as replaying data and control chunks.   
 
    This specification defines the following changes compared with RFC
    6083:
