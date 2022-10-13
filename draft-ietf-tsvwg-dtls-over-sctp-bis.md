@@ -1018,8 +1018,8 @@ terminated and the associated keying material discarded.
    secret which MUST use shared key identifier 1. The endpoint pair shared
    secret are derived using the TLS exporter interface using the ASCII string
    "EXPORTER-DTLS-OVER-SCTP-EXT" with no terminating NUL, no context, and length
-   64. 
-   
+   64.
+
    ~~~~~~~~~~~
    TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-EXT", , 64)
    ~~~~~~~~~~~
@@ -1035,13 +1035,13 @@ terminated and the associated keying material discarded.
 
    Whenever a new DTLS connection is established, a 64-byte endpoint pair shared secret
    is derived using the TLS-Exporter described in {{RFC5705}}.
-   
+
    After sending the DTLS Finished message
    for the initial DTLS connection, the active SCTP-AUTH key MUST be
    switched from key identifier 0 to key identifier 1. Once the
    initial Finished message from the peer has been processed by DTLS,
    the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
-      
+
    When the endpoint has both
    sent and received a close_notify on the old DTLS connection then
    the endpoint SHALL remove the SCTP-AUTH endpoint pair shared
@@ -1051,7 +1051,7 @@ terminated and the associated keying material discarded.
 
    Whenever a new exporter_secret can be computed, a 64-byte endpoint pair shared secret
    is derived using the TLS-Exporter described in Section 7.5 of {{RFC8446}}.
-   
+
    TBD.... Finished and close_notify works differently in DTLS 1.3
 
 ## Shutdown {#sec-shutdown}
