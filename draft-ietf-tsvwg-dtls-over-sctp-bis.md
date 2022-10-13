@@ -869,7 +869,9 @@ terminated and the associated keying material discarded.
    preference.
 
    When using DTLS/SCTP, each endpoint MUST use a single SCTP-AUTH
-   Message Digest Algorithm during the whole SCTP association.
+   Message Digest Algorithm during the whole SCTP association. This
+   guarantees that an association shared key is only used with a single
+   algorithm.
 
 ## Parallel DTLS connections {#Parallel-Dtls}
 
