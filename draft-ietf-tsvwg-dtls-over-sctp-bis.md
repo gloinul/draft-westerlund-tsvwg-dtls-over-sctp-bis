@@ -324,6 +324,9 @@ terminated and the associated keying material discarded.
      where limited to only be sent on Stream 0, which could
      potentially impact applications.
 
+   * An on-path attacker can reflect the authenticated part of a SCTP
+     packet back to the sender as well as replaying chunks.   
+
    This specification defines the following changes compared with RFC
    6083:
 
@@ -350,6 +353,10 @@ terminated and the associated keying material discarded.
      authenticated.
 
    * Requires support of partial delivery of user messages.
+   
+   * Derives direction specific SCTP-AUTH keys to mitigate reflection attacks.
+
+   * Mandates SCTP-AUTH rekeying before the TSN wraps to mitigate replay of data chunks.
 
 ## DTLS Version {#DTLS-version}
 
