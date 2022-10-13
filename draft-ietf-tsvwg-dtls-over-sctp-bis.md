@@ -862,6 +862,9 @@ terminated and the associated keying material discarded.
    and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
    preference.
 
+   When using DTLS/SCTP, each endpoint MUST use a single SCTP-AUTH
+   Message Digest Algorithm during the whole SCTP association.
+
 ## Parallel DTLS connections {#Parallel-Dtls}
 
    To enable SCTP-AUTH rekeying, periodic authentication of both
