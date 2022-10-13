@@ -1014,17 +1014,18 @@ terminated and the associated keying material discarded.
    The endpoint pair shared secret for Shared Key Identifier 0 is
    empty and MUST be used when establishing the first DTLS connection.
 
-   The initial DTLS connection will be used to establish a new endpoint pair shared
-   secret which MUST use shared key identifier 1. The endpoint pair shared
-   secret are derived using the TLS exporter interface using the ASCII string
-   "EXPORTER-DTLS-OVER-SCTP-EXT" with no terminating NUL, no context, and length
-   64.
+   The initial DTLS connection will be used to establish two new endpoint pair shared
+   secrets which MUST use shared key identifier 1. The endpoint pair shared
+   secrets are derived using the TLS exporter interface using the ASCII strings
+   "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" and "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE"
+   with no terminating NUL, no context, and length 64.
 
    ~~~~~~~~~~~
-   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-EXT", , 64)
+   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE", , 64)
+   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE", , 64)
    ~~~~~~~~~~~
 
-   When a subsequent DTLS connection is setup, a new 64-byte endpoint pair shared
+   When a subsequent DTLS connection is setup, two new 64-byte endpoint pair shared
    secret is derived using the TLS-Exporter as defined above. The Shared Key
    Identifiers form a sequence. If the previous endpoint pair shared secret used
    Shared Key Identifier n, the new one MUST use Shared Key Identifier
@@ -1415,12 +1416,13 @@ terminated and the associated keying material discarded.
 
 ## TLS Exporter Label
 
-   IANA added a value to the TLS Exporter Label registry as described in
-   {{RFC5705}}.  The label is "EXPORTER-DTLS-OVER-SCTP-EXT".
+   IANA added the following two values to the TLS Exporter Label registry as described in
+   {{RFC5705}}.
 
 | Value | DTLS-OK | Recommended | Reference |
 | ----- | ------- | ----------- | --------- |
-| EXPORTER-DTLS-OVER-SCTP-EXT | Y | Y | \[RFC-TBD\] |
+| EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE | Y | Y | \[RFC-TBD\] |
+| EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE | Y | Y | \[RFC-TBD\] |
 {: #iana-TLS title="TLS Exporter Label"}
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
