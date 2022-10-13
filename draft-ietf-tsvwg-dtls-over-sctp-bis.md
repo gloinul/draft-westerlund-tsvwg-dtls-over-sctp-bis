@@ -665,7 +665,7 @@ terminated and the associated keying material discarded.
    and could therefore be a denial-of-service attack. To prevent such attacks
    on availability it is RECOMMENDED to send control chunks in SCTP packets that
    also contains DATA or I-DATA chunks. Note that DATA or I-DATA chunks MAY contain
-   zero bytes of actual user data.
+   zero bytes of user data.
    
    DTLS optionally supports record replay detection. Such replay
    detection could result in the DTLS layer dropping valid messages
@@ -1059,7 +1059,7 @@ terminated and the associated keying material discarded.
    When a subsequent DTLS connection is setup, two new 64-byte endpoint pair shared
    secrets are derived using the TLS-Exporter as defined above. The Shared Key
    Identifiers form a sequence. If the previous endpoint pair shared secrets used
-   Shared Key Identifiers 2n-1 and 2n, the new one MUST use Shared Key Identifier
+   Shared Key Identifiers 2n-1 and 2n, the new ones MUST use Shared Key Identifier
    2n+1 and 2n+2, unless 2n = 65534, in which case the new Shared Key Identifiers
    are 1 and 2.
 
