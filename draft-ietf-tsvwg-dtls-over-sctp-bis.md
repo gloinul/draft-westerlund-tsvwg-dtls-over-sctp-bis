@@ -356,7 +356,7 @@ terminated and the associated keying material discarded.
    
    * Derives direction specific SCTP-AUTH keys to mitigate reflection attacks.
 
-   * Mandates SCTP-AUTH rekeying before the TSN wraps to mitigate replay of data chunks.
+   * Mandates SCTP-AUTH rekeying before the TSN cycles back to the Initial TSN to mitigate replay of data chunks.
 
 ## DTLS Version {#DTLS-version}
 
