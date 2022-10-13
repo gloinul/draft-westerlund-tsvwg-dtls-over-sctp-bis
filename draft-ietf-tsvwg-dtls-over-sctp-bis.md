@@ -645,8 +645,8 @@ terminated and the associated keying material discarded.
    SCTP-AUTH {{RFC4895}} does not have explicit replay
    protection. However, the combination of SCTP-AUTH's protection of
    DATA or I-DATA chunks and SCTP user message handling will prevent
-   third party attempts to inject or replay SCTP packets resulting in
-   impact on the received protected user message. In fact, this
+   third party attempts to inject or replay SCTP data chunks as long as
+   the Transmission Sequence Numbers (TSNs) are unique. In fact, this
    document's solution is dependent on SCTP-AUTH and SCTP to prevent
    reordering, duplication, and removal of the DTLS records within
    each protected user message.  This includes detection of changes to
@@ -654,6 +654,19 @@ terminated and the associated keying material discarded.
    DTLS records before an increment to the epoch.  Without SCTP-AUTH,
    these would all have required explicit handling.
 
+   To prevent replay of DATA or I-DATA chunks resulting in impact on the received protected
+   user message, implementations MUST NOT cycle back to the Initial TSN and MUST
+   therefore setup a parallel DTLS connection well before 2^32 TSNs have been used
+   and the TSN approaches the Initial TSN.
+   
+   DTLS/SCTP does not provide replay protection for authenticated control
+   chunks such as ERROR, RE-CONFIG, or SACK when sent in a SCTP packet
+   without DATA or I-DATA chunks. Such replay could disrupt the SCTP association
+   and could therefore be a denial-of-service attack. To prevent such attacks
+   on availability it is RECOMMENDED to send control chunks in SCTP packets that
+   also contains DATA or I-DATA chunks. Note that DATA or I-DATA chunks MAY contain
+   zero bytes of actual user data.
+   
    DTLS optionally supports record replay detection. Such replay
    detection could result in the DTLS layer dropping valid messages
    received outside of the DTLS replay window. As DTLS/SCTP provides
