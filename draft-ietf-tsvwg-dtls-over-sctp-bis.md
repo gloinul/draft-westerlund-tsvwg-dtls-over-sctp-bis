@@ -1088,7 +1088,7 @@ terminated and the associated keying material discarded.
    When the endpoint has sent or received a close_notify in one direction
    on the old DTLS connection then the endpoint SHALL remove the SCTP-AUTH endpoint
    pair shared secret associated with that direction in the old DTLS connection.
-   
+
 ## Shutdown {#sec-shutdown}
 
    To prevent DTLS from discarding DTLS user messages while it is
