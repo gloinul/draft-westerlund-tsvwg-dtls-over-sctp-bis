@@ -1286,8 +1286,8 @@ terminated and the associated keying material discarded.
 ~~~~~~~~~~~
    --- INIT[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-IND] --->
    <- INIT-ACK[RANDOM; CHUNKS; HMAC-ALGO; ADAPTATION-LAYER-IND] -
-   ------------------------ COOKIE-ECHO ------------------------>
-   <------------------------ COOKIE-ACK -------------------------
+   --------------------- AUTH; COOKIE-ECHO --------------------->
+   <-------------------- AUTH; COOKIE-ACK -----------------------
    ---------------- AUTH; DATA[DTLS Handshake] ----------------->
                                ...
                                ...
