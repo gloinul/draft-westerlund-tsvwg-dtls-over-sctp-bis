@@ -1432,6 +1432,15 @@ struct {
 
 # IANA Considerations {#IANA-Consideration}
 
+## Transport Layer Security (TLS) Extensions
+
+   IANA added a value to the Transport Layer Security (TLS) Extensions registry.
+
+| Value | Extension Name | TLS 1.3 | DTLS-OK | Recommended | Reference |
+| ----- | ------- | ----------- | --------- |
+| TBD2 | dtls_sctp_ext | CH | Y | Y | \[RFC-TBD\] |
+{: #iana-TLS title="TLS Exporter Label"}
+
 ## TLS Exporter Label
 
    IANA added a value to the TLS Exporter Label registry as described in
