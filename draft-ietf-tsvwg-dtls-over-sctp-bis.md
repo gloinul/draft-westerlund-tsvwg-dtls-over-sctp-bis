@@ -834,17 +834,18 @@ terminated and the associated keying material discarded.
 
 ## Chunk Handling
 
-   DATA chunks of SCTP MUST be sent in an authenticated way as
-   described in SCTP-AUTH {{RFC4895}}.  All other chunks that can be
-   authenticated, i.e., all chunk types that can be listed in the Chunk
-   List Parameter {{RFC4895}}, MUST also be sent in an authenticated
-   way.  This makes sure that an attacker cannot modify the stream in
-   which a message is sent or affect the ordered/unordered delivery of
-   the message.
+   All chunks types that
+   can be listed in the Chunk List Parameter {{RFC4895}}, i.e., all chunks
+   types except INIT, INIT-ACK, and SHUTDOWN-COMPLETE, MUST be sent
+   in an authenticated way as described in {{RFC4895}}. This makes sure
+   that an attacker cannot modify the stream in which a message is sent
+   or affect the ordered/unordered delivery of the message. Note that
+   COOKIE-ECHO and COOKIE-ACK are protected with an empty key. This is not
+   a problem as everything in these chunks are detemined by earlier chunks
+   or ignored on receipt.
 
-   If PR-SCTP as defined in {{RFC3758}} is used, FORWARD-TSN chunks
-   MUST also be sent in an authenticated way as described in
-   {{RFC4895}}.  This makes sure that it is not possible for an
+   If PR-SCTP as defined in {{RFC3758}} is used, the FORWARD-TSN chunks
+   are sent in an authenticated way whcih makes sure that it is not possible for an
    attacker to drop messages and use forged FORWARD-TSN, SACK, and/or
    SHUTDOWN chunks to hide this dropping.
 
@@ -852,9 +853,7 @@ terminated and the associated keying material discarded.
    supported to avoid some of the down sides that large user messages
    have on blocking transmission of later arriving high priority user
    messages. However, the support is not mandated and negotiated
-   independently from DTLS/SCTP. If I-DATA chunks are used, then
-   they MUST be sent in an authenticated way as described in
-   {{RFC4895}}.
+   independently from DTLS/SCTP.
 
 ## SCTP-AUTH Hash Function
 
