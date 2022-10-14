@@ -1080,17 +1080,15 @@ terminated and the associated keying material discarded.
    Whenever a new exporter_secret can be computed, two 64-byte endpoint pair shared secrets
    is derived using the TLS-Exporter described in Section 7.5 of {{RFC8446}}.
 
-   After sending or receiving the DTLS Finished message
+   After sending or receiving the DTLS server Finished message
    for the initial DTLS connection, the active SCTP-AUTH key MUST be
-   switched from key identifier 0 to key identifier 1 or 2 and
+   switched from key identifier 0 to key identifier 1 and 2 and
    the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
 
-   When the endpoint has sent and received a close_notify on the old
-   DTLS connection then the endpoint SHALL remove the SCTP-AUTH endpoint
-   pair shared secrets derived from the old DTLS connection.
-
-TBD.... Finished and close_notify works differently in DTLS 1.3
-
+   When the endpoint has sent and received a close_notify in one direction
+   on the old DTLS connection then the endpoint SHALL remove the SCTP-AUTH endpoint
+   pair shared secret associated with that direction in the old DTLS connection.
+   
 ## Shutdown {#sec-shutdown}
 
    To prevent DTLS from discarding DTLS user messages while it is
