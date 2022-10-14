@@ -1447,7 +1447,7 @@ struct {
 | Value | Extension Name | TLS 1.3 | DTLS-OK | Recommended | Reference |
 | ----- | ------- | ----------- | --------- |
 | TBD2 | dtls_sctp_ext | CH | Y | Y | \[RFC-TBD\] |
-{: #iana-TLS title="TLS Exporter Label"}
+{: #iana-TLS2 title="TLS Exporter Label"}
 
 ## TLS Exporter Label
 
