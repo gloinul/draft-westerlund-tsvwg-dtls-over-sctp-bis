@@ -1443,9 +1443,9 @@ terminated and the associated keying material discarded.
 
 # IANA Considerations {#IANA-Consideration}
 
-## TLS Exporter Label
+## TLS Exporter Labels
 
-   IANA added the following two values to the TLS Exporter Label registry as described in
+   IANA added the following two values to the TLS Exporter Labels registry as described in
    {{RFC5705}}.
 
 | Value | DTLS-OK | Recommended | Reference |
