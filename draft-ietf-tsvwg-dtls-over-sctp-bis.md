@@ -660,12 +660,10 @@ terminated and the associated keying material discarded.
    and the TSN approaches the Initial TSN.
    
    DTLS/SCTP does not provide replay protection for authenticated control
-   chunks such as ERROR, RE-CONFIG, or SACK when sent in a SCTP packet
-   without DATA or I-DATA chunks. Such replay could disrupt the SCTP association
-   and could therefore be a denial-of-service attack. To prevent such attacks
-   on availability it is RECOMMENDED to send control chunks in SCTP packets that
-   also contains DATA or I-DATA chunks. Note that DATA or I-DATA chunks MAY contain
-   zero bytes of user data.
+   chunks such as ERROR, RE-CONFIG, or SACK. An on-path attacker can replay
+   control chunks as long as the receiving endpoint still has the endpoint pair
+   shared secret. Such replay could disrupt the SCTP association
+   and could therefore be a denial-of-service attack.
    
    DTLS optionally supports record replay detection. Such replay
    detection could result in the DTLS layer dropping valid messages
