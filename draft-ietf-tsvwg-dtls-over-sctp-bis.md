@@ -1071,17 +1071,25 @@ terminated and the associated keying material discarded.
    initial Finished message from the peer has been processed by DTLS,
    the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
 
-   When the endpoint has both
-   sent and received a close_notify on the old DTLS connection then
-   the endpoint SHALL remove the two SCTP-AUTH endpoint pair shared
-   secrets derived from the old DTLS connection.
+   When the endpoint has sent or received a close_notify on the old DTLS
+   connection then the endpoint SHALL remove the two SCTP-AUTH endpoint
+   pair shared secrets derived from the old DTLS connection.
 
 ### DTLS 1.3 Considerations
 
-   Whenever a new exporter_secret can be computed, a 64-byte endpoint pair shared secret
+   Whenever a new exporter_secret can be computed, two 64-byte endpoint pair shared secrets
    is derived using the TLS-Exporter described in Section 7.5 of {{RFC8446}}.
 
-   TBD.... Finished and close_notify works differently in DTLS 1.3
+   After sending or receiving the DTLS Finished message
+   for the initial DTLS connection, the active SCTP-AUTH key MUST be
+   switched from key identifier 0 to key identifier 1 or 2 and
+   the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
+
+   When the endpoint has sent and received a close_notify on the old
+   DTLS connection then the endpoint SHALL remove the SCTP-AUTH endpoint
+   pair shared secrets derived from the old DTLS connection.
+
+TBD.... Finished and close_notify works differently in DTLS 1.3
 
 ## Shutdown {#sec-shutdown}
 
