@@ -324,7 +324,7 @@ terminated and the associated keying material discarded.
      potentially impact applications.
 
    * An on-path attacker can reflect the authenticated part of a SCTP
-     packet back to the sender as well as replaying data and control chunks.   
+     packet back to the sender as well as replaying data and control chunks.
 
    This specification defines the following changes compared with RFC
    6083:
@@ -352,7 +352,7 @@ terminated and the associated keying material discarded.
      authenticated.
 
    * Requires support of partial delivery of user messages.
-   
+
    * Derives direction specific SCTP-AUTH keys to mitigate reflection attacks.
 
    * Mandates SCTP-AUTH rekeying before the TSN cycles back to the Initial TSN to mitigate replay of data chunks.
@@ -652,13 +652,13 @@ terminated and the associated keying material discarded.
    user message, implementations MUST NOT cycle back to the Initial TSN and MUST
    therefore setup a parallel DTLS connection well before 2^32 TSNs have been used
    and the TSN approaches the Initial TSN.
-   
+
    DTLS/SCTP does not provide replay protection for authenticated control
    chunks such as ERROR, RE-CONFIG, or SACK. An on-path attacker can replay
    control chunks as long as the receiving endpoint still has the endpoint pair
    shared secret. Such replay could disrupt the SCTP association
    and could therefore be a denial-of-service attack.
-   
+
    DTLS optionally supports record replay detection. Such replay
    detection could result in the DTLS layer dropping valid messages
    received outside of the DTLS replay window. As DTLS/SCTP provides
@@ -1042,7 +1042,7 @@ terminated and the associated keying material discarded.
    "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" are used by the TLS client for sending SCTP-AUTH
    and always have an odd Shared Key Identifier. Keys derived with the label
    "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE" are used by the TLS server for sending SCTP-AUTH
-   and always have an even Shared Key Identifier.    
+   and always have an even Shared Key Identifier.
 
    ~~~~~~~~~~~
    TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE", , 64)
