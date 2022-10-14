@@ -845,7 +845,7 @@ terminated and the associated keying material discarded.
    or ignored on receipt.
 
    If PR-SCTP as defined in {{RFC3758}} is used, the FORWARD-TSN chunks
-   are sent in an authenticated way whcih makes sure that it is not possible for an
+   are sent in an authenticated way which makes sure that it is not possible for an
    attacker to drop messages and use forged FORWARD-TSN, SACK, and/or
    SHUTDOWN chunks to hide this dropping.
 
