@@ -111,9 +111,8 @@ normative:
    fragmentation so that multiple DTLS records can be used to protect
    a single user message. It further contains a large number of security
    fixes and improvements. It updates the DTLS versions and SCTP-AUTH HMAC
-   algorithms to use. It mitigates reflection and data replay attacks in
-   RFC 6083 and limits replay of authenticated control chunks. It simplifies
-   secure implementation by some stricter requirements on the establishment
+   algorithms to use. It mitigates reflection attacks and replay attacks of data chunks.
+   It simplifies secure implementation by some stricter requirements on the establishment
    procedures as well as rekeying to align with zero trust principles.
 
 --- middle
