@@ -1392,7 +1392,7 @@ The dtls_sctp_ext extention is defined as follows:
 
 ~~~~~~~~~~~~~~~~~~~~~~~
 enum {
-    dtls_sctp_ext(TBD), (65535)
+    dtls_sctp_ext(TBD2), (65535)
 } ExtensionType;
 ~~~~~~~~~~~~~~~~~~~~~~~
 
