@@ -1386,7 +1386,7 @@ terminated and the associated keying material discarded.
 
 ### Authenticated Fallback
 
-A DTLS/SCTP implementation supporting this document MUST include the dtls_sctp_ext extention in all DTLS Client Hello used in DTLS/SCTP according to RFC 6083. A DTLS/SCTP implementation supporting this document MUST abort the SCTP association if the dtls_sctp_ext extention is received in DTLS/SCTP according to RFC 6083 is used. This mechanism provides authenticated fallback to RFC 6083.
+A DTLS/SCTP implementation supporting this document MUST include the dtls_sctp_ext extention in all DTLS Client Hello used in DTLS/SCTP according to RFC 6083. A DTLS/SCTP implementation supporting this document MUST abort the SCTP association if the dtls_sctp_ext extention is received when DTLS/SCTP according to RFC 6083 is used. This mechanism provides authenticated fallback to RFC 6083.
 
 The dtls_sctp_ext extention is defined as follows:
 
