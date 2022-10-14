@@ -1324,12 +1324,12 @@ terminated and the associated keying material discarded.
    policy to allow fallback or not. However, the possibility to use
    fallback is based on the ULP can operate using user messages that
    are no longer than 16384 bytes and where the security issues can be
-   mitigated or considered acceptable. If fallback is enabled, implementations
-   MUST use the dtls_sctp_ext extention {{auth_fallback}} to authenticate the
-   fallback. This mitigates on-path attacker to trigge fallback to RFC 6083.
-   Fallback is NOT RECOMMENDED to be
-   enabled as it enables downgrade attacks to weaker algorithms and
-   versions of DTLS.
+   mitigated or considered acceptable. If fallback is enabled,
+   implementations MUST use the dtls_sctp_ext extension
+   {{auth_fallback}} to authenticate the fallback. This mitigates
+   on-path attacker to trigger fallback to RFC 6083.  Fallback is NOT
+   RECOMMENDED to be enabled as it enables downgrade attacks to weaker
+   algorithms and versions of DTLS.
 
    An SCTP endpoint that receives an INIT chunk or an INIT-ACK chunk
    that does not contain the SCTP-Adaptation-Indication parameter with
@@ -1389,7 +1389,12 @@ terminated and the associated keying material discarded.
 
 ### Authenticated Fallback
 
-A DTLS/SCTP implementation supporting this document MUST include the dtls_sctp_ext extention in all DTLS Client Hello used in DTLS/SCTP according to RFC 6083. A DTLS/SCTP implementation supporting this document MUST abort the SCTP association if the dtls_sctp_ext extention is received when DTLS/SCTP according to RFC 6083 is used. This mechanism provides authenticated fallback to RFC 6083.
+A DTLS/SCTP implementation supporting this document MUST include the
+dtls_sctp_ext extension in all DTLS Client Hello used in DTLS/SCTP
+according to RFC 6083. A DTLS/SCTP implementation supporting this
+document MUST abort the SCTP association if the dtls_sctp_ext
+extension is received when DTLS/SCTP according to RFC 6083 is
+used. This mechanism provides authenticated fallback to RFC 6083.
 
 The dtls_sctp_ext extention is defined as follows:
 
@@ -1442,7 +1447,7 @@ struct {
 | Value | Extension Name | TLS 1.3 | DTLS-OK | Recommended | Reference |
 | ----- | ------- | ----------- | --------- |
 | TBD2 | dtls_sctp_ext | CH | Y | Y | \[RFC-TBD\] |
-{: #iana-TLS title="TLS Exporter Label"}
+{: #iana-TLS-extension title="TLS Exporter Label"}
 
 ## TLS Exporter Label
 
@@ -1452,7 +1457,7 @@ struct {
 | Value | DTLS-OK | Recommended | Reference |
 | ----- | ------- | ----------- | --------- |
 | EXPORTER-DTLS-OVER-SCTP-EXT | Y | Y | \[RFC-TBD\] |
-{: #iana-TLS title="TLS Exporter Label"}
+{: #iana-TLS-exporter title="TLS Exporter Label"}
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
