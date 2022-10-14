@@ -1324,7 +1324,10 @@ terminated and the associated keying material discarded.
    policy to allow fallback or not. However, the possibility to use
    fallback is based on the ULP can operate using user messages that
    are no longer than 16384 bytes and where the security issues can be
-   mitigated or considered acceptable. Fallback is NOT RECOMMENDED to be
+   mitigated or considered acceptable. If fallback is enabled, implementations
+   MUST use the dtls_sctp_ext extention {{auth_fallback}} to authenticate the
+   fallback. This mitigates on-path attacker to trigge fallback to RFC 6083.
+   Fallback is NOT RECOMMENDED to be
    enabled as it enables downgrade attacks to weaker algorithms and
    versions of DTLS.
 
@@ -1362,7 +1365,7 @@ terminated and the associated keying material discarded.
       targeted server the client has successful fallen back to use
       RFC 6083. If not terminate the SCTP association.
 
-### Server Fallback
+### Server Fallback {#auth_fallback}
 
    A DTLS/SCTP Server that supports both this specification and RFC
    6083 and where fallback has been enabled for the ULP can follow
