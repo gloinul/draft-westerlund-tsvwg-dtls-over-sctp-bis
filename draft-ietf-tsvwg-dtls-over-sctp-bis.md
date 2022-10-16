@@ -528,16 +528,8 @@ terminated and the associated keying material discarded.
    for SCTP where the previous epoch’s security context is maintained
    and thus changes to epoch handling would be necessary.
 
-### DTLS 1.2 Considerations
-
-   The endpoint MUST NOT use DTLS 1.2 renegotiation. The
-   endpoint MUST instead initiate a new DTLS connection before the old
-   one reaches the used cipher suit's key life time. The AEAD limits given
-   in section 4.5.3 of {{RFC9147}} SHOULD be followed.
-
-### DTLS 1.3 Considerations
-
-   The DTLS 1.3 endpoint MUST NOT send any KeyUpdate message. The
+   A DTLS 1.2 endpoint MUST NOT use renegotiation and a DTLS 1.3 endpoint
+   MUST NOT send any KeyUpdate message. The
    endpoint MUST instead initiate a new DTLS connection before the old
    one reaches the used cipher suit's key life time. The AEAD limits given
    in section 4.5.3 of {{RFC9147}} SHOULD be followed.
