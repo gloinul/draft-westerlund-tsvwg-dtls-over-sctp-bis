@@ -1039,7 +1039,7 @@ terminated and the associated keying material discarded.
    empty and MUST be used by both endpoints when establishing the first DTLS connection.
 
    The initial DTLS connection will be used to establish two new endpoint pair shared
-   secrets which MUST use shared key identifier 1 and 2. The endpoint pair shared
+   secrets which MUST use shared key identifier 2 and 3. The endpoint pair shared
    secrets are derived using the TLS exporter interface using the ASCII strings
    "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" and "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE"
    with no terminating NUL, no context, and length 64. Keys derived with the label
@@ -1056,9 +1056,9 @@ terminated and the associated keying material discarded.
    When a subsequent DTLS connection is setup, two new 64-byte endpoint pair shared
    secrets are derived using the TLS-Exporter as defined above. The Shared Key
    Identifiers form a sequence. If the previous endpoint pair shared secrets used
-   Shared Key Identifiers 2n-1 and 2n, the new ones MUST use Shared Key Identifier
-   2n+1 and 2n+2, unless 2n = 65534, in which case the new Shared Key Identifiers
-   are 1 and 2.
+   Shared Key Identifiers 2n and 2n+1, the new ones MUST use Shared Key Identifier
+   2n+2 and 2n+3, unless 2n = 65534, in which case the new Shared Key Identifiers
+   are 2 and 3.
 
 ### DTLS 1.2 Considerations
 
