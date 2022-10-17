@@ -1067,7 +1067,7 @@ terminated and the associated keying material discarded.
 
    After sending the DTLS Finished message
    for the initial DTLS connection, the active SCTP-AUTH key MUST be
-   switched from key identifier 0 to key identifier 1 or 2. Once the
+   switched from key identifier 0 to key identifiers 2 and 3. Once the
    initial Finished message from the peer has been processed by DTLS,
    the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
 
@@ -1082,7 +1082,7 @@ terminated and the associated keying material discarded.
 
    After sending or receiving the DTLS server Finished message
    for the initial DTLS connection, the active SCTP-AUTH key MUST be
-   switched from key identifier 0 to key identifier 1 and 2 and
+   switched from key identifier 0 to key identifiers 2 and 3 and
    the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
 
    When the endpoint has sent or received a close_notify in one direction
