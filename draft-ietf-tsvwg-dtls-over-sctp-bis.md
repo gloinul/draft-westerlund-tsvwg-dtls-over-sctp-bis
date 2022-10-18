@@ -1319,9 +1319,12 @@ terminated and the associated keying material discarded.
    policy to allow fallback or not. However, the possibility to use
    fallback is based on the ULP can operate using user messages that
    are no longer than 16384 bytes and where the security issues can be
-   mitigated or considered acceptable. Fallback is NOT RECOMMENDED to be
-   enabled as it enables downgrade attacks to weaker algorithms and
-   versions of DTLS.
+   mitigated or considered acceptable. If fallback is enabled,
+   implementations MUST use the dtls_sctp_ext extension
+   {{auth_fallback}} to authenticate the fallback. This mitigates
+   on-path attacker to trigger fallback to RFC 6083.  Fallback is NOT
+   RECOMMENDED to be enabled as it enables downgrade attacks to weaker
+   algorithms and versions of DTLS.
 
    An SCTP endpoint that receives an INIT chunk or an INIT-ACK chunk
    that does not contain the SCTP-Adaptation-Indication parameter with
@@ -1379,6 +1382,30 @@ terminated and the associated keying material discarded.
    5. Upon successful completion of DTLS handshake successful fallback
       to RFC 6083 have been accomplished.
 
+### Authenticated Fallback {#auth_fallback}
+
+A DTLS/SCTP implementation supporting this document MUST include the
+dtls_sctp_ext extension in all DTLS Client Hello used in DTLS/SCTP
+according to RFC 6083. A DTLS/SCTP implementation supporting this
+document MUST abort the SCTP association if the dtls_sctp_ext
+extension is received when DTLS/SCTP according to RFC 6083 is
+used. This mechanism provides authenticated fallback to RFC 6083.
+
+The dtls_sctp_ext extention is defined as follows:
+
+~~~~~~~~~~~~~~~~~~~~~~~
+enum {
+    dtls_sctp_ext(TBD2), (65535)
+} ExtensionType;
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Clients MAY send this extention in ClientHello. It contains the following structure:
+
+~~~~~~~~~~~~~~~~~~~~~~~
+struct {
+    Empty;
+} DTLSOverSCTPExt;
+~~~~~~~~~~~~~~~~~~~~~~~
 
 # SCTP API Consideration {#api-considerations}
 
@@ -1408,6 +1435,15 @@ terminated and the associated keying material discarded.
 
 # IANA Considerations {#IANA-Consideration}
 
+## Transport Layer Security (TLS) Extensions
+
+   IANA added a value to the Transport Layer Security (TLS) Extensions registry.
+
+| Value | Extension Name | TLS 1.3 | DTLS-OK | Recommended | Reference |
+| ----- | ------- | ----------- | --------- |
+| TBD2 | dtls_sctp_ext | CH | Y | Y | \[RFC-TBD\] |
+{: #iana-TLS-extension title="TLS Exporter Label"}
+
 ## TLS Exporter Label
 
    IANA added a value to the TLS Exporter Label registry as described in
@@ -1416,7 +1452,7 @@ terminated and the associated keying material discarded.
 | Value | DTLS-OK | Recommended | Reference |
 | ----- | ------- | ----------- | --------- |
 | EXPORTER-DTLS-OVER-SCTP-EXT | Y | Y | \[RFC-TBD\] |
-{: #iana-TLS title="TLS Exporter Label"}
+{: #iana-TLS-exporter title="TLS Exporter Label"}
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
