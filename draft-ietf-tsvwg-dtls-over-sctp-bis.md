@@ -1031,7 +1031,7 @@ terminated and the associated keying material discarded.
    The endpoint pair shared secrets MUST be provided to the SCTP stack as
    soon as the computation is possible. The endpoints MUST NOT use another
    mechanism for establishing endpoint pair shared secrets for SCTP-AUTH.
-   The endpoint pair shared secret for Shared Key Identifier 0 is
+   The endpoint pair shared secret for Shared Key Identifier zero (0) is
    empty and MUST be used by both endpoints when establishing the first DTLS connection.
 
    The initial DTLS connection will be used to establish two new endpoint pair shared
@@ -1063,7 +1063,7 @@ terminated and the associated keying material discarded.
 
    After sending the DTLS Finished message
    for the initial DTLS connection, the active SCTP-AUTH key MUST be
-   switched from key identifier 0 to key identifiers 2 and 3. Once the
+   switched from key identifier zero (0) to key identifiers 2 and 3. Once the
    initial Finished message from the peer has been processed by DTLS,
    the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
 
@@ -1078,7 +1078,7 @@ terminated and the associated keying material discarded.
 
    After sending or receiving the DTLS server Finished message
    for the initial DTLS connection, the active SCTP-AUTH key MUST be
-   switched from key identifier 0 to key identifiers 2 and 3 and
+   switched from key identifier zero (0) to key identifiers 2 and 3 and
    the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
 
    When the endpoint has sent or received a close_notify in one direction
