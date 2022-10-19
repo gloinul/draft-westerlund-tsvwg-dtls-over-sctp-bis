@@ -1061,10 +1061,9 @@ terminated and the associated keying material discarded.
    Whenever a new DTLS connection is established, two 64-byte endpoint pair shared secrets
    are derived using the TLS-Exporter described in {{RFC5705}}.
 
-   After sending the DTLS Finished message
+   After sending or receiving the DTLS client Finished message
    for the initial DTLS connection, the active SCTP-AUTH key MUST be
-   switched from key identifier zero (0) to key identifiers 2 and 3. Once the
-   initial Finished message from the peer has been processed by DTLS,
+   switched from key identifier zero (0) to key identifiers 2 and 3 and
    the SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
 
    When the endpoint has sent or received a close_notify on the old DTLS
