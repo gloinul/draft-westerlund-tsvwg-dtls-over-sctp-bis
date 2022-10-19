@@ -81,6 +81,7 @@ normative:
   RFC8174:
   RFC8260:
   RFC8446:
+  RFC8447:
   RFC8449:
   RFC8996:
   RFC9113:
@@ -1435,9 +1436,18 @@ struct {
 
 # IANA Considerations {#IANA-Consideration}
 
+This document registers a number of protocol values per the
+below. RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number
+given to this specification.
+
+
 ## Transport Layer Security (TLS) Extensions
 
-   IANA added a value to the Transport Layer Security (TLS) Extensions registry.
+   IANA is requested to add a value to the Transport Layer Security
+   (TLS) Extensions' "TLS ExtensionType Values" registry defined by {{RFC8447}}.  At time of
+   writing located at: [TLS ExtensionType Values
+   Registry](https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#tls-extensiontype-values-1)
+
 
 | Value | Extension Name | TLS 1.3 | DTLS-OK | Recommended | Reference |
 | ----- | ------- | ----------- | --------- |
@@ -1446,8 +1456,10 @@ struct {
 
 ## TLS Exporter Label
 
-   IANA added a value to the TLS Exporter Label registry as described in
-   {{RFC5705}}.  The label is "EXPORTER-DTLS-OVER-SCTP-EXT".
+   IANA is requested to add a value to the TLS Exporter Label registry
+   as defined by {{RFC5705}}, and {{RFC5705}}. At time of writing located at: [TLS
+   Exporter Label
+   registry](https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#exporter-labels)
 
 | Value | DTLS-OK | Recommended | Reference |
 | ----- | ------- | ----------- | --------- |
@@ -1456,13 +1468,11 @@ struct {
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
-   {{RFC5061}} defined an IANA registry for Adaptation Code Points to
-   be used in the Adaptation Layer Indication parameter. The registry
-   was at time of writing located:
-   https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-27
-   IANA is requested to assign one Adaptation Code Point for DTLS/SCTP
-   per the below proposed entry in {{iana-ACP}}.
-
+   IANA is requested to assign a Adaptation Code Point to DTLS/SCTP
+   for usage in the Adaptation Layer Indication Parameter. The
+   Adaptation Code Point is registered in the SCTP Adaptation Code
+   Points registry defined by {{RFC5061}}. The registry was at time of
+   writing located: [Adaptation Code Point registry](https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-27)
 
 | Code Point (32-bit number) | Description | Reference |
 | -------------------------- | ----------- | --------- |
@@ -1475,17 +1485,17 @@ this specification.
 
 ## SCTP Payload Protocol Identifiers  {#sec-IANA-PPID}
 
-   This document registers one Payload Protocol Identifier (PPID) to
-   be used to identify the DTLS/SCTP control messages
-   ({{Control-Message}}).
+   IANA is requeted to assign one SCTP Payload Protocol Identifier
+   (PPID) to be used to identify the DTLS/SCTP control messages
+   ({{Control-Message}}). This PPID is registered in the SCTP Payload
+   Protocol Identifiers registry defined by {{RFC9260}}.  The registry was at time of
+   writing located: [SCTP Payload Protocol Identifiers](https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-25)
 
 | Value | SCTP PPID | Reference |
 | -------------------------- | ----------- | --------- |
 | TBD1 | DTLS/SCTP Control Message | \[RFC-TBD\] |
 {: #iana-PPID title="SCTP Payload Protocol Identifier"}
 
-RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
-this specification.
 
 # Security Considerations {#sec-Consideration}
 
