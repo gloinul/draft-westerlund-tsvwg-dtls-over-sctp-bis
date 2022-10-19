@@ -905,7 +905,10 @@ terminated and the associated keying material discarded.
 
    A DTLS/SCTP Endpoint MUST NOT have more than two DTLS connections
    open at the same time. Either of the endpoints MAY initiate a new
-   DTLS connection by performing a full DTLS handshake. As either
+   DTLS connection by performing a full DTLS handshake. To support this
+   implementations and certificates need to support both DTLS client and
+   server roles. Note that resumption is not possible between DTLS
+   connections unless the endpoints have the same roles. As either
    endpoint can initiate a DTLS handshake on either side at the same
    time, either endpoint may receive a DTLS ClientHello when it has
    sent its own ClientHello. In this case the ClientHello from the
