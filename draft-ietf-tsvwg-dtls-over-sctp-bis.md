@@ -656,7 +656,7 @@ terminated and the associated keying material discarded.
    To prevent replay of DATA or I-DATA chunks resulting in impact on the received protected
    user message, the SCTP-AUTH key MUST be retired before it has been used with more than 2^32 TSNs.
    Implementations MUST therefore setup a parallel DTLS connection well before 2^32 TSNs
-   have been used with a SCTP-AUTH key.      
+   have been used with a SCTP-AUTH key.
 
    DTLS/SCTP does not provide replay protection for authenticated control
    chunks such as ERROR, RE-CONFIG, or SACK. An on-path attacker can replay
