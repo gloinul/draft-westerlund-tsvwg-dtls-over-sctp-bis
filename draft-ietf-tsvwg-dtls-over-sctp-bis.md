@@ -172,12 +172,13 @@ normative:
 
 ## Protocol Overview
 
-The DTLS/SCTP protection is defined as an SCTP adaptation layer {{RFC5061}} that
-is implemented on top of an SCTP API for an SCTP implementation with SCTP AUTH
-{{RFC4895}} support. DTLS/SCTP is expected to provide an SCTP like API towards
-the upper layer protocol with some additions for controlling the DTLS/SCTP
-security parameters and policies. This minimizes the impact on the SCTP
-implementation and wire image.
+The DTLS/SCTP protection is defined as an SCTP adaptation layer
+{{RFC5061}} that is implemented on top of an SCTP API for an SCTP
+implementation with SCTP AUTH {{RFC4895}} support. DTLS/SCTP is
+expected to provide an SCTP like API towards the upper layer protocol
+with some additions for controlling the DTLS/SCTP security parameters
+and policies. This minimizes the impact on the SCTP implementation and
+wire image.
 
 ~~~~~~~~~~~ aasvg
 +---------------------+
@@ -215,80 +216,92 @@ fragment is encrypted and provided with authentication tag by DTLS.
 ~~~~~~~~~~~
 {: #msg-fragmenting="Individual user message fragmentation and protection"}
 
-The sequence of protected user message fragments (user_message') are then
-transmitted as a SCTP user message. SCTP AUTH provides authentication of the
-SCTP packets and prevents injection of data or reordering of DTLS fragments thus
-ensuring that each protected user message can be de-protected in the receiver in
-order and reassembled. Partial transmission and delivery of user messages are
+The sequence of protected user message fragments (user_message') are
+then transmitted as a SCTP user message. SCTP AUTH provides
+authentication of the SCTP packets and prevents injection of data or
+reordering of DTLS fragments thus ensuring that each protected user
+message can be de-protected in the receiver in order and
+reassembled. Partial transmission and delivery of user messages are
 supported on a per fragment basis.
 
-SCTP's capability for multi-stream concurrent transmission of different SCTP
-user messages, where each SCTP user message can potentially be very large,
-results in some challenges for any change of the keys used to protect the ULP
-data. SCTP AUTH API, defined in {{RFC6458}}, provides additional limitations
-that needs to be considered when supported. These issues and the related
-limitations will be discussed more in details below.
+SCTP's capability for multi-stream concurrent transmission of
+different SCTP user messages, where each SCTP user message can
+potentially be very large, results in some challenges for any change
+of the keys used to protect the ULP data. SCTP AUTH API, defined in
+{{RFC6458}}, provides additional limitations that needs to be
+considered when supported. These issues and the related limitations
+will be discussed more in details below.
 
-RFC6083 dealt with the above limitations by requiring that the peers drained all
-outstanding data before updating the key to prevent issues. This can have
-significant impact on a ULP that requires timely and frequent exchange of user
-messages. This specification uses another solution to these problems assuming a
-sufficient capable SCTP and SCTP AUTH implementations and with rich enough APIs.
+RFC6083 dealt with the above limitations by requiring that the peers
+drained all outstanding data before updating the key to prevent
+issues. This can have significant impact on a ULP that requires timely
+and frequent exchange of user messages. This specification uses
+another solution to these problems assuming a sufficient capable SCTP
+and SCTP AUTH implementations and with rich enough APIs.
 
-The solution that ensures the current keying material will not be prematurely
-discarded on renegotiation or key-update, is based on not using these mechanisms
-and instead establishing a second DTLS connection over the SCTP
-association. This creates a parallel DTLS connections, where the DTLS connection
-ID feature is used to identify the originating DTLS connection for each DTLS record
-or message. When a new DTLS connection has been established and its keying
-material is made available, the sender starts using it to protect the ULP
-data. When all protected user message fragments protected by the old key have
-been delivered in a non-renegable way then the old DTLS connection can be
-terminated and the associated keying material discarded.
+The solution that ensures the current keying material will not be
+prematurely discarded on renegotiation or key-update, is based on not
+using these mechanisms and instead establishing a second DTLS
+connection over the SCTP association. This creates a parallel DTLS
+connections, where the DTLS connection ID feature is used to identify
+the originating DTLS connection for each DTLS record or message. When
+a new DTLS connection has been established and its keying material is
+made available, the sender starts using it to protect the ULP
+data. When all protected user message fragments protected by the old
+key have been delivered in a non-renegable way then the old DTLS
+connection can be terminated and the associated keying material
+discarded.
 
 ## DTLS/SCTP Buffering and Flow Control {#buffering}
 
-   With DTLS/SCTP as a layer above SCTP stacks on both sender and receiver side
-   some consideration is needed for buffering and resource contention, and how
-   back pressure is applied in cases the receiving application is not keeping up
-   with the sender. The ULP may use multiple user messages simultaneous, and the
-   progress and delivery of these messages are progressing independently, thus
-   the receiving DTLS/SCTP implementation may not receive DTLS records in order
-   in case of packet loss.
+   With DTLS/SCTP as a layer above SCTP stacks on both sender and
+   receiver side some consideration is needed for buffering and
+   resource contention, and how back pressure is applied in cases the
+   receiving application is not keeping up with the sender. The ULP
+   may use multiple user messages simultaneous, and the progress and
+   delivery of these messages are progressing independently, thus the
+   receiving DTLS/SCTP implementation may not receive DTLS records in
+   order in case of packet loss.
 
-   On the sender side the DTLS/SCTP layer will need to accept data from the ULP
-   of at least one maximum DTLS record size. The maximum DTLS record size is
-   2<sup>14</sup> bytes per default or a lower negotiated value using the DTLS
-   extension defined in {{RFC8449}}. The user message fragment is then protected by DTLS
-   and assumed to immediately after be dispatched for transmission by SCTP.
+   On the sender side the DTLS/SCTP layer will need to accept data
+   from the ULP of at least one maximum DTLS record size. The maximum
+   DTLS record size is 2<sup>14</sup> bytes per default or a lower
+   negotiated value using the DTLS extension defined in
+   {{RFC8449}}. The user message fragment is then protected by DTLS
+   and assumed to immediately after be dispatched for transmission by
+   SCTP.
 
-   As SCTP schedules the DTLS record for transmission as SCTP packets it will
-   become part of the data tracked by the send/receive buffer in the SCTP
-   stacks. The maximum receiver buffer size is negotiated and provides an upper
-   limit of how much out standing data can exist on the SCTP layer. For example
-   if an DTLS record part of user message N experience repeated packet losses,
-   it may not be delivered, despite several later user messages fragments has
-   been delivered.
+   As SCTP schedules the DTLS record for transmission as SCTP packets
+   it will become part of the data tracked by the send/receive buffer
+   in the SCTP stacks. The maximum receiver buffer size is negotiated
+   and provides an upper limit of how much out standing data can exist
+   on the SCTP layer. For example if an DTLS record part of user
+   message N experience repeated packet losses, it may not be
+   delivered, despite several later user messages fragments has been
+   delivered.
 
-   Next we assume that the receiver side DTLS/SCTP will read partial user
-   messages from the SCTP receiver stack as they become availble unless it can't
-   keep up or has run out of intermediate buffer space for reassembly of the
-   DTLS records in each user message. Thus, in case the receiver falls behind it
-   will eventually block the receiver buffer by not consuming data from it and
-   thus creating back pressure towards the sender. But, at any time it is
-   assumed that the receiver side DTLS/SCTP layer will not buffer multiple DTLS
-   records, and instead process each as soon as possible. Buffering multiple
-   DTLS records prior to DTLS decryption would increase the total number of DTLS
-   records in flight, counted between DTLS encryption and decryption, and thus
-   risk overlapping DTLS sequence numbers.
+   Next we assume that the receiver side DTLS/SCTP will read partial
+   user messages from the SCTP receiver stack as they become availble
+   unless it can't keep up or has run out of intermediate buffer space
+   for reassembly of the DTLS records in each user message. Thus, in
+   case the receiver falls behind it will eventually block the
+   receiver buffer by not consuming data from it and thus creating
+   back pressure towards the sender. But, at any time it is assumed
+   that the receiver side DTLS/SCTP layer will not buffer multiple
+   DTLS records, and instead process each as soon as
+   possible. Buffering multiple DTLS records prior to DTLS decryption
+   would increase the total number of DTLS records in flight, counted
+   between DTLS encryption and decryption, and thus risk overlapping
+   DTLS sequence numbers.
 
-   To avoid overlapping sequence number the DTLS sender should first of all use
-   16-bit sequence number to enable a larger space. Secondly, it should track
-   which DTLS records has been non-renegable ACKed by the receiver and always
-   maintain a certain safety buffer in number of DTLS records. Thirdly, the
-   implementation needs to attempt to minimize usage of buffers that exist after
-   the DTLS encryption until the DTLS Decryption in its sender and receiver
-   implementation.
+   To avoid overlapping sequence number the DTLS sender should first
+   of all use 16-bit sequence number to enable a larger
+   space. Secondly, it should track which DTLS records has been
+   non-renegable ACKed by the receiver and always maintain a certain
+   safety buffer in number of DTLS records. Thirdly, the
+   implementation needs to attempt to minimize usage of buffers that
+   exist after the DTLS encryption until the DTLS Decryption in its
+   sender and receiver implementation.
 
 
 ## Comparison with TLS over SCTP
@@ -315,8 +328,8 @@ terminated and the associated keying material discarded.
    The DTLS over SCTP solution defined in RFC 6083 had the following
    limitations:
 
-   * The maximum user message size is 2<sup>14</sup> (16384) bytes, which is a single
-      DTLS record limit.
+   * The maximum user message size is 2<sup>14</sup> (16384) bytes,
+      which is a single DTLS record limit.
 
    * DTLS 1.0 has been deprecated for RFC 6083 requiring at least DTLS
      1.2 {{RFC8996}}. This creates additional limitations as discussed
@@ -327,10 +340,12 @@ terminated and the associated keying material discarded.
      potentially impact applications.
 
    * An on-path attacker can reflect the authenticated part of a SCTP
-     packet back to the sender as well as replaying data and control chunks.
+     packet back to the sender as well as replaying data and control
+     chunks.
 
    * An on-path attacker can reflect the authenticated part of a SCTP
-     packet back to the sender as well as replaying data and control chunks.
+     packet back to the sender as well as replaying data and control
+     chunks.
 
    This specification defines the following changes compared with RFC
    6083:
@@ -379,8 +394,9 @@ terminated and the associated keying material discarded.
 
    DTLS 1.3 comes with a large number of significant changes.
 
-   *  Renegotiations are not supported and instead partly replaced by
-      key updates. The number of key updates is limited to 2<sup>48</sup>.
+   * Renegotiations are not supported and instead partly replaced by
+      key updates. The number of key updates is limited to
+      2<sup>48</sup>.
 
    *  Strict AEAD significantly limits on how much many packets can be
       sent before rekeying.
@@ -407,8 +423,9 @@ terminated and the associated keying material discarded.
    requirements from semi-permanent applications, this document uses
    several overlapping DTLS connections with either DTLS 1.2 or
    1.3. Having uniform procedures reduces the impact when upgrading
-   from DTLS 1.2 to DTLS 1.3 and avoids using the renegotiation mechanism which
-   is disabled by default in many DTLS implementations.
+   from DTLS 1.2 to DTLS 1.3 and avoids using the renegotiation
+   mechanism which is disabled by default in many DTLS
+   implementations.
 
    To address known vulnerabilities in DTLS 1.2 this document
    describes and mandates implementation constraints on ciphers and
@@ -424,8 +441,8 @@ terminated and the associated keying material discarded.
    In the rest of the document, unless the version of DTLS is
    specifically called out, the text applies to both versions of DTLS.
 
-   DTLS/SCTP requires the maximum DTLS record size to be known, and not
-   being changed during the lifetime of the Association.
+   DTLS/SCTP requires the maximum DTLS record size to be known, and
+   not being changed during the lifetime of the Association.
 
 
 ## Terminology
@@ -546,11 +563,11 @@ terminated and the associated keying material discarded.
    for SCTP where the previous epoch’s security context is maintained
    and thus changes to epoch handling would be necessary.
 
-   A DTLS 1.2 endpoint MUST NOT use renegotiation and a DTLS 1.3 endpoint
-   MUST NOT send any KeyUpdate message. The
-   endpoint MUST instead initiate a new DTLS connection before the old
-   one reaches the used cipher suit's key life time. The AEAD limits given
-   in section 4.5.3 of {{RFC9147}} SHOULD be followed.
+   A DTLS 1.2 endpoint MUST NOT use renegotiation and a DTLS 1.3
+   endpoint MUST NOT send any KeyUpdate message. The endpoint MUST
+   instead initiate a new DTLS connection before the old one reaches
+   the used cipher suit's key life time. The AEAD limits given in
+   section 4.5.3 of {{RFC9147}} SHOULD be followed.
 
 ## DTLS Connection Identifier
 
@@ -567,10 +584,10 @@ terminated and the associated keying material discarded.
    another DTLS connection context, and there fail the decryption and
    integrity verification. And in that case to avoid losing the DTLS
    record, it would have to be forwarded to another zero-length CID
-   using DTLS Connection, where decryption and validation must be tried,
-   resulting in higher resource utilization. Thus, it is REQUIRED to
-   use non-zero length CID values, and RECOMMENDED to use a single
-   common length for the CID values. A single byte should be
+   using DTLS Connection, where decryption and validation must be
+   tried, resulting in higher resource utilization. Thus, it is
+   REQUIRED to use non-zero length CID values, and RECOMMENDED to use
+   a single common length for the CID values. A single byte should be
    sufficient, as reuse of old CIDs is possible as long as the
    implementation ensures that they are not used in near time to the
    previous usage.
@@ -583,8 +600,8 @@ terminated and the associated keying material discarded.
    sequence number due to wrapping of the sequence number MUST be
    prevented as it otherwise can lead to decryption failure that
    result in failure of the transport service. See
-   {{Prevent-DTLS-Seq-wraps}} for how to prevent sequence
-   number wraps.
+   {{Prevent-DTLS-Seq-wraps}} for how to prevent sequence number
+   wraps.
 
 ## Message Sizes {#Msg-size}
 
@@ -606,9 +623,9 @@ terminated and the associated keying material discarded.
    Chunks to fit the path MTU by SCTP. These changes ensure that
    DTLS/SCTP has the same capability as SCTP to support user messages
    of any size. However, to simplify implementations it is OPTIONAL to
-   support user messages larger than 2<sup>64</sup>-1 bytes. This is to allow
-   implementation to assume that 64-bit length fields and offset
-   pointers will be sufficient.
+   support user messages larger than 2<sup>64</sup>-1 bytes. This is
+   to allow implementation to assume that 64-bit length fields and
+   offset pointers will be sufficient.
 
    The security operations and reassembly process requires that the
    protected user message, i.e., with DTLS record overhead, is stored
@@ -621,19 +638,20 @@ terminated and the associated keying material discarded.
    required buffering prior to DTLS processing is a single DTLS record
    per used incoming stream. This enables the DTLS/SCTP implementation
    to provide the Upper Layer Protocol (ULP) with each DTLS record's
-   content, when it has been decrypted and its integrity been verified,
-   enabling partial user message delivery to the ULP.  However, for
-   efficient operation and avoiding flow control stalls if user
-   message fragments are not frequently and expiendtly moved to upper
-   layer memory buffers, the receiver buffer needs to be larger.
+   content, when it has been decrypted and its integrity been
+   verified, enabling partial user message delivery to the ULP.
+   However, for efficient operation and avoiding flow control stalls
+   if user message fragments are not frequently and expiendtly moved
+   to upper layer memory buffers, the receiver buffer needs to be
+   larger.
 
    Implementations can trade-off buffer memory requirements in the
    DTLS layer with transport overhead by using smaller DTLS records,
    in this case the record size limit extension for DTLS according to
    {{RFC8449}} MUST be used and the negotiated record size SHALL be
-   communicated to DTLS/SCTP.  The maximum record size SHALL be
-   the same during the lifetime of the Association, i.e. renegotiated
-   to the same value in all subsequent DTLS connections.
+   communicated to DTLS/SCTP.  The maximum record size SHALL be the
+   same during the lifetime of the Association, i.e. renegotiated to
+   the same value in all subsequent DTLS connections.
 
    The DTLS/SCTP implementation is expected to behave very similar to
    just SCTP when it comes to handling of user messages and dealing
@@ -660,7 +678,8 @@ terminated and the associated keying material discarded.
    the received protected user message, the SCTP AUTH key MUST be
    retired before it has been used with more than 2<sup>32</sup> TSNs.
    Implementations MUST therefore setup a new parallel DTLS connection
-   to rekey well before 2<sup>32</sup> TSNs have been used with a SCTP AUTH key.
+   to rekey well before 2<sup>32</sup> TSNs have been used with a SCTP
+   AUTH key.
 
    DTLS/SCTP does not provide replay protection for authenticated
    control chunks such as ERROR, RE-CONFIG {{RFC6525}}, or SACK. An
@@ -692,8 +711,8 @@ terminated and the associated keying material discarded.
 
 ## Mapping of DTLS Records {#Mapping-DTLS}
 
-   The SCTP implementation MUST support fragmentation of user messages using
-   DATA {{RFC9260}}, and optionally I-DATA {{RFC8260}} chunks.
+   The SCTP implementation MUST support fragmentation of user messages
+   using DATA {{RFC9260}}, and optionally I-DATA {{RFC8260}} chunks.
 
    DTLS/SCTP as an SCTP adaptation layer exist between the ULP user
    message API and SCTP. On the sender side a user message is split
@@ -715,13 +734,14 @@ terminated and the associated keying material discarded.
    The new user_message', i.e., the protected user message, is the input
    to SCTP.
 
-   On the receiving side, the length field in each DTLS record can be used to
-   determine the boundaries between DTLS records. DTLS/SCTP SHOULD request
-   decryption of each individual records as soon as possible.  The last DTLS
-   record can be found by subtracting the length of individual records from the
-   length of user_message’.  The output from the DTLS decryption(s) is the
-   fragments m0, m1, m2 ...  The user_message is reassembled from decrypted DTLS
-   records as user_message = m0 | m1 | m2 ...
+   On the receiving side, the length field in each DTLS record can be
+   used to determine the boundaries between DTLS records. DTLS/SCTP
+   SHOULD request decryption of each individual records as soon as
+   possible.  The last DTLS record can be found by subtracting the
+   length of individual records from the length of user_message’.  The
+   output from the DTLS decryption(s) is the fragments m0, m1, m2 ...
+   The user_message is reassembled from decrypted DTLS records as
+   user_message = m0 | m1 | m2 ...
 
    There are four failure cases an DTLS/SCTP implementation needs to
    detect and then act on:
@@ -745,21 +765,23 @@ terminated and the associated keying material discarded.
    number of concurrent transmitted SCTP streams or unordered user
    messages.
 
-   4. DTLS Replay protection. This specification mandates that replay protection
-   shall not be used, otherwise the sequence number in a delayed DTLS record
-   might be beyond what the replay window accepts and thus be dropped. If such a
-   discard would happen the user message would be compromised as the data has
-   been lost.
+   4. DTLS Replay protection. This specification mandates that replay
+   protection shall not be used, otherwise the sequence number in a
+   delayed DTLS record might be beyond what the replay window accepts
+   and thus be dropped. If such a discard would happen the user
+   message would be compromised as the data has been lost.
 
-   The above failure cases all result in the receiver failing to recreate the
-   full user message. This is a failure of the transport service that is not
-   possible to recover from the DTLS/SCTP layer and the sender could believe the
-   complete message have been delivered. This error MUST NOT be ignored, as SCTP
-   lacks any facility to declare a failure on a specific stream or user message,
-   the DTLS connection and the SCTP association SHOULD be terminated. A valid
-   exception to the termination of the SCTP association is if the receiver is
-   capable of notifying the ULP about the failure in delivery and the ULP is
-   capable of recovering from this failure.
+   The above failure cases all result in the receiver failing to
+   recreate the full user message. This is a failure of the transport
+   service that is not possible to recover from the DTLS/SCTP layer
+   and the sender could believe the complete message have been
+   delivered. This error MUST NOT be ignored, as SCTP lacks any
+   facility to declare a failure on a specific stream or user message,
+   the DTLS connection and the SCTP association SHOULD be
+   terminated. A valid exception to the termination of the SCTP
+   association is if the receiver is capable of notifying the ULP
+   about the failure in delivery and the ULP is capable of recovering
+   from this failure.
 
    Note that if the SCTP extension for Partial Reliability (PR-SCTP) {{RFC3758}}
    is used for a user message, user message may be partially delivered or
@@ -770,12 +792,12 @@ terminated and the associated keying material discarded.
 ## DTLS Connection Handling
 
    DTLS/SCTP is negotiated on SCTP level as an adaptation layer
-   ({{Negotiation}}). After a successful negotiation of the DTLS/SCTP adaptation layer
-   during SCTP association establishment, a DTLS connection MUST be
-   established prior the transmission of any ULP user messages. All
-   DTLS connections are terminated when the SCTP association is
-   terminated. A DTLS connection MUST NOT span multiple SCTP
-   associations.
+   ({{Negotiation}}). After a successful negotiation of the DTLS/SCTP
+   adaptation layer during SCTP association establishment, a DTLS
+   connection MUST be established prior the transmission of any ULP
+   user messages. All DTLS connections are terminated when the SCTP
+   association is terminated. A DTLS connection MUST NOT span multiple
+   SCTP associations.
 
    As it is required to establish the DTLS connection at the beginning
    of the SCTP association, either of the peers should never send any
@@ -846,34 +868,35 @@ terminated and the associated keying material discarded.
    sent in user messages. Thus, ensuring that if there are DTLS
    records that need to be delivered in particular order it can be
    ensured. Alternatively, if it is desired that a DTLS record is
-   delivered as early as possible, avoiding in-order streams with queued
-   messages and considering stream priorities can result in faster
-   delivery.
+   delivered as early as possible, avoiding in-order streams with
+   queued messages and considering stream priorities can result in
+   faster delivery.
 
    A simple solution avoiding any protocol issue with sending DTLS
-   messages, that are not protected user message fragments, is to pick a
-   stream not used by the ULP, and send the DTLS messages in their own
-   SCTP user messages with in order delivery. That mimics the RFC 6083
-   behavior without impacting the ULP. However, it assumes that there
-   are available streams to be used based on the SCTP association
-   handshake allowed streams (Section 5.1.1 of {{RFC9260}}).
+   messages, that are not protected user message fragments, is to pick
+   a stream not used by the ULP, and send the DTLS messages in their
+   own SCTP user messages with in order delivery. That mimics the RFC
+   6083 behavior without impacting the ULP. However, it assumes that
+   there are available streams to be used based on the SCTP
+   association handshake allowed streams (Section 5.1.1 of
+   {{RFC9260}}).
 
 ## Chunk Handling
 
-   All chunks types that
-   can be listed in the Chunk List Parameter {{RFC4895}}, i.e., all chunks
-   types except INIT, INIT ACK, and SHUTDOWN-COMPLETE, MUST be sent
-   in an authenticated way as described in {{RFC4895}}. This makes sure
-   that an attacker cannot modify the stream in which a message is sent
-   or affect the ordered/unordered delivery of the message. Note that
-   COOKIE ECHO and COOKIE ACK are protected with an empty key. This is not
-   a problem as everything in these chunks are detemined by earlier chunks
-   or ignored on receipt.
+   All chunks types that can be listed in the Chunk List Parameter
+   {{RFC4895}}, i.e., all chunks types except INIT, INIT ACK, and
+   SHUTDOWN-COMPLETE, MUST be sent in an authenticated way as
+   described in {{RFC4895}}. This makes sure that an attacker cannot
+   modify the stream in which a message is sent or affect the
+   ordered/unordered delivery of the message. Note that COOKIE ECHO
+   and COOKIE ACK are protected with an empty key. This is not a
+   problem as everything in these chunks are detemined by earlier
+   chunks or ignored on receipt.
 
-   If PR-SCTP as defined in {{RFC3758}} is used, the FORWARD-TSN chunks
-   are sent in an authenticated way which makes sure that it is not possible for an
-   attacker to drop messages and use forged FORWARD-TSN, SACK, and/or
-   SHUTDOWN chunks to hide this dropping.
+   If PR-SCTP as defined in {{RFC3758}} is used, the FORWARD-TSN
+   chunks are sent in an authenticated way which makes sure that it is
+   not possible for an attacker to drop messages and use forged
+   FORWARD-TSN, SACK, and/or SHUTDOWN chunks to hide this dropping.
 
    I-DATA chunk type as defined in {{RFC8260}} is RECOMMENDED to be
    supported to avoid some of the down sides that large user messages
@@ -940,15 +963,15 @@ terminated and the associated keying material discarded.
    A DTLS/SCTP Endpoint MUST NOT have more than two DTLS connections
    open at the same time. Either of the endpoints MAY initiate a new
    DTLS connection by performing a DTLS handshake. To support this
-   implementations and certificates need to support both DTLS client and
-   server roles. Note that resumption is not possible between DTLS
+   implementations and certificates need to support both DTLS client
+   and server roles. Note that resumption is not possible between DTLS
    connections unless the endpoints have the same roles. As either
    endpoint can initiate a DTLS handshake on either side at the same
-   time, either endpoint may receive a DTLS ClientHello message when it has
-   sent its own ClientHello. In this case the ClientHello from the
-   endpoint that had the DTLS Client role in the establishment of the
-   existing DTLS connection shall be continued to be processed and the
-   other dropped.
+   time, either endpoint may receive a DTLS ClientHello message when
+   it has sent its own ClientHello. In this case the ClientHello from
+   the endpoint that had the DTLS Client role in the establishment of
+   the existing DTLS connection shall be continued to be processed and
+   the other dropped.
 
    When performing the DTLS handshake the endpoint MUST verify that
    the peer identifies using the same identity as in the previous DTLS
@@ -1148,11 +1171,11 @@ terminated and the associated keying material discarded.
    been successfully transferred to the remote peer.
 
    4. Local DTLS/SCTP sends a DTLS/SCTP Control Message
-   ({{Control-Message}}) of type "SHUTDOWN_Request" ({{SHUTDOWN-Request}})
-   to its peer.
+   ({{Control-Message}}) of type "SHUTDOWN_Request"
+   ({{SHUTDOWN-Request}}) to its peer.
 
-   5. The remote DTLS/SCTP, when receiving the SHUTDOWN-Request, informs
-   its ULP that shutdown has been initiated. No more ULP user
+   5. The remote DTLS/SCTP, when receiving the SHUTDOWN-Request,
+   informs its ULP that shutdown has been initiated. No more ULP user
    message data to be sent to the peer can be accepted by DTLS/SCTP.
 
    6. Remote DTLS/SCTP finishes any protection operation on buffered
@@ -1190,57 +1213,63 @@ terminated and the associated keying material discarded.
 
 ### Preventing DTLS sequence number wraps {#Prevent-DTLS-Seq-wraps}
 
-   To avoid failures in DTLS record decryption it is necessary to ensure that
-   the sequence number space never wraps for the DTLS records that are
-   outstanding between the DTLS encryption and decryption. As discussed in
-   {{buffering}} the amount of packets this include is a combination of any
-   buffering in the endpoint and the amount of data in the SCTP sender/receiver
-   buffer for the transmission.
+   To avoid failures in DTLS record decryption it is necessary to
+   ensure that the sequence number space never wraps for the DTLS
+   records that are outstanding between the DTLS encryption and
+   decryption. As discussed in {{buffering}} the amount of packets
+   this include is a combination of any buffering in the endpoint and
+   the amount of data in the SCTP sender/receiver buffer for the
+   transmission.
 
-   To avoid overlapping sequence number the DTLS sender should first of all use
-   16-bit sequence number to enable a larger space. Secondly, it should track
-   which DTLS records has been non-renegable ACKed by the receiver and always
-   maintain a certain safety buffer in number of DTLS records. Thirdly, the
-   implementation needs to attempt to minimize usage of buffers that exist after
-   the DTLS encryption until the DTLS Decryption in its sender and receiver
-   implementation.
+   To avoid overlapping sequence number the DTLS sender should first
+   of all use 16-bit sequence number to enable a larger
+   space. Secondly, it should track which DTLS records has been
+   non-renegable ACKed by the receiver and always maintain a certain
+   safety buffer in number of DTLS records. Thirdly, the
+   implementation needs to attempt to minimize usage of buffers that
+   exist after the DTLS encryption until the DTLS Decryption in its
+   sender and receiver implementation.
 
-   If the receiver implementation keeps with the assumpption to timely decrypt
-   DTLS records after it has been completely received, the tracking of when a
-   records has been fully received can maintain a good view of the total number
-   of outstanding records in regards to the DTLS sequence number space and
-   prevent wrapping of the sequence number space by not protecting additional
-   user message fragements until further DTLS records has been ackonwledged.
+   If the receiver implementation keeps with the assumpption to timely
+   decrypt DTLS records after it has been completely received, the
+   tracking of when a records has been fully received can maintain a
+   good view of the total number of outstanding records in regards to
+   the DTLS sequence number space and prevent wrapping of the sequence
+   number space by not protecting additional user message fragements
+   until further DTLS records has been ackonwledged.
 
-   Assuming a that a quarter of the sequence number space is used as safety
-   margin it will limit the number of simultanous in-flight DTLS records to
-   49152, and thus also the number of simultanos user messages. Technically, if
-   the DTLS implementation supports trial decoding, overlap of the sequence
-   number but that results in both implementation requirements, need to signal
-   the window it supports, and additional decryption overhead due to trial
-   decoding and will be left for future extension.
+   Assuming a that a quarter of the sequence number space is used as
+   safety margin it will limit the number of simultanous in-flight
+   DTLS records to 49152, and thus also the number of simultanos user
+   messages. Technically, if the DTLS implementation supports trial
+   decoding, overlap of the sequence number but that results in both
+   implementation requirements, need to signal the window it supports,
+   and additional decryption overhead due to trial decoding and will
+   be left for future extension.
 
-   So what size of SCTP receiver window this limitation correspond to is highly
-   dependent on the SCTP user message size. If all SCTP user message are large,
-   e.g. 1 MB, then most DTLS Records will be close to maxmimum DTLS record
-   size. Thus, the SCTP receiver window size required before this becomes an
-   issue becomes fairly close to 49152 times 16384, i.e. approximately 800
-   MB. While SCTP user messages of 100 bytes would only need a receiver window
-   of approximately 5 MB.
+   So what size of SCTP receiver window this limitation correspond to
+   is highly dependent on the SCTP user message size. If all SCTP user
+   message are large, e.g. 1 MB, then most DTLS Records will be close
+   to maxmimum DTLS record size. Thus, the SCTP receiver window size
+   required before this becomes an issue becomes fairly close to 49152
+   times 16384, i.e. approximately 800 MB. While SCTP user messages of
+   100 bytes would only need a receiver window of approximately 5 MB.
 
 ### SCTP API Limitations
 
-   The SCTP-API defined in {{RFC6458}} results in an implementation limitation
-   when it comes to support transmission of user messages of arbitrary
-   sizes. That API does not allow changing the SCTP AUTH key used for protecting
-   the sending of a particular user message. Thus, user messages that will be
-   transmitted over periods of time on the order or longer than the interval
-   between rekeying can't be supported. Beyond delaying the completion of a
-   rekeying until the message has been transmitted, the session can deadlock if
-   the DTLS connection used to protect this long user message reaches the limit
-   of number of bytes transmitted with a particular key. However, this is not an
-   interoperability issue as it is the sender side's API that limits what can be
-   sent and thus the sender implementation will have to address this issue.
+   The SCTP-API defined in {{RFC6458}} results in an implementation
+   limitation when it comes to support transmission of user messages
+   of arbitrary sizes. That API does not allow changing the SCTP AUTH
+   key used for protecting the sending of a particular user
+   message. Thus, user messages that will be transmitted over periods
+   of time on the order or longer than the interval between rekeying
+   can't be supported. Beyond delaying the completion of a rekeying
+   until the message has been transmitted, the session can deadlock if
+   the DTLS connection used to protect this long user message reaches
+   the limit of number of bytes transmitted with a particular
+   key. However, this is not an interoperability issue as it is the
+   sender side's API that limits what can be sent and thus the sender
+   implementation will have to address this issue.
 
 
 # DTLS/SCTP Control Message {#Control-Message}
@@ -1282,20 +1311,21 @@ terminated and the associated keying material discarded.
 ## SHUTDOWN-Request {#SHUTDOWN-Request}
 
    The value "1" is defined as a request to the peer to initiate
-   controlled shutdown. This is used per step 4 and 5 in {{sec-shutdown}}.
-   Control Message 1 "Shutdown request" has Parameter Length = 0.
+   controlled shutdown. This is used per step 4 and 5 in
+   {{sec-shutdown}}.  Control Message 1 "Shutdown request" has
+   Parameter Length = 0.
 
 ## Ready To Close Indication {#Ready_To_Close}
 
    The value "2" is defined as an indication to the peer that from its
-   perspective all SCTP packets with user message or using the
-   SCTP AUTH key associated with the oldest DTLS connection have been
-   sent and acknowledged as received in a non-renegable way. This is
-   used per {{Parallel-Dtls}} to initiate the closing of the DTLS
-   connections during rekeying.
-   Control Message 2 "Ready To Close" has has Parameter Length equal
-   to the size of the DTLS Connection ID parameter in bytes.
-   The Variable Parameter contains the DTLS Connection ID that is to be closed.
+   perspective all SCTP packets with user message or using the SCTP
+   AUTH key associated with the oldest DTLS connection have been sent
+   and acknowledged as received in a non-renegable way. This is used
+   per {{Parallel-Dtls}} to initiate the closing of the DTLS
+   connections during rekeying.  Control Message 2 "Ready To Close"
+   has has Parameter Length equal to the size of the DTLS Connection
+   ID parameter in bytes.  The Variable Parameter contains the DTLS
+   Connection ID that is to be closed.
 
 # DTLS over SCTP Service {#Negotiation}
 
@@ -1461,7 +1491,8 @@ enum {
 } ExtensionType;
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-Clients MAY send this extention in ClientHello. It contains the following structure:
+Clients MAY send this extention in ClientHello. It contains the
+following structure:
 
 ~~~~~~~~~~~~~~~~~~~~~~~
 struct {
@@ -1504,9 +1535,9 @@ given to this specification.
 ## Transport Layer Security (TLS) Extensions
 
    IANA is requested to add a value to the Transport Layer Security
-   (TLS) Extensions' "TLS ExtensionType Values" registry defined by {{RFC8447}}.  At time of
-   writing located at: [TLS ExtensionType Values
-   Registry](https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#tls-extensiontype-values-1)
+   (TLS) Extensions' "TLS ExtensionType Values" registry defined by
+   {{RFC8447}}.  At time of writing located at:
+   [TLS ExtensionType Values Registry](https://www.iana.org/assignments/tls-extensiontype-values/tls-extensiontype-values.xhtml#tls-extensiontype-values-1)
 
 
 | Value | Extension Name | TLS 1.3 | DTLS-OK | Recommended | Reference |
@@ -1533,7 +1564,8 @@ given to this specification.
    for usage in the Adaptation Layer Indication Parameter. The
    Adaptation Code Point is registered in the SCTP Adaptation Code
    Points registry defined by {{RFC5061}}. The registry was at time of
-   writing located: [Adaptation Code Point registry](https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-27)
+   writing located: [Adaptation Code Point
+   registry](https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-27)
 
 | Code Point (32-bit number) | Description | Reference |
 | -------------------------- | ----------- | --------- |
@@ -1541,16 +1573,14 @@ given to this specification.
 {: #iana-ACP title="Adaptation Code Point"}
 
 
-RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number given to
-this specification.
-
 ## SCTP Payload Protocol Identifiers  {#sec-IANA-PPID}
 
    IANA is requeted to assign one SCTP Payload Protocol Identifier
    (PPID) to be used to identify the DTLS/SCTP control messages
    ({{Control-Message}}). This PPID is registered in the SCTP Payload
-   Protocol Identifiers registry defined by {{RFC9260}}.  The registry was at time of
-   writing located: [SCTP Payload Protocol Identifiers](https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-25)
+   Protocol Identifiers registry defined by {{RFC9260}}.  The registry
+   was at time of writing located: [SCTP Payload Protocol
+   Identifiers](https://www.iana.org/assignments/sctp-parameters/sctp-parameters.xhtml#sctp-parameters-25)
 
 | Value | SCTP PPID | Reference |
 | -------------------------- | ----------- | --------- |
@@ -1658,20 +1688,21 @@ this specification.
    negotiation of stronger algorithms and security parameters, which
    might be motivated by new attacks.
 
-   Allowing new connections can enable denial-of-service attacks.
-   The endpoints MUST limit the number of simultaneous connection to two.
-   The implementor shall take into account that an existing DTLS connection
-   can only be closed after "Ready_To_Close" {{Ready_To_Close}} indication.
+   Allowing new connections can enable denial-of-service attacks.  The
+   endpoints MUST limit the number of simultaneous connection to two.
+   The implementor shall take into account that an existing DTLS
+   connection can only be closed after "Ready_To_Close"
+   {{Ready_To_Close}} indication.
 
    When DTLS/SCTP is used with DTLS 1.2 {{RFC6347}}, the TLS Session
-   Hash and Extended Master Secret Extension {{RFC7627}} MUST be used to
-   prevent unknown key-share attacks where an attacker establishes the
-   same key on several connections. DTLS 1.3 always prevents these
+   Hash and Extended Master Secret Extension {{RFC7627}} MUST be used
+   to prevent unknown key-share attacks where an attacker establishes
+   the same key on several connections. DTLS 1.3 always prevents these
    kinds of attacks. The use of SCTP AUTH then cryptographically binds
-   new connections to the old connections. This together with mandatory
-   mutual authentication (on the DTLS layer) and a requirement to not
-   accept new identities mitigates MITM attacks that have plagued
-   renegotiation {{TRISHAKE}}.
+   new connections to the old connections. This together with
+   mandatory mutual authentication (on the DTLS layer) and a
+   requirement to not accept new identities mitigates MITM attacks
+   that have plagued renegotiation {{TRISHAKE}}.
 
 ## Downgrade Attacks
 
@@ -1687,10 +1718,10 @@ this specification.
    The DTLS handshake messages and other control messages, i.e., not
    application data can easily be identified when using DTLS 1.2 as
    their content type is not encrypted. With DTLS 1.3 there is no
-   unprotected content type. However, they will be sent with an PPID of 0
-   if sent in their own SCTP user messages. {{Stream-Usage}} proposes
-   a basic behavior that will still make it easily for anyone to
-   detect the DTLS messages that are not protected user messages.
+   unprotected content type. However, they will be sent with an PPID
+   of 0 if sent in their own SCTP user messages. {{Stream-Usage}}
+   proposes a basic behavior that will still make it easily for anyone
+   to detect the DTLS messages that are not protected user messages.
 
 ## Authentication and Policy Decisions
 
@@ -1723,12 +1754,13 @@ this specification.
 ## Resumption and Tickets
 
    In DTLS 1.3 any number of tickets can be issued in a connection and
-   the tickets can be used for resumption as long as they are valid, which
-   is up to seven days. The nodes in a resumed connection have the
-   same roles (client or server) as in the connection where the ticket
-   was issued. Resumption can have significant latency benefits for
-   quickly restarting a broken DTLS/SCTP association. If tickets and
-   resumption are used it is enough to issue a single ticket per connection.
+   the tickets can be used for resumption as long as they are valid,
+   which is up to seven days. The nodes in a resumed connection have
+   the same roles (client or server) as in the connection where the
+   ticket was issued. Resumption can have significant latency benefits
+   for quickly restarting a broken DTLS/SCTP association. If tickets
+   and resumption are used it is enough to issue a single ticket per
+   connection.
 
 ## Privacy Considerations
 
@@ -1740,13 +1772,13 @@ this specification.
    or unordered, and a payload protocol identifier.  Although
    DTLS/SCTP provides privacy for the actual user message, the other
    three information fields are not confidentiality protected.  They
-   are sent as clear text because they are part of the SCTP DATA
-   chunk header.
+   are sent as clear text because they are part of the SCTP DATA chunk
+   header.
 
    It is RECOMMENDED that DTLS/SCTP is used with certificate-based
-   authentication in DTLS 1.3 {{RFC9147}} to provide
-   identity protection. DTLS/SCTP MUST be used with a key exchange
-   method providing forward secrecy.
+   authentication in DTLS 1.3 {{RFC9147}} to provide identity
+   protection. DTLS/SCTP MUST be used with a key exchange method
+   providing forward secrecy.
 
 ## Pervasive Monitoring
 
@@ -1759,10 +1791,10 @@ this specification.
    offers much better protection against pervasive monitoring.
 
    Massive pervasive monitoring attacks relying on key exchange
-   without forward secrecy has been reported. By mandating
-   forward secrecy, DTLS/SCTP effectively mitigate many forms of
-   passive pervasive monitoring and limits the amount of compromised
-   data due to key compromise.
+   without forward secrecy has been reported. By mandating forward
+   secrecy, DTLS/SCTP effectively mitigate many forms of passive
+   pervasive monitoring and limits the amount of compromised data due
+   to key compromise.
 
    An important mitigation of pervasive monitoring is to force
    attackers to do dynamic key exfiltration instead of static key
@@ -1817,8 +1849,8 @@ New Versions: Almost 10 years has passed since RFC 6083 was written,
    security algorithms. Thus, DTLS 1.3 is the newest version of DTLS
    and also the SHA-1 HMAC algorithm of RFC 4895 is getting towards
    the end of usefulness. Use of DTLS 1.3 with long lived associations
-   require parallel DTLS connections. Thus, this document mandates usage of
-   relevant versions and algorithms.
+   require parallel DTLS connections. Thus, this document mandates
+   usage of relevant versions and algorithms.
 
 Allowing DTLS Messages on any stream: RFC6083 requires DTLS messages
    that are not user message data to be sent on stream 0 and that this
