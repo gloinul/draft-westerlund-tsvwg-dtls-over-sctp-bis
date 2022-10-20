@@ -31,6 +31,7 @@ informative:
   RFC6083:
   RFC6125:
   RFC6458:
+  RFC6525:
   RFC6973:
   RFC7258:
   RFC7457:
@@ -109,10 +110,13 @@ normative:
    improved alternative to RFC 6083 and removes the 16 kB limitation
    on protected user message size by defining a secure user message
    fragmentation so that multiple DTLS records can be used to protect
-   a single user message. It further updates the DTLS versions to use,
-   as well as the HMAC algorithms for SCTP AUTH, and simplifies secure
-   implementation by some stricter requirements on the establishment
-   procedures.
+   a single user message. It further contains a large number of
+   security fixes and improvements. It updates the DTLS versions and
+   SCTP AUTH HMAC algorithms to use. It mitigates reflection attacks
+   of data and control chunks and replay attacks of data chunks.  It
+   simplifies secure implementation by some stricter requirements on
+   the establishment procedures as well as rekeying to align with zero
+   trust principles.
 
 --- middle
 
@@ -322,6 +326,12 @@ terminated and the associated keying material discarded.
      where limited to only be sent on Stream 0, which could
      potentially impact applications.
 
+   * An on-path attacker can reflect the authenticated part of a SCTP
+     packet back to the sender as well as replaying data and control chunks.
+
+   * An on-path attacker can reflect the authenticated part of a SCTP
+     packet back to the sender as well as replaying data and control chunks.
+
    This specification defines the following changes compared with RFC
    6083:
 
@@ -348,6 +358,12 @@ terminated and the associated keying material discarded.
      authenticated.
 
    * Requires support of partial delivery of user messages.
+
+   * Derives direction specific SCTP AUTH keys to mitigate reflection
+     attacks.
+
+   * Mandates SCTP AUTH rekeying before the TSN cycles back to the
+     Initial TSN to mitigate replay of data chunks.
 
 ## DTLS Version {#DTLS-version}
 
@@ -631,14 +647,27 @@ terminated and the associated keying material discarded.
    SCTP AUTH {{RFC4895}} does not have explicit replay
    protection. However, the combination of SCTP AUTH's protection of
    DATA or I-DATA chunks and SCTP user message handling will prevent
-   third party attempts to inject or replay SCTP packets resulting in
-   impact on the received protected user message. In fact, this
+   third party attempts to inject or replay SCTP data chunks as long as
+   the Transmission Sequence Numbers (TSNs) are unique. In fact, this
    document's solution is dependent on SCTP AUTH and SCTP to prevent
    reordering, duplication, and removal of the DTLS records within
    each protected user message.  This includes detection of changes to
    what DTLS records start and end the SCTP user message, and removal of
    DTLS records before an increment to the epoch.  Without SCTP AUTH,
    these would all have required explicit handling.
+
+   To prevent replay of DATA or I-DATA chunks resulting in impact on
+   the received protected user message, the SCTP AUTH key MUST be
+   retired before it has been used with more than 2^32 TSNs.
+   Implementations MUST therefore setup a new parallel DTLS connection
+   to rekey well before 2^32 TSNs have been used with a SCTP AUTH key.
+
+   DTLS/SCTP does not provide replay protection for authenticated
+   control chunks such as ERROR, RE-CONFIG {{RFC6525}}, or SACK. An
+   on-path attacker can replay control chunks as long as the receiving
+   endpoint still has the endpoint pair shared secret. Such replay
+   could disrupt the SCTP association and could therefore be a
+   denial-of-service attack.
 
    DTLS optionally supports record replay detection. Such replay
    detection could result in the DTLS layer dropping valid messages
@@ -862,6 +891,11 @@ terminated and the associated keying material discarded.
    and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
    preference.
 
+   When using DTLS/SCTP, each endpoint MUST use a single SCTP AUTH
+   Message Digest Algorithm during the whole SCTP association. This
+   guarantees that an association shared key is only used with a single
+   algorithm.
+
 ## Parallel DTLS connections {#Parallel-Dtls}
 
    To enable SCTP AUTH rekeying, periodic authentication of both
@@ -1004,51 +1038,75 @@ terminated and the associated keying material discarded.
 
    SCTP AUTH {{RFC4895}} is keyed using endpoint pair shared
    secrets. In DTLS/SCTP, DTLS is used to establish these secrets.
-   The endpoint pair shared secrets MUST be provided to the SCTP stack as
-   soon as the computation is possible. The endpoints MUST NOT use another
-   mechanism for establishing endpoint pair shared secrets for SCTP AUTH.
-   The endpoint pair shared secret for Shared Key Identifier 0 is
-   empty and MUST be used when establishing the first DTLS connection.
+   The endpoint pair shared secrets MUST be provided to the SCTP stack
+   as soon as the computation is possible. The endpoints MUST NOT use
+   another mechanism for establishing endpoint pair shared secrets for
+   SCTP AUTH.  The endpoint pair shared secret for Shared Key
+   Identifier zero (0) is empty and MUST be used by both endpoints
+   when establishing the first DTLS connection.
 
-   The initial DTLS connection will be used to establish a new endpoint pair shared
-   secret which MUST use shared key identifier 1. The endpoint pair shared
-   secret are derived using the TLS exporter interface using the ASCII string
-   "EXPORTER-DTLS-OVER-SCTP-EXT" with no terminating NUL, no context, and length
-   64.
+   The initial DTLS connection will be used to establish two new
+   endpoint pair shared secrets which MUST use shared key identifier 2
+   and 3. The endpoint pair shared secrets are derived using the TLS
+   exporter interface using the ASCII strings
+   "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" and
+   "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE" with no terminating NUL, no
+   context, and length 64.
 
-~~~~~~~~~~~
-   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-EXT", , 64)
-~~~~~~~~~~~
+   ~~~~~~~~~~~
+   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE", , 64)
+   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE", , 64)
+   ~~~~~~~~~~~
 
-   When a subsequent DTLS connection is setup, a new 64-byte endpoint pair shared
-   secret is derived using the TLS-Exporter as defined above. The Shared Key
-   Identifiers form a sequence. If the previous endpoint pair shared secret used
-   Shared Key Identifier n, the new one MUST use Shared Key Identifier
-   n+1, unless n = 65535, in which case the new Shared Key Identifier
-   is 1.
+   Keys derived with the label "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE"
+   always have an even Shared Key Identifier.  They are used by the
+   TLS client for sending AUTH chunks and MUST NOT be used by the TLS
+   client for receiving AUTH chunks.  Keys derived with the label
+   "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE" always have an odd Shared
+   Key Identifier.  They are used by the TLS server for sending AUTH
+   chunks and MUST NOT be used by the TLS server for receiving AUTH
+   chunks.  These directional keys changes the behaivior of SCTP AUTH
+   {{RFC4895}} and requires extentions to the SCTP API defined in
+   {{RFC6458}}.
+
+   When a subsequent DTLS connection is setup, two new 64-byte
+   endpoint pair shared secrets are derived using the TLS-Exporter as
+   defined above. The Shared Key Identifiers form a sequence. If the
+   previous endpoint pair shared secrets used Shared Key Identifiers
+   2n and 2n+1, the new ones MUST use Shared Key Identifier 2n+2 and
+   2n+3, unless 2n = 65534, in which case the new Shared Key
+   Identifiers are 2 and 3.
 
 ### DTLS 1.2 Considerations
 
-   Whenever a new DTLS connection is established, a 64-byte endpoint pair shared secret
-   is derived using the TLS-Exporter described in {{RFC5705}}.
+   Whenever a new DTLS connection is established, two 64-byte endpoint
+   pair shared secrets are derived using the TLS-Exporter described in
+   {{RFC5705}}.
 
-   After sending the DTLS Finished message
-   for the initial DTLS connection, the active SCTP AUTH key MUST be
-   switched from key identifier 0 to key identifier 1. Once the
-   initial Finished message from the peer has been processed by DTLS,
-   the SCTP AUTH Shared Key Identifier zero MUST NOT be used.
+   After sending or receiving the DTLS client Finished message for the
+   initial DTLS connection, the active SCTP AUTH key MUST be switched
+   from key identifier zero (0) to key identifiers 2 and 3 and the
+   SCTP AUTH Shared Key Identifier zero MUST NOT be used.
 
-   When the endpoint has both
-   sent and received a close_notify on the old DTLS connection then
-   the endpoint SHALL remove the SCTP AUTH endpoint pair shared
-   secret derived from the old DTLS connection.
+   When the endpoint has sent or received a close_notify on the old DTLS
+   connection then the endpoint SHALL remove the two SCTP AUTH endpoint
+   pair shared secrets derived from the old DTLS connection.
 
 ### DTLS 1.3 Considerations
 
-   Whenever a new exporter_secret can be computed, a 64-byte endpoint pair shared secret
-   is derived using the TLS-Exporter described in Section 7.5 of {{RFC8446}}.
+   Whenever a new exporter_secret can be computed, two 64-byte
+   endpoint pair shared secrets is derived using the TLS-Exporter
+   described in Section 7.5 of {{RFC8446}}.
 
-   TBD.... Finished and close_notify works differently in DTLS 1.3
+   After sending or receiving the DTLS server Finished message for the
+   initial DTLS connection, the active SCTP AUTH key MUST be switched
+   from key identifier zero (0) to key identifiers 2 and 3 and the
+   SCTP AUTH Shared Key Identifier zero MUST NOT be used.
+
+   When the endpoint has sent or received a close_notify in one
+   direction on the old DTLS connection then the endpoint SHALL remove
+   the SCTP AUTH endpoint pair shared secret associated with that
+   direction in the old DTLS connection.
 
 ## Shutdown {#sec-shutdown}
 
@@ -1440,7 +1498,6 @@ This document registers a number of protocol values per the
 below. RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number
 given to this specification.
 
-
 ## Transport Layer Security (TLS) Extensions
 
    IANA is requested to add a value to the Transport Layer Security
@@ -1454,17 +1511,18 @@ given to this specification.
 | TBD2 | dtls_sctp_ext | CH | Y | Y | \[RFC-TBD\] |
 {: #iana-TLS-extension title="TLS Exporter Label"}
 
-## TLS Exporter Label
+## TLS Exporter Labels
 
-   IANA is requested to add a value to the TLS Exporter Label registry
-   as defined by {{RFC5705}}, and {{RFC5705}}. At time of writing located at: [TLS
-   Exporter Label
+   IANA is requested to add two values to the TLS Exporter Label
+   registry as defined by {{RFC5705}}, and {{RFC8447}}. At time of
+   writing located at: [TLS Exporter Label
    registry](https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#exporter-labels)
 
 | Value | DTLS-OK | Recommended | Reference |
 | ----- | ------- | ----------- | --------- |
-| EXPORTER-DTLS-OVER-SCTP-EXT | Y | Y | \[RFC-TBD\] |
-{: #iana-TLS-exporter title="TLS Exporter Label"}
+| EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE | Y | Y | \[RFC-TBD\] |
+| EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE | Y | Y | \[RFC-TBD\] |
+{: #iana-TLS title="TLS Exporter Label"}
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
