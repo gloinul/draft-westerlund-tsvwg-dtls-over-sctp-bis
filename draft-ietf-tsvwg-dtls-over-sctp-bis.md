@@ -31,6 +31,7 @@ informative:
   RFC6083:
   RFC6125:
   RFC6458:
+  RFC6525:
   RFC6973:
   RFC7258:
   RFC7457:
@@ -358,10 +359,10 @@ terminated and the associated keying material discarded.
 
    * Requires support of partial delivery of user messages.
 
-   * Derives direction specific SCTP-AUTH keys to mitigate reflection
+   * Derives direction specific SCTP AUTH keys to mitigate reflection
      attacks.
 
-   * Mandates SCTP-AUTH rekeying before the TSN cycles back to the
+   * Mandates SCTP AUTH rekeying before the TSN cycles back to the
      Initial TSN to mitigate replay of data chunks.
 
 ## DTLS Version {#DTLS-version}
@@ -656,14 +657,14 @@ terminated and the associated keying material discarded.
    these would all have required explicit handling.
 
    To prevent replay of DATA or I-DATA chunks resulting in impact on
-   the received protected user message, the SCTP-AUTH key MUST be
+   the received protected user message, the SCTP AUTH key MUST be
    retired before it has been used with more than 2^32 TSNs.
    Implementations MUST therefore setup a new parallel DTLS connection
-   to rekey well before 2^32 TSNs have been used with a SCTP-AUTH key.
+   to rekey well before 2^32 TSNs have been used with a SCTP AUTH key.
 
    DTLS/SCTP does not provide replay protection for authenticated
-   control chunks such as ERROR, RE-CONFIG {{RFC8449}}, or SACK. An on-path
-   attacker can replay control chunks as long as the receiving
+   control chunks such as ERROR, RE-CONFIG {{RFC6525}}, or SACK. An
+   on-path attacker can replay control chunks as long as the receiving
    endpoint still has the endpoint pair shared secret. Such replay
    could disrupt the SCTP association and could therefore be a
    denial-of-service attack.
@@ -861,7 +862,7 @@ terminated and the associated keying material discarded.
 
    All chunks types that
    can be listed in the Chunk List Parameter {{RFC4895}}, i.e., all chunks
-   types except INIT, INIT-ACK, and SHUTDOWN-COMPLETE, MUST be sent
+   types except INIT, INIT ACK, and SHUTDOWN-COMPLETE, MUST be sent
    in an authenticated way as described in {{RFC4895}}. This makes sure
    that an attacker cannot modify the stream in which a message is sent
    or affect the ordered/unordered delivery of the message. Note that
@@ -1035,12 +1036,12 @@ terminated and the associated keying material discarded.
 
 ## Handling of Endpoint Pair Shared Secrets {#handling-endpoint-secret}
 
-   SCTP-AUTH {{RFC4895}} is keyed using endpoint pair shared
+   SCTP AUTH {{RFC4895}} is keyed using endpoint pair shared
    secrets. In DTLS/SCTP, DTLS is used to establish these secrets.
    The endpoint pair shared secrets MUST be provided to the SCTP stack
    as soon as the computation is possible. The endpoints MUST NOT use
    another mechanism for establishing endpoint pair shared secrets for
-   SCTP-AUTH.  The endpoint pair shared secret for Shared Key
+   SCTP AUTH.  The endpoint pair shared secret for Shared Key
    Identifier zero (0) is empty and MUST be used by both endpoints
    when establishing the first DTLS connection.
 
