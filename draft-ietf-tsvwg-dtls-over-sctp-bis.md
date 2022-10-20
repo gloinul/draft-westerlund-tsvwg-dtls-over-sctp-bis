@@ -1043,17 +1043,19 @@ terminated and the associated keying material discarded.
    secrets which MUST use shared key identifier 2 and 3. The endpoint pair shared
    secrets are derived using the TLS exporter interface using the ASCII strings
    "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" and "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE"
-   with no terminating NUL, no context, and length 64. Keys derived with the label
-   "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" are used by the TLS client for sending SCTP-AUTH
-   and always have an odd Shared Key Identifier. Keys derived with the label
-   "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE" are used by the TLS server for sending SCTP-AUTH
-   and always have an even Shared Key Identifier.
-
+   with no terminating NUL, no context, and length 64.
+   
    ~~~~~~~~~~~
    TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE", , 64)
    TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE", , 64)
    ~~~~~~~~~~~
 
+   Keys derived with the label "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" always have an even Shared Key Identifier.
+   They are used by the TLS client for sending AUTH chunks and MUST NOT be used by the TLS client for receiving AUTH chunks.
+   Keys derived with the label "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE" always have an odd Shared Key Identifier.
+   They are used by the TLS server for sending AUTH chunks and MUST NOT be used by the TLS server for receiving AUTH chunks.
+   These directional keys changes the behaivior of SCTP-AUTH {{RFC4895}} and requires extentions to the SCTP API defined in {{RFC6458}}.
+   
    When a subsequent DTLS connection is setup, two new 64-byte endpoint pair shared
    secrets are derived using the TLS-Exporter as defined above. The Shared Key
    Identifiers form a sequence. If the previous endpoint pair shared secrets used
