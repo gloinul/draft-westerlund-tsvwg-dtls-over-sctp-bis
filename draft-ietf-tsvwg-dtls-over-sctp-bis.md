@@ -328,6 +328,9 @@ terminated and the associated keying material discarded.
    * An on-path attacker can reflect the authenticated part of a SCTP
      packet back to the sender as well as replaying data and control chunks.
 
+   * An on-path attacker can reflect the authenticated part of a SCTP
+     packet back to the sender as well as replaying data and control chunks.
+
    This specification defines the following changes compared with RFC
    6083:
 
@@ -1494,7 +1497,6 @@ This document registers a number of protocol values per the
 below. RFC-Editor Note: Please replace \[RFC-TBD\] with the RFC number
 given to this specification.
 
-
 ## Transport Layer Security (TLS) Extensions
 
    IANA is requested to add a value to the Transport Layer Security
@@ -1508,7 +1510,7 @@ given to this specification.
 | TBD2 | dtls_sctp_ext | CH | Y | Y | \[RFC-TBD\] |
 {: #iana-TLS-extension title="TLS Exporter Label"}
 
-## TLS Exporter Label
+## TLS Exporter Labels
 
    IANA is requested to add two values to the TLS Exporter Label
    registry as defined by {{RFC5705}}, and {{RFC8447}}. At time of
