@@ -526,7 +526,7 @@ terminated and the associated keying material discarded.
    Hellman) of DTLS as well as mutual reauthentication and transfer of
    revocation information inside an DTLS 1.2 connection. Renegotiation
    has been removed from DTLS 1.3 and partly replaced with
-   post-handshake messages such as Key Update. The parallel DTLS
+   post-handshake mechanism for key update. The parallel DTLS
    connection solution was specified due to lack of necessary features
    with DTLS 1.3 considered needed for long lived SCTP associations,
    such as rekeying (with ephemeral Diffie-Hellman) as well as mutual
