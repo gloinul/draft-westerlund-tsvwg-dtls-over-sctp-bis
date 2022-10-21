@@ -1066,7 +1066,7 @@ discarded.
    SCTP AUTH.  The endpoint pair shared secret for Shared Key
    Identifier zero (0) is empty, it is used by both endpoints
    when establishing the first DTLS connection and MUST NOT be
-   used to protect ULP data. 
+   used to protect ULP data.
 
    The initial DTLS connection will be used to establish two new
    endpoint pair shared secrets which MUST use shared key identifier 2
