@@ -131,8 +131,8 @@ normative:
    Authenticated Chunks for SCTP (SCTP AUTH) {{RFC4895}}.
 
    This specification provides mutual authentication of endpoints,
-   confidentiality, integrity protection, and replay protection of
-   user messages for applications that use SCTP as their transport
+   data confidentiality, data origin authentication, data integrity protection,
+   and data replay protection of user messages for applications that use SCTP as their transport
    protocol.  Thus, it allows client/server applications to communicate
    in a way that is designed to give communications privacy and to
    prevent eavesdropping and detect tampering or message
@@ -240,7 +240,7 @@ another solution to these problems assuming a sufficient capable SCTP
 and SCTP AUTH implementations and with rich enough APIs.
 
 The solution that ensures the current keying material will not be
-prematurely discarded on renegotiation or key-update, is based on not
+prematurely discarded on renegotiation or key update, is based on not
 using these mechanisms and instead establishing a second DTLS
 connection over the SCTP association. This creates a parallel DTLS
 connections, where the DTLS connection ID feature is used to identify
@@ -338,10 +338,6 @@ discarded.
    * DTLS messages that don't contain protected user message data
      where limited to only be sent on Stream 0, which could
      potentially impact applications.
-
-   * An on-path attacker can reflect the authenticated part of a SCTP
-     packet back to the sender as well as replaying data and control
-     chunks.
 
    * An on-path attacker can reflect the authenticated part of a SCTP
      packet back to the sender as well as replaying data and control
@@ -1068,8 +1064,9 @@ discarded.
    as soon as the computation is possible. The endpoints MUST NOT use
    another mechanism for establishing endpoint pair shared secrets for
    SCTP AUTH.  The endpoint pair shared secret for Shared Key
-   Identifier zero (0) is empty and MUST be used by both endpoints
-   when establishing the first DTLS connection.
+   Identifier zero (0) is empty, it is used by both endpoints
+   when establishing the first DTLS connection and MUST NOT be
+   used to protect ULP data. 
 
    The initial DTLS connection will be used to establish two new
    endpoint pair shared secrets which MUST use shared key identifier 2
@@ -1102,6 +1099,10 @@ discarded.
    2n and 2n+1, the new ones MUST use Shared Key Identifier 2n+2 and
    2n+3, unless 2n = 65534, in which case the new Shared Key
    Identifiers are 2 and 3.
+   
+   A DTLS connection MUST NOT be used be used for protection of ULP data
+   before the two SCTP AUTH endpoint pair shared secrets has been exported and
+   the other endpoint has been authenticated.
 
 ### DTLS 1.2 Considerations
 
