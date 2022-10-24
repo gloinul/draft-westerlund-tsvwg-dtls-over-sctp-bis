@@ -1280,7 +1280,7 @@ discarded.
    protocol for DTLS/SCTP identified by its own PPID. The control
    message is sent in network byte order.
 
-   The first 32 bit are split in two 16-bit integer where the first
+   The first 32 bits are split in two 16-bit integers where the first
    contains the Control Message Number and the next 16-bit integer
    contains the length of the optional Variable Parameter.
    Granularity of Variable Parameter is 32-bit with trailing zeroes.
@@ -1300,7 +1300,7 @@ discarded.
    Each message is sent as its own SCTP user message after
    having been protected by an open DTLS connection on any SCTP stream
    and MUST be marked with SCTP Payload Protocol Identifier (PPID)
-   value TBD1 {{sec-IANA-PPID}}.
+   value TBD1 ({{sec-IANA-PPID}}).
 
    The DTLS/SCTP implementation MUST consume all SCTP messages
    received with the PPID value of TBD1. If the message is not 32-bit
@@ -1321,7 +1321,7 @@ discarded.
 
    The value "2" is defined as an indication to the peer that from its
    perspective all SCTP packets with user message or using the
-   SCTP-AUTH key associated with the oldest DTLS connection have been
+   SCTP-AUTH key associated with the indicated DTLS connection have been
    sent and acknowledged as received in a non-renegable way. This is
    used per {{Parallel-Dtls}} to initiate the closing of the DTLS
    connections during rekeying.  Control Message 2 "Ready To Close"
@@ -1416,10 +1416,10 @@ discarded.
    are no longer than 16384 bytes and where the security issues can be
    mitigated or considered acceptable. If fallback is enabled,
    implementations MUST use the dtls_sctp_ext extension
-   {{auth_fallback}} to authenticate the fallback. This mitigates
-   on-path attacker to trigger fallback to RFC 6083.  Fallback is NOT
-   RECOMMENDED to be enabled as it enables downgrade attacks to weaker
-   algorithms and versions of DTLS.
+   ({{auth_fallback}}) to authenticate the fallback. This mitigates
+   on-path attacker to trigger fallback to RFC 6083. Fallback is NOT
+   RECOMMENDED to be enabled as it permits weaker algorithms and
+   versions of DTLS.
 
    An SCTP endpoint that receives an INIT chunk or an INIT ACK chunk
    that does not contain the SCTP-Adaptation-Indication parameter with
@@ -1512,6 +1512,7 @@ struct {
    the needed functionality on the SCTP API.
 
    The following functionality is needed:
+
    * Controlling SCTP-AUTH negotiation so that SHA-256 algorithm is
      included, and determine that SHA-1 is not selected when the
      association is established.
@@ -1519,6 +1520,8 @@ struct {
    * Determining when all SCTP packets that uses an SCTP-AUTH key or
      contains DTLS records associated to a particular DTLS connection
      has been acknowledged non-renegable.
+
+   * Install SCTP-AUTH keys with directionality
 
    * Determining when all SCTP packets have been acknowledged
      non-renegable.
@@ -1546,7 +1549,7 @@ given to this specification.
 | Value | Extension Name | TLS 1.3 | DTLS-OK | Recommended | Reference |
 | ----- | ------- | ----------- | --------- |
 | TBD2 | dtls_sctp_ext | CH | Y | Y | \[RFC-TBD\] |
-{: #iana-TLS-extension title="TLS Exporter Label"}
+{: #iana-TLS-extension title="TLS Extension"}
 
 ## TLS Exporter Labels
 
@@ -1563,7 +1566,7 @@ given to this specification.
 
 ## SCTP Adaptation Layer Indication Code Point {#sec-IANA-ACP}
 
-   IANA is requested to assign a Adaptation Code Point to DTLS/SCTP
+   IANA is requested to assign an Adaptation Code Point to DTLS/SCTP
    for usage in the Adaptation Layer Indication Parameter. The
    Adaptation Code Point is registered in the SCTP Adaptation Code
    Points registry defined by {{RFC5061}}. The registry was at time of
@@ -1572,7 +1575,7 @@ given to this specification.
 
 | Code Point (32-bit number) | Description | Reference |
 | -------------------------- | ----------- | --------- |
-| 0x00000002 | DTLS/SCTP | \[RFC-TBD\] |
+| TBD | DTLS/SCTP | \[RFC-TBD\] |
 {: #iana-ACP title="Adaptation Code Point"}
 
 
@@ -1847,13 +1850,15 @@ Supporting Large User Messages: RFC 6083 allowed only user messages
    E1, Xn, NG-C) that can potentially generate messages over the size
    of 16384 bytes.
 
-New Versions: Almost 10 years has passed since RFC 6083 was written,
-   and significant evolution has happened in the area of DTLS and
-   security algorithms. Thus, DTLS 1.3 is the newest version of DTLS
-   and also the SHA-1 HMAC algorithm of RFC 4895 is getting towards
-   the end of usefulness. Use of DTLS 1.3 with long lived associations
-   require parallel DTLS connections. Thus, this document mandates
-   usage of relevant versions and algorithms.
+New Versions: 10 years has passed since RFC 6083 was written, and
+   significant evolution has happened in the area of DTLS and security
+   algorithms. Thus, DTLS 1.3 is the newest version of DTLS and also
+   the SHA-1 HMAC algorithm of RFC 4895 is getting towards the end of
+   usefulness. Use of DTLS 1.3 with long lived associations require a
+   solution to enable mutual re-authentication and (EC)DHE based
+   rekeying to ensure forward secrecy. Thus, this document mandates
+   usage of relevant versions and algorithms as well as defining the
+   parallel DTLS connection solution.
 
 Allowing DTLS Messages on any stream: RFC6083 requires DTLS messages
    that are not user message data to be sent on stream 0 and that this
