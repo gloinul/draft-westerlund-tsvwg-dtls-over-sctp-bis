@@ -1320,9 +1320,9 @@ discarded.
 ## Ready To Close Indication {#Ready_To_Close}
 
    The value "2" is defined as an indication to the peer that from its
-   perspective all SCTP packets with user message or using the 
-   SCTP-AUTH key associated with the indicated DTLS connection have been 
-   sent and acknowledged as received in a non-renegable way. This is 
+   perspective all SCTP packets with user message or using the
+   SCTP-AUTH key associated with the indicated DTLS connection have been
+   sent and acknowledged as received in a non-renegable way. This is
    used per {{Parallel-Dtls}} to initiate the closing of the DTLS
    connections during rekeying.  Control Message 2 "Ready To Close"
    has Parameter Length equal to the size of the DTLS Connection ID
