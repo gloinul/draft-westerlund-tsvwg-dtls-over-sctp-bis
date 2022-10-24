@@ -112,7 +112,7 @@ normative:
    fragmentation so that multiple DTLS records can be used to protect
    a single user message. It further contains a large number of
    security fixes and improvements. It updates the DTLS versions and
-   SCTP AUTH HMAC algorithms to use. It mitigates reflection attacks
+   SCTP-AUTH HMAC algorithms to use. It mitigates reflection attacks
    of data and control chunks and replay attacks of data chunks.  It
    simplifies secure implementation by some stricter requirements on
    the establishment procedures as well as rekeying to align with zero
@@ -128,19 +128,20 @@ normative:
    Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
    DTLS 1.3 {{RFC9147}}, over the Stream Control
    Transmission Protocol (SCTP), as defined in {{RFC9260}} with
-   Authenticated Chunks for SCTP (SCTP AUTH) {{RFC4895}}.
+   Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
 
    This specification provides mutual authentication of endpoints,
-   data confidentiality, data origin authentication, data integrity protection,
-   and data replay protection of user messages for applications that use SCTP as their transport
-   protocol.  Thus, it allows client/server applications to communicate
-   in a way that is designed to give communications privacy and to
-   prevent eavesdropping and detect tampering or message
-   forgery. DTLS/SCTP uses DTLS for mutual authentication, key
-   exchange with forward secrecy for SCTP AUTH, and
-   confidentiality of user messages. DTLS/SCTP use SCTP and SCTP AUTH
-   for integrity protection and replay protection of all SCTP Chunks
-   that can be authenticated, including user messages.
+   data confidentiality, data origin authentication, data integrity
+   protection, and data replay protection of user messages for
+   applications that use SCTP as their transport protocol.  Thus, it
+   allows client/server applications to communicate in a way that is
+   designed to give communications privacy and to prevent
+   eavesdropping and detect tampering or message forgery. DTLS/SCTP
+   uses DTLS for mutual authentication, key exchange with forward
+   secrecy for SCTP-AUTH, and confidentiality of user
+   messages. DTLS/SCTP use SCTP and SCTP-AUTH for integrity protection
+   and replay protection of all SCTP Chunks that can be authenticated,
+   including user messages.
 
    Applications using DTLS over SCTP can use almost all transport
    features provided by SCTP and its extensions. DTLS/SCTP supports:
@@ -174,7 +175,7 @@ normative:
 
 The DTLS/SCTP protection is defined as an SCTP adaptation layer
 {{RFC5061}} that is implemented on top of an SCTP API for an SCTP
-implementation with SCTP AUTH {{RFC4895}} support. DTLS/SCTP is
+implementation with SCTP-AUTH {{RFC4895}} support. DTLS/SCTP is
 expected to provide an SCTP like API towards the upper layer protocol
 with some additions for controlling the DTLS/SCTP security parameters
 and policies. This minimizes the impact on the SCTP implementation and
@@ -191,9 +192,9 @@ wire image.
 | Adaptation          +----------| DTLS |
 | Layer               |          +------+
 |                     |
-+---------------------+ <- SCTP API + SCTP AUTH API
++---------------------+ <- SCTP API + SCTP-AUTH API
 |                     |
-|  SCTP + SCTP AUTH   |
+|  SCTP + SCTP-AUTH   |
 |                     |
 +---------------------+
 
@@ -217,7 +218,7 @@ fragment is encrypted and provided with authentication tag by DTLS.
 {: #msg-fragmenting="Individual user message fragmentation and protection"}
 
 The sequence of protected user message fragments (user_message') are
-then transmitted as a SCTP user message. SCTP AUTH provides
+then transmitted as a SCTP user message. SCTP-AUTH provides
 authentication of the SCTP packets and prevents injection of data or
 reordering of DTLS fragments thus ensuring that each protected user
 message can be de-protected in the receiver in order and
@@ -227,7 +228,7 @@ supported on a per fragment basis.
 SCTP's capability for multi-stream concurrent transmission of
 different SCTP user messages, where each SCTP user message can
 potentially be very large, results in some challenges for any change
-of the keys used to protect the ULP data. SCTP AUTH API, defined in
+of the keys used to protect the ULP data. SCTP-AUTH API, defined in
 {{RFC6458}}, provides additional limitations that needs to be
 considered when supported. These issues and the related limitations
 will be discussed more in details below.
@@ -237,7 +238,7 @@ drained all outstanding data before updating the key to prevent
 issues. This can have significant impact on a ULP that requires timely
 and frequent exchange of user messages. This specification uses
 another solution to these problems assuming a sufficient capable SCTP
-and SCTP AUTH implementations and with rich enough APIs.
+and SCTP-AUTH implementations and with rich enough APIs.
 
 The solution that ensures the current keying material will not be
 prematurely discarded on renegotiation or key update, is based on not
@@ -365,15 +366,15 @@ discarded.
    * Applies stricter requirements on always using DTLS for all user
      messages in the SCTP association.
 
-   * Requires that SCTP AUTH is applied to all SCTP Chunks that can be
+   * Requires that SCTP-AUTH is applied to all SCTP Chunks that can be
      authenticated.
 
    * Requires support of partial delivery of user messages.
 
-   * Derives direction specific SCTP AUTH keys to mitigate reflection
+   * Derives direction specific SCTP-AUTH keys to mitigate reflection
      attacks.
 
-   * Mandates SCTP AUTH rekeying before the TSN cycles back to the
+   * Mandates SCTP-AUTH rekeying before the TSN cycles back to the
      Initial TSN to mitigate replay of data chunks.
 
 ## DTLS Version {#DTLS-version}
@@ -411,7 +412,7 @@ discarded.
    *  Periodic rerunning of Diffie-Hellman Key Exchange to provide
       forward secrecy and mitigate static key exfiltration attacks.
 
-   *  Perform SCTP AUTH rekeying.
+   *  Perform SCTP-AUTH rekeying.
 
    At the time of publication, DTLS 1.3 does not support any of these,
    where DTLS 1.2 renegotiation functionality can provide these
@@ -476,8 +477,8 @@ discarded.
    SCTP:
    : Stream Control Transmission Protocol
 
-   SCTP AUTH:
-   : Authenticated Chunks for SCTP
+   SCTP-AUTH:
+   : Authenticated Chunks for SCTP {{RFC4895}}
 
    TCP:
    : Transmission Control Protocol
@@ -521,10 +522,10 @@ discarded.
    confidentiality and forward secrecy MUST be used.
 
    There are potential for aligning used hash algorithms between
-   SCTP AUTH and the DTLS cipher suit. If the otherwise considered to
-   be used SCTP AUTH hash algorithms and DTLS Cipher suits have
+   SCTP-AUTH and the DTLS cipher suit. If the otherwise considered to
+   be used SCTP-AUTH hash algorithms and DTLS Cipher suits have
    matching hashing algorithms it is RECOMMENDED to indicate a
-   preference for such algorithms. Note, however as the SCTP AUTH
+   preference for such algorithms. Note, however as the SCTP-AUTH
    hashing algorithm is chosen during SCTP association handshake it
    can't be changed once it is known what is supported in DTLS by the
    peer endpoint.
@@ -548,7 +549,7 @@ discarded.
    This specification does not allow usage of DTLS 1.2 renegotiation to
    avoid race conditions and corner cases in the interaction between
    the parallel DTLS connection mechanism and the keying of
-   SCTP AUTH. In addition, renegotiation is also disabled in some
+   SCTP-AUTH. In addition, renegotiation is also disabled in some
    implementations, as well as dealing with the epoch change reliable
    have similar or worse application impact.
 
@@ -658,24 +659,24 @@ discarded.
 
 ## Replay Protection
 
-   SCTP AUTH {{RFC4895}} does not have explicit replay
-   protection. However, the combination of SCTP AUTH's protection of
+   SCTP-AUTH {{RFC4895}} does not have explicit replay
+   protection. However, the combination of SCTP-AUTH's protection of
    DATA or I-DATA chunks and SCTP user message handling will prevent
    third party attempts to inject or replay SCTP data chunks as long as
    the Transmission Sequence Numbers (TSNs) are unique. In fact, this
-   document's solution is dependent on SCTP AUTH and SCTP to prevent
+   document's solution is dependent on SCTP-AUTH and SCTP to prevent
    reordering, duplication, and removal of the DTLS records within
    each protected user message.  This includes detection of changes to
    what DTLS records start and end the SCTP user message, and removal of
-   DTLS records before an increment to the epoch.  Without SCTP AUTH,
+   DTLS records before an increment to the epoch.  Without SCTP-AUTH,
    these would all have required explicit handling.
 
    To prevent replay of DATA or I-DATA chunks resulting in impact on
-   the received protected user message, the SCTP AUTH key MUST be
+   the received protected user message, the SCTP-AUTH key MUST be
    retired before it has been used with more than 2<sup>32</sup> TSNs.
    Implementations MUST therefore setup a new parallel DTLS connection
-   to rekey well before 2<sup>32</sup> TSNs have been used with a SCTP
-   AUTH key.
+   to rekey well before 2<sup>32</sup> TSNs have been used with a
+   SCTP-AUTH key.
 
    DTLS/SCTP does not provide replay protection for authenticated
    control chunks such as ERROR, RE-CONFIG {{RFC6525}}, or SACK. An
@@ -743,7 +744,7 @@ discarded.
    detect and then act on:
 
    1. Failure in decryption and integrity verification process of any
-   DTLS record. Due to SCTP AUTH preventing delivery of injected or
+   DTLS record. Due to SCTP-AUTH preventing delivery of injected or
    corrupt fragments of the protected user message this should only
    occur in case of implementation errors or internal hardware
    failures or the necessary security context has been prematurely
@@ -779,10 +780,10 @@ discarded.
    about the failure in delivery and the ULP is capable of recovering
    from this failure.
 
-   Note that if the SCTP extension for Partial Reliability (PR-SCTP) {{RFC3758}}
-   is used for a user message, user message may be partially delivered or
-   abandoned. These failures are not a reason for terminating the DTLS
-   connection and SCTP association.
+   Note that if the SCTP extension for Partial Reliability (PR-SCTP)
+   {{RFC3758}} is used for a user message, user message may be
+   partially delivered or abandoned. These failures are not a reason
+   for terminating the DTLS connection and SCTP association.
 
 
 ## DTLS Connection Handling
@@ -808,7 +809,7 @@ discarded.
    correct caching of the messages until the DTLS endpoint is ready.
 
    Whenever a mutual authentication, updated security parameters,
-   rerun of Diffie-Hellman Key Exchange, or SCTP AUTH rekeying is
+   rerun of Diffie-Hellman Key Exchange, or SCTP-AUTH rekeying is
    needed, a new DTLS connection is instead setup in parallel with the
    old connection (i.e., there may be up to two simultaneous DTLS
    connections within one association).
@@ -900,24 +901,24 @@ discarded.
    messages. However, the support is not mandated and negotiated
    independently from DTLS/SCTP.
 
-## SCTP AUTH Hash Function
+## SCTP-AUTH Hash Function
 
    When using DTLS/SCTP, the SHA-256 Message Digest Algorithm MUST be
-   supported in the SCTP AUTH {{RFC4895}} implementation. SHA-1 MUST
+   supported in the SCTP-AUTH {{RFC4895}} implementation. SHA-1 MUST
    NOT be used when using DTLS/SCTP. {{RFC4895}} requires support and
    inclusion of SHA-1 in the HMAC-ALGO parameter, thus, to meet
    both requirements the HMAC-ALGO parameter will include both SHA-256
    and SHA-1 with SHA-256 listed prior to SHA-1 to indicate the
    preference.
 
-   When using DTLS/SCTP, each endpoint MUST use a single SCTP AUTH
+   When using DTLS/SCTP, each endpoint MUST use a single SCTP-AUTH
    Message Digest Algorithm during the whole SCTP association. This
    guarantees that an association shared key is only used with a single
    algorithm.
 
 ## Parallel DTLS connections {#Parallel-Dtls}
 
-   To enable SCTP AUTH rekeying, periodic authentication of both
+   To enable SCTP-AUTH rekeying, periodic authentication of both
    endpoints, and force attackers to dynamic key extraction
    {{RFC7624}}, DTLS/SCTP per this specification defines the usage of
    parallel DTLS connections over the same SCTP association. This
@@ -927,7 +928,7 @@ discarded.
    which is disabled by default in many DTLS implementations, or
    post-handshake messages in DTLS 1.3, which does not allow periodic
    mutual endpoint re-authentication or re-keying of
-   SCTP AUTH.
+   SCTP-AUTH.
 
    Parallel DTLS connections enable opening a new DTLS
    connection performing an handshake, while the existing DTLS
@@ -947,9 +948,9 @@ discarded.
    As specified in {{Mapping-DTLS}} the usage of DTLS connection ID is
    required to ensure that the receiver can correctly identify the
    DTLS connection and its security context when performing its
-   de-protection operations. There is also only a single SCTP AUTH key
+   de-protection operations. There is also only a single SCTP-AUTH key
    exported per DTLS connection ensuring that there is clear mapping
-   between the DTLS connection ID and the SCTP AUTH security context for
+   between the DTLS connection ID and the SCTP-AUTH security context for
    each Key Identifier.
 
    Application writers should be aware that establishing a new DTLS
@@ -977,23 +978,23 @@ discarded.
    MUST be used for the DTLS protection of any new ULP user message,
    and SHOULD be switched to for protection of not yet protected user
    message fragments of partially transmitted user messages.  Also,
-   after the completion of the DTLS handshake, a new SCTP AUTH key will
+   after the completion of the DTLS handshake, a new SCTP-AUTH key will
    be exported per {{handling-endpoint-secret}}. To enable the sender
    and receiver to correctly identify when the old DTLS connection is
-   no longer in use, the SCTP AUTH key used to protect a SCTP packet
+   no longer in use, the SCTP-AUTH key used to protect a SCTP packet
    MUST NOT be from a newer DTLS connection than produced any included
    DTLS record fragment.
 
    The SCTP API defined in {{RFC6458}} has limitation in changing the
-   SCTP AUTH key until the whole SCTP user message has been
+   SCTP-AUTH key until the whole SCTP user message has been
    delivered. However, the DTLS/SCTP implementation can switch the
    DTLS connection used to protect the user message fragments to a
    newer, even if the older DTLS connections exported key is used
-   for the SCTP AUTH. And for SCTP implementations where the SCTP AUTH
-   key can be switched in the middle of a user message the SCTP AUTH
+   for the SCTP-AUTH. And for SCTP implementations where the SCTP-AUTH
+   key can be switched in the middle of a user message the SCTP-AUTH
    key should be changed as soon as all DTLS record fragments included
    in an SCTP packet have been protected by the newer DTLS connection.
-   Any SCTP AUTH receiver implementation is expected to be able to
+   Any SCTP-AUTH receiver implementation is expected to be able to
    select key on per SCTP packet basis.
 
    The DTLS/SCTP endpoint timely indicates to its peer when the
@@ -1008,7 +1009,7 @@ discarded.
       protected using the security context of this DTLS connection
       have been acknowledged in a non-renegable way.
 
-   2. All SCTP packets using the SCTP AUTH key associated with the
+   2. All SCTP packets using the SCTP-AUTH key associated with the
       security context of this DTLS connection have been acknowledged
       in a non-renegable way.
 
@@ -1017,7 +1018,7 @@ discarded.
    SHALL immediately initiate closing of this DTLS connection by
    sending a DTLS close_notify. Then when it has received the peer's
    close_notify terminate the DTLS connection and expunges the
-   associated security context and SCTP AUTH key. Note that it is not
+   associated security context and SCTP-AUTH key. Note that it is not
    required for a DTLS/SCTP implementation that has received a
    Ready_To_Close message to send that message itself when it
    fulfills the conditions. However, in some situations both endpoints
@@ -1030,14 +1031,14 @@ discarded.
    SCTP implementations exposing APIs like {{RFC6458}} fulfilling
    these conditions require draining the SCTP association of all
    outstanding data after having completed all the user messages using
-   the previous SCTP AUTH key identifier, relying on the
+   the previous SCTP-AUTH key identifier, relying on the
    SCTP_SENDER_DRY_EVENT to know when delivery has been accomplished.
    A richer API could also be used that allows user message level
    tracking of delivery, see {{api-considerations}} for API
    considerations.
 
    For SCTP implementations exposing APIs like {{RFC6458}} where it is
-   not possible to change the SCTP AUTH key for a partial SCTP message
+   not possible to change the SCTP-AUTH key for a partial SCTP message
    initiated before the change of security context, it will be forced to
    track the SCTP messages and determine when all using the old
    security context has been transmitted. This maybe be impossible to
@@ -1058,12 +1059,12 @@ discarded.
 
 ## Handling of Endpoint Pair Shared Secrets {#handling-endpoint-secret}
 
-   SCTP AUTH {{RFC4895}} is keyed using endpoint pair shared
+   SCTP-AUTH {{RFC4895}} is keyed using endpoint pair shared
    secrets. In DTLS/SCTP, DTLS is used to establish these secrets.
    The endpoint pair shared secrets MUST be provided to the SCTP stack
    as soon as the computation is possible. The endpoints MUST NOT use
    another mechanism for establishing endpoint pair shared secrets for
-   SCTP AUTH.  The endpoint pair shared secret for Shared Key
+   SCTP-AUTH.  The endpoint pair shared secret for Shared Key
    Identifier zero (0) is empty, it is used by both endpoints
    when establishing the first DTLS connection and MUST NOT be
    used to protect ULP data.
@@ -1088,7 +1089,7 @@ discarded.
    "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE" always have an odd Shared
    Key Identifier.  They are used by the TLS server for sending AUTH
    chunks and MUST NOT be used by the TLS server for receiving AUTH
-   chunks.  These directional keys change the behavior of SCTP AUTH
+   chunks.  These directional keys change the behavior of SCTP-AUTH
    {{RFC4895}} and requires extensions to the SCTP API defined in
    {{RFC6458}}.
 
@@ -1100,9 +1101,9 @@ discarded.
    2n+3, unless 2n = 65534, in which case the new Shared Key
    Identifiers are 2 and 3.
 
-   A DTLS connection MUST NOT be used be used for protection of ULP data
-   before the two SCTP AUTH endpoint pair shared secrets has been exported and
-   the other endpoint has been authenticated.
+   A DTLS connection MUST NOT be used be used for protection of ULP
+   data before the two SCTP-AUTH endpoint pair shared secrets has been
+   exported and the other endpoint has been authenticated.
 
 ### DTLS 1.2 Considerations
 
@@ -1111,12 +1112,12 @@ discarded.
    {{RFC5705}}.
 
    After sending or receiving the DTLS client Finished message for the
-   initial DTLS connection, the active SCTP AUTH key MUST be switched
+   initial DTLS connection, the active SCTP-AUTH key MUST be switched
    from key identifier zero (0) to key identifiers 2 and 3 and the
-   SCTP AUTH Shared Key Identifier zero MUST NOT be used.
+   SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
 
    When the endpoint has sent or received a close_notify on the old DTLS
-   connection then the endpoint SHALL remove the two SCTP AUTH endpoint
+   connection then the endpoint SHALL remove the two SCTP-AUTH endpoint
    pair shared secrets derived from the old DTLS connection.
 
 ### DTLS 1.3 Considerations
@@ -1126,13 +1127,13 @@ discarded.
    described in Section 7.5 of {{RFC8446}}.
 
    After sending or receiving the DTLS server Finished message for the
-   initial DTLS connection, the active SCTP AUTH key MUST be switched
+   initial DTLS connection, the active SCTP-AUTH key MUST be switched
    from key identifier zero (0) to key identifiers 2 and 3 and the
-   SCTP AUTH Shared Key Identifier zero MUST NOT be used.
+   SCTP-AUTH Shared Key Identifier zero MUST NOT be used.
 
    When the endpoint has sent or received a close_notify in one
    direction on the old DTLS connection then the endpoint SHALL remove
-   the SCTP AUTH endpoint pair shared secret associated with that
+   the SCTP-AUTH endpoint pair shared secret associated with that
    direction in the old DTLS connection.
 
 ## Shutdown {#sec-shutdown}
@@ -1260,7 +1261,7 @@ discarded.
 
    The SCTP-API defined in {{RFC6458}} results in an implementation
    limitation when it comes to support transmission of user messages
-   of arbitrary sizes. That API does not allow changing the SCTP AUTH
+   of arbitrary sizes. That API does not allow changing the SCTP-AUTH
    key used for protecting the sending of a particular user
    message. Thus, user messages that will be transmitted over periods
    of time on the order or longer than the interval between rekeying
@@ -1319,13 +1320,13 @@ discarded.
 ## Ready To Close Indication {#Ready_To_Close}
 
    The value "2" is defined as an indication to the peer that from its
-   perspective all SCTP packets with user message or using the SCTP
-   AUTH key associated with the indicated DTLS connection have been sent
-   and acknowledged as received in a non-renegable way. This is used
-   per {{Parallel-Dtls}} to initiate the closing of the DTLS
+   perspective all SCTP packets with user message or using the 
+   SCTP-AUTH key associated with the indicated DTLS connection have been 
+   sent and acknowledged as received in a non-renegable way. This is 
+   used per {{Parallel-Dtls}} to initiate the closing of the DTLS
    connections during rekeying.  Control Message 2 "Ready To Close"
-   has Parameter Length equal to the size of the DTLS Connection
-   ID parameter in bytes.  The Variable Parameter contains the DTLS
+   has Parameter Length equal to the size of the DTLS Connection ID
+   parameter in bytes.  The Variable Parameter contains the DTLS
    Connection ID that is to be closed.
 
 # DTLS over SCTP Service {#Negotiation}
@@ -1366,8 +1367,9 @@ discarded.
    parameters, the Association will start with support of DTLS/SCTP.
    The set of options indicated are the DTLS/SCTP Mandatory Options.
    No data transfer is permitted before DTLS handshake is
-   completed. Chunk bundling is permitted according to {{RFC9260}}. The
-   DTLS handshake will enable authentication of both the peers.
+   completed. Chunk bundling is permitted according to
+   {{RFC9260}}. The DTLS handshake will enable authentication of both
+   the peers.
 
    The extension described in this document is given by the following
    message exchange.
@@ -1443,7 +1445,7 @@ discarded.
       is aborted.
 
    2. The client checks that the SCTP INIT ACK contained the necessary
-      chunks and parameters to establish SCTP AUTH per RFC 6083 with
+      chunks and parameters to establish SCTP-AUTH per RFC 6083 with
       this endpoint. If not all necessary parameters or support
       algorithms don't match the client MUST abort the
       handshake. Otherwise it completes the SCTP handshake.
@@ -1462,11 +1464,11 @@ discarded.
    1. When receiving an SCTP INIT message without the DTLS/SCTP
       adaptation layer indication fallback procedure is initiated.
 
-   2. Verify that the SCTP INIT contains SCTP AUTH parameters required
+   2. Verify that the SCTP INIT contains SCTP-AUTH parameters required
       by RFC 6083 and compatible with this server. If that is not the
       case abort the SCTP handshake.
 
-   3. Send an SCTP INIT ACK with the required SCTP AUTH chunks and
+   3. Send an SCTP INIT ACK with the required SCTP-AUTH chunks and
       parameters to the client.
 
    4. Complete the SCTP Handshake. Await DTLS handshake per RFC 6083.
@@ -1511,11 +1513,11 @@ struct {
 
    The following functionality is needed:
 
-   * Controlling SCTP AUTH negotiation so that SHA-256 algorithm is
+   * Controlling SCTP-AUTH negotiation so that SHA-256 algorithm is
      included, and determine that SHA-1 is not selected when the
      association is established.
 
-   * Determining when all SCTP packets that uses an SCTP AUTH key or
+   * Determining when all SCTP packets that uses an SCTP-AUTH key or
      contains DTLS records associated to a particular DTLS connection
      has been acknowledged non-renegable.
 
@@ -1623,11 +1625,11 @@ given to this specification.
    DTLS 1.2 and SHOULD be followed for DTLS/SCTP, but are not mandated
    by the DTLS 1.2 specification.
 
-   HMAC-SHA-256 as used in SCTP AUTH has a very large tag length and
-   very good integrity properties.  The SCTP AUTH key can be used
+   HMAC-SHA-256 as used in SCTP-AUTH has a very large tag length and
+   very good integrity properties.  The SCTP-AUTH key can be used
    longer than the current algorithms in the TLS record layer. The
-   SCTP AUTH key is rekeyed when a new DTLS connection is set up at
-   which point a new SCTP AUTH key is derived using the TLS-Exporter.
+   SCTP-AUTH key is rekeyed when a new DTLS connection is set up at
+   which point a new SCTP-AUTH key is derived using the TLS-Exporter.
 
    (D)TLS 1.3 {{RFC8446}} discusses forward secrecy from (EC)DHE,
    Key Update, and tickets/resumption. Forward secrecy limits the
@@ -1678,7 +1680,7 @@ given to this specification.
    significantly shorter than a year are common which is shorter than
    many expected DTLS/SCTP associations.
 
-   SCTP AUTH re-rekeying, periodic authentication of both endpoints,
+   SCTP-AUTH re-rekeying, periodic authentication of both endpoints,
    and frequent re-run of Diffie-Hellman to force attackers to dynamic
    key extraction is in DTLS/SCTP per this specification achieved by
    setting up new DTLS connections over the same SCTP
@@ -1702,7 +1704,7 @@ given to this specification.
    Hash and Extended Master Secret Extension {{RFC7627}} MUST be used
    to prevent unknown key-share attacks where an attacker establishes
    the same key on several connections. DTLS 1.3 always prevents these
-   kinds of attacks. The use of SCTP AUTH then cryptographically binds
+   kinds of attacks. The use of SCTP-AUTH then cryptographically binds
    new connections to the old connections. This together with
    mandatory mutual authentication (on the DTLS layer) and a
    requirement to not accept new identities mitigates MITM attacks
