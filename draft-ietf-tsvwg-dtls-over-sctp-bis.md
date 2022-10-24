@@ -1099,7 +1099,7 @@ discarded.
    2n and 2n+1, the new ones MUST use Shared Key Identifier 2n+2 and
    2n+3, unless 2n = 65534, in which case the new Shared Key
    Identifiers are 2 and 3.
-   
+
    A DTLS connection MUST NOT be used be used for protection of ULP data
    before the two SCTP AUTH endpoint pair shared secrets has been exported and
    the other endpoint has been authenticated.
