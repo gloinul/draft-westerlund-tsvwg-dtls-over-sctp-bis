@@ -7,6 +7,8 @@ cat: std
 ipr: trust200902
 wg: TSVWG
 area: Transport
+submissiontype: IETF  # also: "independent", "IAB", or "IRTF"
+
 
 author:
 -
