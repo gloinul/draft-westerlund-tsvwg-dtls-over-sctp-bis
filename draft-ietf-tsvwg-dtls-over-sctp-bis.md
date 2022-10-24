@@ -1417,9 +1417,9 @@ discarded.
    mitigated or considered acceptable. If fallback is enabled,
    implementations MUST use the dtls_sctp_ext extension
    ({{auth_fallback}}) to authenticate the fallback. This mitigates
-   on-path attacker to trigger fallback to RFC 6083.  Fallback is NOT
-   RECOMMENDED to be enabled as it enables downgrade attacks to weaker
-   algorithms and versions of DTLS.
+   on-path attacker to trigger fallback to RFC 6083. Fallback is NOT
+   RECOMMENDED to be enabled as it permits weaker algorithms and
+   versions of DTLS.
 
    An SCTP endpoint that receives an INIT chunk or an INIT ACK chunk
    that does not contain the SCTP-Adaptation-Indication parameter with
