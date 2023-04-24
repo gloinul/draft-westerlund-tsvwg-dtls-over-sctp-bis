@@ -9,6 +9,10 @@ wg: TSVWG
 area: Transport
 submissiontype: IETF  # also: "independent", "IAB", or "IRTF"
 
+venue:
+  group: Transport Area Working Group (tsvwg)
+  mail: tsvwg@ietf.org
+  github: gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis
 
 author:
 -
