@@ -136,10 +136,12 @@ normative:
    Transmission Protocol (SCTP), as defined in {{RFC9260}} with
    Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
 
-   This specification provides mutual authentication of endpoints,
+   Once the assumptions are fulfilled  (see {{Assumptions}}),
+   this specification provides mutual authentication of endpoints,
    data confidentiality, data origin authentication, data integrity
-   protection, and data replay protection of user messages for
-   applications that use SCTP as their transport protocol.  Thus, it
+   protection, and a certain level of data replay protection of user
+   messages for applications that use SCTP as their transport
+   protocol (see in this regard what stated in {{replay_issues}}). Thus, it
    allows client/server applications to communicate in a way that is
    designed to give communications privacy and to prevent
    eavesdropping and detect tampering or message forgery. DTLS/SCTP
@@ -176,6 +178,27 @@ normative:
    To simplify implementation and reduce the risk for security holes,
    limitations have been defined such that STARTTLS as specified in
    {{RFC3788}} is no longer supported.
+
+## Assumptions {#Assumptions}
+
+In this document it is assumed that SCTP-AUTH provides periodic rekeying
+it is also assumed that the rfc4895 has been reworked, that is all the security
+related issues found so far are fixed.
+
+The current rfc4895 has been identified as weak in the following parts:
+
+1. Reflection of authenticated data chunks
+
+2. Replay of authenticated data chunks
+
+3. Single key used with different HMAC algorithms
+
+4. Reflection of authenticated control chunks
+
+5. Replay of authenticated control chunks
+
+Being SCTP-AUTH fixed and having a periodic rekeying is a condicio sine qua non
+for this document to provide a working solution.
 
 ## Protocol Overview
 
@@ -663,7 +686,7 @@ discarded.
    contention related to large user messages.
 
 
-## Replay Protection
+## Replay Protection {#replay_protection}
 
    SCTP-AUTH {{RFC4895}} does not have explicit replay
    protection. However, the combination of SCTP-AUTH's protection of
@@ -1821,6 +1844,24 @@ given to this specification.
    geographical area and across different access networks.  Using
    information from DTLS/SCTP together with information gathered from
    other protocols increase the risk of identifying individual users.
+
+## Replay attacks {#replay_issues}
+
+Replay attack breaks data origin authentication, data integrity
+protection, and data confidentiality. The peculiar architecture
+of rfc6083 makes hard to predict how a replay attack can get success.
+What is clear is that replay attack hasn't been considered when
+rfc6083 has been specified, making it weak from the beginning.
+In rfc6083 the replay window is open during the lifetime of the
+SCTP-AUTH key validity and being TSN visible it's relatively
+easy to inject an old Data Chunk that passes validation.
+Since DTLS replay protection is not used and because a single
+chunk is also a single DTLS record, the attack surface of rfc6083
+is large and even if SCTP-AUTH will be fixed in regards to
+replay attack, the combination of SCTP-AUTH and DTLS as described
+in rfc6083 is not by architecture.
+
+Details are described in {{replay_protection}}
 
 # Contributors
 
