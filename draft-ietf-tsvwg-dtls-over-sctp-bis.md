@@ -113,7 +113,7 @@ normative:
 
    Applications using DTLS over SCTP can use almost all transport
    features provided by SCTP and its extensions. This document is an
-   improved alternative to RFC 6083 and removes the 16 kB limitation
+   improved alternative to RFC 6083 and removes the 16 kbytes limitation
    on protected user message size by defining a secure user message
    fragmentation so that multiple DTLS records can be used to protect
    a single user message. It further contains a large number of
@@ -203,7 +203,7 @@ We are expecting the SCTP-AUTH update to fully address issue 1, 3 and
 4. Issue 2 will be partially addressed in this specification through
 periodic rekeying to prevent replay to inject data and affect
 availability, but that is based on SCTP implementation correctly
-suppressing replayed packets. SCTP-AUTH issues mitigated  and having a
+handling replayed packets. SCTP-AUTH issues mitigated  and having a
 periodic rekeying is a condicio sine qua non (indispensable condition)
 for this document to provide a working solution.
 
