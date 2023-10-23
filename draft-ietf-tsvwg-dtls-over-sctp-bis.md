@@ -591,9 +591,9 @@ discarded.
 
    This specification also forbids against using DTLS 1.3 key update
    and instead rely on parallel DTLS connections. For DTLS 1.3 there
-   isn’t feature parity. It also has the issue that a DTLS
+   isn't feature parity. It also has the issue that a DTLS
    implementation following the RFC may assume a too limited window
-   for SCTP where the previous epoch’s security context is maintained
+   for SCTP where the previous epoch's security context is maintained
    and thus, changes to epoch handling would be necessary.
 
    A DTLS 1.2 endpoint MUST NOT use renegotiation and a DTLS 1.3
@@ -607,11 +607,11 @@ discarded.
    The DTLS Connection ID MUST be negotiated, according to {{RFC9146}}
    for DTLS 1.2, and Section 9 of {{RFC9147}} for DTLS 1.3.
 
-   Section 4 of {{RFC9146}} states “If, however, an implementation
+   Section 4 of {{RFC9146}} states "If, however, an implementation
    chooses to receive different lengths of CID, the assigned CID
    values must be self-delineating since there is no other mechanism
    available to determine what connection (and thus, what CID length)
-   is in use.”. As this solution requires multiple connection IDs,
+   is in use.". As this solution requires multiple connection IDs,
    using a zero-length CID will be highly problematic as it could
    result in that any DTLS records with a zero length CID ends up in
    another DTLS connection context, and there fail the decryption and
@@ -771,7 +771,7 @@ discarded.
    used to determine the boundaries between DTLS records. DTLS/SCTP
    SHOULD request decryption of each individual records as soon as
    possible.  The last DTLS record can be found by subtracting the
-   length of individual records from the length of user_message’.  The
+   length of individual records from the length of user_message'.  The
    output from the DTLS decryption(s) is the fragments m0, m1, m2 ...
    The user_message is reassembled from decrypted DTLS records as
    user_message = m0 | m1 | m2 ...
@@ -1084,7 +1084,7 @@ discarded.
    messages it can support. Each SCTP message needs to have completed
    delivery and enabling closing of the previous DTLS connection prior
    to the need to create yet another DTLS connection. Thus, SCTP
-   messages can’t be larger than that the transmission completes in
+   messages can't be larger than that the transmission completes in
    less than the duration between the rekeying or re-authentications
    needed for this SCTP association.
 
