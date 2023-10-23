@@ -1183,7 +1183,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-overview" class="internal xref">Overview</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.2">
-                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-assumptions" class="internal xref">Assumptions</a></p>
+                <p id="section-toc.1-1.1.2.2.1" class="keepWithNext"><a href="#section-1.2" class="auto internal xref">1.2</a>.  <a href="#name-sctp-auth-assumptions" class="internal xref">SCTP-AUTH Assumptions</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.3">
                 <p id="section-toc.1-1.1.2.3.1" class="keepWithNext"><a href="#section-1.3" class="auto internal xref">1.3</a>.  <a href="#name-protocol-overview" class="internal xref">Protocol Overview</a></p>
@@ -1427,12 +1427,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
         </h3>
 <p id="section-1.1-1">This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol, as defined in DTLS 1.2 <span>[<a href="#RFC6347" class="cite xref">RFC6347</a>]</span>, and
-   DTLS 1.3 <span>[<a href="#RFC9147" class="cite xref">RFC9147</a>]</span>, over the Stream Control
-   Transmission Protocol (SCTP), as defined in <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span> with
-   Authenticated Chunks for SCTP (SCTP-AUTH) <span>[<a href="#RFC4895" class="cite xref">RFC4895</a>]</span>.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
-<p id="section-1.1-2">Once the assumptions are fulfilled (see <a href="#Assumptions" class="auto internal xref">Section 1.2</a>), this
-   specification provides mutual authentication of endpoints, data
-   confidentiality, data origin authentication, data integrity
+   DTLS 1.3 <span>[<a href="#RFC9147" class="cite xref">RFC9147</a>]</span>, over the Stream Control Transmission Protocol
+   (SCTP), as defined in <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span> combined with Authenticated
+   Chunks for SCTP (SCTP-AUTH) <span>[<a href="#RFC4895" class="cite xref">RFC4895</a>]</span>.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-2">Once the SCTP-AUTH assumptions are fulfilled (see <a href="#Assumptions" class="auto internal xref">Section 1.2</a>),
+   this specification provides mutual authentication of endpoints,
+   data confidentiality, data origin authentication, data integrity
    protection, and a certain level of data replay protection of user
    messages for applications that use SCTP as their transport protocol
    (see in this regard what stated in <a href="#replay_issues" class="auto internal xref">Section 9.8</a>). Thus, it
@@ -1481,15 +1481,16 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </div>
 <div id="Assumptions">
 <section id="section-1.2">
-        <h3 id="name-assumptions">
-<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-assumptions" class="section-name selfRef">Assumptions</a>
+        <h3 id="name-sctp-auth-assumptions">
+<a href="#section-1.2" class="section-number selfRef">1.2. </a><a href="#name-sctp-auth-assumptions" class="section-name selfRef">SCTP-AUTH Assumptions</a>
         </h3>
 <p id="section-1.2-1">In this document it is assumed that SCTP-AUTH is provided with
 periodic rekeying by periodic usage the mechanism for DTLS rekeying
 and re-authentication defined in this document.  It is also assumed
 that SCTP-AUTH specification <span>[<a href="#RFC4895" class="cite xref">RFC4895</a>]</span> has been updated to address
-most of the issues.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
-<p id="section-1.2-2">The current rfc4895 has been identified as weak in the following parts:<a href="#section-1.2-2" class="pilcrow">¶</a></p>
+most of the known issues.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
+<p id="section-1.2-2">SCTP-AUTH as defined by RFC4895 has been identified as weak in the
+following parts:<a href="#section-1.2-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-1.2-3">
 <li id="section-1.2-3.1">
             <p id="section-1.2-3.1.1">Reflection of authenticated data chunks<a href="#section-1.2-3.1.1" class="pilcrow">¶</a></p>
@@ -1511,9 +1512,10 @@ most of the issues.<a href="#section-1.2-1" class="pilcrow">¶</a></p>
 4. Issue 2 will be partially addressed in this specification through
 periodic rekeying to prevent replay to inject data and affect
 availability, but that is based on SCTP implementation correctly
-handling replayed packets. SCTP-AUTH issues mitigated  and having a
-periodic rekeying is a condicio sine qua non (indispensable condition)
-for this document to provide a working solution.<a href="#section-1.2-4" class="pilcrow">¶</a></p>
+handling replayed or duplicated packets. SCTP-AUTH issues mitigated
+and having a periodic rekeying is a condicio sine qua non
+(indispensable condition) for this document to provide a working
+solution.<a href="#section-1.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="protocol-overview">
@@ -1747,7 +1749,7 @@ user message from SCTP.<a href="#section-1.6-4.2.1" class="pilcrow">¶</a></p>
 1.3)<a href="#section-1.6-4.3.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.6-4.4">
-            <p id="section-1.6-4.4.1">Mandates support of modern HMAC algorithm (SHA-256) in the SCTP
+            <p id="section-1.6-4.4.1">Mandates support of stronger HMAC algorithm (SHA-256) in the SCTP
 authentication extension <span>[<a href="#RFC4895" class="cite xref">RFC4895</a>]</span>.<a href="#section-1.6-4.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.6-4.5">
@@ -1766,8 +1768,9 @@ authenticated.<a href="#section-1.6-4.7.1" class="pilcrow">¶</a></p>
             <p id="section-1.6-4.8.1">Requires support of partial delivery of user messages.<a href="#section-1.6-4.8.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.6-4.9">
-            <p id="section-1.6-4.9.1">Derives direction specific SCTP-AUTH keys to mitigate reflection
-attacks.<a href="#section-1.6-4.9.1" class="pilcrow">¶</a></p>
+            <p id="section-1.6-4.9.1">Requires an updates SCTP-AUTH specification to mitigate packet
+reflection attacks that can impact the SCTP association
+availability.<a href="#section-1.6-4.9.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.6-4.10">
             <p id="section-1.6-4.10.1">Mandates SCTP-AUTH rekeying before the TSN cycles back to the
@@ -1802,8 +1805,8 @@ compared to unlimited in DTLS 1.0.<a href="#section-1.7-2.1.1" class="pilcrow">�
  2<sup>48</sup>.<a href="#section-1.7-4.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-1.7-4.2">
-            <p id="section-1.7-4.2.1">Strict AEAD significantly limits on how much many packets can be
-sent before rekeying.<a href="#section-1.7-4.2.1" class="pilcrow">¶</a></p>
+            <p id="section-1.7-4.2.1">Strict AEAD significantly limits on how many DTLS records can be
+ sent before rekeying.<a href="#section-1.7-4.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 <p id="section-1.7-5">Many applications using DTLS/SCTP are of semi-permanent nature.
@@ -2366,8 +2369,8 @@ forward secrecy and mitigate static key exfiltration attacks.<a href="#section-1
    own SCTP user messages with in order delivery. That mimics the RFC
    6083 behavior without impacting the ULP. However, it assumes that
    there are available streams to be used based on the SCTP
-   association handshake allowed streams (Section 5.1.1 of
-   <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span>).<a href="#section-4.4-4" class="pilcrow">¶</a></p>
+   association handshake parameter for "maximum inbound streams"
+   (Section 5.1.1 of <span>[<a href="#RFC9260" class="cite xref">RFC9260</a>]</span>).<a href="#section-4.4-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="chunk-handling">
@@ -2446,9 +2449,9 @@ forward secrecy and mitigate static key exfiltration attacks.<a href="#section-1
    required to ensure that the receiver can correctly identify the
    DTLS connection and its security context when performing its
    de-protection operations. There is also only a single SCTP-AUTH key
-   exported per DTLS connection ensuring that there is clear mapping
-   between the DTLS connection ID and the SCTP-AUTH security context for
-   each Key Identifier.<a href="#section-4.7-4" class="pilcrow">¶</a></p>
+   exported per DTLS connection and transmission direction ensuring
+   that there is clear mapping between the DTLS connection ID and the
+   SCTP-AUTH security context for each Key Identifier.<a href="#section-4.7-4" class="pilcrow">¶</a></p>
 <p id="section-4.7-5">Application writers should be aware that establishing a new DTLS
    connection may result in changes of security parameters.  See
    <a href="#sec-Consideration" class="auto internal xref">Section 9</a> for security considerations regarding rekeying.<a href="#section-4.7-5" class="pilcrow">¶</a></p>
@@ -2491,8 +2494,8 @@ forward secrecy and mitigate static key exfiltration attacks.<a href="#section-1
 <p id="section-4.7-10">The DTLS/SCTP endpoint timely indicates to its peer when the
    previous DTLS connection and its context are no longer needed for
    receiving any more data from this endpoint. This is done by sending
-   a DTLS/SCTP Control Message <a href="#Control-Message" class="auto internal xref">Section 5</a> of type
-   "Ready_To_Close" <a href="#Ready_To_Close" class="auto internal xref">Section 5.2</a> to its peer. The endpoint MUST
+   a DTLS/SCTP Control Message (<a href="#Control-Message" class="auto internal xref">Section 5</a>) of type
+   "Ready_To_Close" (<a href="#Ready_To_Close" class="auto internal xref">Section 5.2</a>) to its peer. The endpoint MUST
    NOT send the Ready_To_Close until the following two conditions are
    fulfilled:<a href="#section-4.7-10" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-4.7-11">
@@ -2534,7 +2537,7 @@ in a non-renegable way.<a href="#section-4.7-11.2.1" class="pilcrow">¶</a></p>
    initiated before the change of security context, it will be forced to
    track the SCTP messages and determine when all using the old
    security context has been transmitted. This maybe be impossible to
-   do as completely reliable without tighter integration between the
+   do completely reliable without tighter integration between the
    DTLS/SCTP layer and the SCTP implementation. This type of
    implementations also has an implicit limitation in how large SCTP
    messages it can support. Each SCTP message needs to have completed
@@ -2554,7 +2557,10 @@ in a non-renegable way.<a href="#section-4.7-11.2.1" class="pilcrow">¶</a></p>
         <h3 id="name-handling-of-endpoint-pair-s">
 <a href="#section-4.8" class="section-number selfRef">4.8. </a><a href="#name-handling-of-endpoint-pair-s" class="section-name selfRef">Handling of Endpoint Pair Shared Secrets</a>
         </h3>
-<p id="section-4.8-1">SCTP-AUTH <span>[<a href="#RFC4895" class="cite xref">RFC4895</a>]</span> is keyed using endpoint pair shared
+<p id="section-4.8-1">Editor's Note: Assuming that RFC 4895 is updates to address the
+   security issues this section is expected to be able to be updated
+   to not require generating two different keys.<a href="#section-4.8-1" class="pilcrow">¶</a></p>
+<p id="section-4.8-2">SCTP-AUTH <span>[<a href="#RFC4895" class="cite xref">RFC4895</a>]</span> is keyed using endpoint pair shared
    secrets. In DTLS/SCTP, DTLS is used to establish these secrets.
    The endpoint pair shared secrets MUST be provided to the SCTP stack
    as soon as the computation is possible. The endpoints MUST NOT use
@@ -2562,19 +2568,21 @@ in a non-renegable way.<a href="#section-4.7-11.2.1" class="pilcrow">¶</a></p>
    SCTP-AUTH.  The endpoint pair shared secret for Shared Key
    Identifier zero (0) is empty, it is used by both endpoints
    when establishing the first DTLS connection and MUST NOT be
-   used to protect ULP data.<a href="#section-4.8-1" class="pilcrow">¶</a></p>
-<p id="section-4.8-2">The initial DTLS connection will be used to establish two new
+   used to protect ULP data.<a href="#section-4.8-2" class="pilcrow">¶</a></p>
+<p id="section-4.8-3">The initial DTLS connection will be used to establish two new
    endpoint pair shared secrets which MUST use shared key identifier 2
    and 3. The endpoint pair shared secrets are derived using the TLS
    exporter interface using the ASCII strings
    "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE" and
    "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE" with no terminating NUL, no
-   context, and length 64.<a href="#section-4.8-2" class="pilcrow">¶</a></p>
-<p id="section-4.8-3">~~~~~~~~~~~
-   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE", , 64)
-   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE", , 64)
-   ~~~~~~~~~~~<a href="#section-4.8-3" class="pilcrow">¶</a></p>
-<p id="section-4.8-4">Keys derived with the label "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE"
+   context, and length 64.<a href="#section-4.8-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-4.8-4">
+<pre>
+TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE", , 64)
+TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE", , 64)
+</pre><a href="#section-4.8-4" class="pilcrow">¶</a>
+</div>
+<p id="section-4.8-5">Keys derived with the label "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE"
    always have an even Shared Key Identifier.  They are used by the
    TLS client for sending AUTH chunks and MUST NOT be used by the TLS
    client for receiving AUTH chunks.  Keys derived with the label
@@ -2583,17 +2591,17 @@ in a non-renegable way.<a href="#section-4.7-11.2.1" class="pilcrow">¶</a></p>
    chunks and MUST NOT be used by the TLS server for receiving AUTH
    chunks.  These directional keys change the behavior of SCTP-AUTH
    <span>[<a href="#RFC4895" class="cite xref">RFC4895</a>]</span> and requires extensions to the SCTP API defined in
-   <span>[<a href="#RFC6458" class="cite xref">RFC6458</a>]</span>.<a href="#section-4.8-4" class="pilcrow">¶</a></p>
-<p id="section-4.8-5">When a subsequent DTLS connection is setup, two new 64-byte
+   <span>[<a href="#RFC6458" class="cite xref">RFC6458</a>]</span>.<a href="#section-4.8-5" class="pilcrow">¶</a></p>
+<p id="section-4.8-6">When a subsequent DTLS connection is setup, two new 64-byte
    endpoint pair shared secrets are derived using the TLS-Exporter as
    defined above. The Shared Key Identifiers form a sequence. If the
    previous endpoint pair shared secrets used Shared Key Identifiers
    2n and 2n+1, the new ones MUST use Shared Key Identifier 2n+2 and
    2n+3, unless 2n = 65534, in which case the new Shared Key
-   Identifiers are 2 and 3.<a href="#section-4.8-5" class="pilcrow">¶</a></p>
-<p id="section-4.8-6">A DTLS connection MUST NOT be used be used for protection of ULP
+   Identifiers are 2 and 3.<a href="#section-4.8-6" class="pilcrow">¶</a></p>
+<p id="section-4.8-7">A DTLS connection MUST NOT be used be used for protection of ULP
    data before the two SCTP-AUTH endpoint pair shared secrets has been
-   exported and the other endpoint has been authenticated.<a href="#section-4.8-6" class="pilcrow">¶</a></p>
+   exported and the other endpoint has been authenticated.<a href="#section-4.8-7" class="pilcrow">¶</a></p>
 <div id="dtls-12-considerations">
 <section id="section-4.8.1">
           <h4 id="name-dtls-12-considerations">
@@ -2756,13 +2764,14 @@ in a non-renegable way.<a href="#section-4.7-11.2.1" class="pilcrow">¶</a></p>
    implementation requirements, need to signal the window it supports,
    and additional decryption overhead due to trial decoding and will
    be left for future extension.<a href="#section-4.10.1-4" class="pilcrow">¶</a></p>
-<p id="section-4.10.1-5">So, what size of SCTP receiver window this limitation corresponds to
-   is highly dependent on the SCTP user message size. If all SCTP user
-   messages are large, e.g., 1 MB, then most DTLS Records will be close
-   to maximum DTLS record size. Thus, the SCTP receiver window size
-   required before this becomes an issue becomes fairly close to 49152
-   times 16384, i.e., approximately 800 MB. While SCTP user messages of
-   100 bytes would only need a receiver window of approximately 5 MB.<a href="#section-4.10.1-5" class="pilcrow">¶</a></p>
+<p id="section-4.10.1-5">So, what size of SCTP receiver window this limitation corresponds
+   to is highly dependent on the SCTP user message size. If all SCTP
+   user messages are large, e.g., 1 MB, then most DTLS Records will be
+   close to maximum DTLS record size. Thus, the SCTP receiver window
+   size required before this becomes an issue becomes fairly close to
+   49152 times 16384, i.e., approximately 800 MB. While SCTP user
+   messages of almost exclusively 100 bytes would only need a receiver
+   window of approximately 5 MB.<a href="#section-4.10.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="sctp-api-limitations">
@@ -3347,7 +3356,7 @@ given to this specification.<a href="#section-8-1" class="pilcrow">¶</a></p>
    with such long lifetimes there is a need to frequently
    re-authenticate both client and server. TLS Certificate lifetimes
    significantly shorter than a year are common which is shorter than
-   many expected DTLS/SCTP associations.<a href="#section-9.1-9" class="pilcrow">¶</a></p>
+   expected to be used DTLS/SCTP associations lifetimes.<a href="#section-9.1-9" class="pilcrow">¶</a></p>
 <p id="section-9.1-10">SCTP-AUTH re-rekeying, periodic authentication of both endpoints,
    and frequent re-run of Diffie-Hellman to force attackers to dynamic
    key extraction is in DTLS/SCTP per this specification achieved by
