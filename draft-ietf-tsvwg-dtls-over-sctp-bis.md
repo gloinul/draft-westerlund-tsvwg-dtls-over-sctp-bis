@@ -132,13 +132,13 @@ normative:
 
    This document describes the usage of the Datagram Transport Layer
    Security (DTLS) protocol, as defined in DTLS 1.2 {{RFC6347}}, and
-   DTLS 1.3 {{RFC9147}}, over the Stream Control
-   Transmission Protocol (SCTP), as defined in {{RFC9260}} with
-   Authenticated Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
+   DTLS 1.3 {{RFC9147}}, over the Stream Control Transmission Protocol
+   (SCTP), as defined in {{RFC9260}} combined with Authenticated
+   Chunks for SCTP (SCTP-AUTH) {{RFC4895}}.
 
-   Once the assumptions are fulfilled (see {{Assumptions}}), this
-   specification provides mutual authentication of endpoints, data
-   confidentiality, data origin authentication, data integrity
+   Once the SCTP-AUTH assumptions are fulfilled (see {{Assumptions}}),
+   this specification provides mutual authentication of endpoints,
+   data confidentiality, data origin authentication, data integrity
    protection, and a certain level of data replay protection of user
    messages for applications that use SCTP as their transport protocol
    (see in this regard what stated in {{replay_issues}}). Thus, it
@@ -179,15 +179,16 @@ normative:
    limitations have been defined such that STARTTLS as specified in
    {{RFC3788}} is no longer supported.
 
-## Assumptions {#Assumptions}
+## SCTP-AUTH Assumptions {#Assumptions}
 
 In this document it is assumed that SCTP-AUTH is provided with
 periodic rekeying by periodic usage the mechanism for DTLS rekeying
 and re-authentication defined in this document.  It is also assumed
 that SCTP-AUTH specification {{RFC4895}} has been updated to address
-most of the issues.
+most of the known issues.
 
-The current rfc4895 has been identified as weak in the following parts:
+SCTP-AUTH as defined by RFC4895 has been identified as weak in the
+following parts:
 
 1. Reflection of authenticated data chunks
 
@@ -203,9 +204,10 @@ We are expecting the SCTP-AUTH update to fully address issue 1, 3 and
 4. Issue 2 will be partially addressed in this specification through
 periodic rekeying to prevent replay to inject data and affect
 availability, but that is based on SCTP implementation correctly
-handling replayed packets. SCTP-AUTH issues mitigated  and having a
-periodic rekeying is a condicio sine qua non (indispensable condition)
-for this document to provide a working solution.
+handling replayed or duplicated packets. SCTP-AUTH issues mitigated
+and having a periodic rekeying is a condicio sine qua non
+(indispensable condition) for this document to provide a working
+solution.
 
 ## Protocol Overview
 
@@ -393,7 +395,7 @@ discarded.
    * Mandates that more modern DTLS version are used (DTLS 1.2 or
      1.3)
 
-   * Mandates support of modern HMAC algorithm (SHA-256) in the SCTP
+   * Mandates support of stronger HMAC algorithm (SHA-256) in the SCTP
      authentication extension {{RFC4895}}.
 
    * Recommends support of {{RFC8260}} to enable interleaving of large
@@ -407,8 +409,9 @@ discarded.
 
    * Requires support of partial delivery of user messages.
 
-   * Derives direction specific SCTP-AUTH keys to mitigate reflection
-     attacks.
+   * Requires an updates SCTP-AUTH specification to mitigate packet
+     reflection attacks that can impact the SCTP association
+     availability.
 
    * Mandates SCTP-AUTH rekeying before the TSN cycles back to the
      Initial TSN to mitigate replay of data chunks.
@@ -431,7 +434,7 @@ discarded.
       key updates. The number of key updates is limited to
       2<sup>48</sup>.
 
-   *  Strict AEAD significantly limits on how much many packets can be
+   * Strict AEAD significantly limits on how many DTLS records can be
       sent before rekeying.
 
    Many applications using DTLS/SCTP are of semi-permanent nature.
@@ -591,9 +594,9 @@ discarded.
 
    This specification also forbids against using DTLS 1.3 key update
    and instead rely on parallel DTLS connections. For DTLS 1.3 there
-   isn’t feature parity. It also has the issue that a DTLS
+   isn't feature parity. It also has the issue that a DTLS
    implementation following the RFC may assume a too limited window
-   for SCTP where the previous epoch’s security context is maintained
+   for SCTP where the previous epoch's security context is maintained
    and thus, changes to epoch handling would be necessary.
 
    A DTLS 1.2 endpoint MUST NOT use renegotiation and a DTLS 1.3
@@ -607,11 +610,11 @@ discarded.
    The DTLS Connection ID MUST be negotiated, according to {{RFC9146}}
    for DTLS 1.2, and Section 9 of {{RFC9147}} for DTLS 1.3.
 
-   Section 4 of {{RFC9146}} states “If, however, an implementation
+   Section 4 of {{RFC9146}} states "If, however, an implementation
    chooses to receive different lengths of CID, the assigned CID
    values must be self-delineating since there is no other mechanism
    available to determine what connection (and thus, what CID length)
-   is in use.”. As this solution requires multiple connection IDs,
+   is in use.". As this solution requires multiple connection IDs,
    using a zero-length CID will be highly problematic as it could
    result in that any DTLS records with a zero length CID ends up in
    another DTLS connection context, and there fail the decryption and
@@ -771,7 +774,7 @@ discarded.
    used to determine the boundaries between DTLS records. DTLS/SCTP
    SHOULD request decryption of each individual records as soon as
    possible.  The last DTLS record can be found by subtracting the
-   length of individual records from the length of user_message’.  The
+   length of individual records from the length of user_message'.  The
    output from the DTLS decryption(s) is the fragments m0, m1, m2 ...
    The user_message is reassembled from decrypted DTLS records as
    user_message = m0 | m1 | m2 ...
@@ -911,8 +914,8 @@ discarded.
    own SCTP user messages with in order delivery. That mimics the RFC
    6083 behavior without impacting the ULP. However, it assumes that
    there are available streams to be used based on the SCTP
-   association handshake allowed streams (Section 5.1.1 of
-   {{RFC9260}}).
+   association handshake parameter for "maximum inbound streams"
+   (Section 5.1.1 of {{RFC9260}}).
 
 ## Chunk Handling
 
@@ -985,9 +988,9 @@ discarded.
    required to ensure that the receiver can correctly identify the
    DTLS connection and its security context when performing its
    de-protection operations. There is also only a single SCTP-AUTH key
-   exported per DTLS connection ensuring that there is clear mapping
-   between the DTLS connection ID and the SCTP-AUTH security context for
-   each Key Identifier.
+   exported per DTLS connection and transmission direction ensuring
+   that there is clear mapping between the DTLS connection ID and the
+   SCTP-AUTH security context for each Key Identifier.
 
    Application writers should be aware that establishing a new DTLS
    connection may result in changes of security parameters.  See
@@ -1036,8 +1039,8 @@ discarded.
    The DTLS/SCTP endpoint timely indicates to its peer when the
    previous DTLS connection and its context are no longer needed for
    receiving any more data from this endpoint. This is done by sending
-   a DTLS/SCTP Control Message {{Control-Message}} of type
-   "Ready_To_Close" {{Ready_To_Close}} to its peer. The endpoint MUST
+   a DTLS/SCTP Control Message ({{Control-Message}}) of type
+   "Ready_To_Close" ({{Ready_To_Close}}) to its peer. The endpoint MUST
    NOT send the Ready_To_Close until the following two conditions are
    fulfilled:
 
@@ -1078,13 +1081,13 @@ discarded.
    initiated before the change of security context, it will be forced to
    track the SCTP messages and determine when all using the old
    security context has been transmitted. This maybe be impossible to
-   do as completely reliable without tighter integration between the
+   do completely reliable without tighter integration between the
    DTLS/SCTP layer and the SCTP implementation. This type of
    implementations also has an implicit limitation in how large SCTP
    messages it can support. Each SCTP message needs to have completed
    delivery and enabling closing of the previous DTLS connection prior
    to the need to create yet another DTLS connection. Thus, SCTP
-   messages can’t be larger than that the transmission completes in
+   messages can't be larger than that the transmission completes in
    less than the duration between the rekeying or re-authentications
    needed for this SCTP association.
 
@@ -1094,6 +1097,10 @@ discarded.
    result in SCTP association termination.
 
 ## Handling of Endpoint Pair Shared Secrets {#handling-endpoint-secret}
+
+   Editor's Note: Assuming that RFC 4895 is updates to address the
+   security issues this section is expected to be able to be updated
+   to not require generating two different keys.
 
    SCTP-AUTH {{RFC4895}} is keyed using endpoint pair shared
    secrets. In DTLS/SCTP, DTLS is used to establish these secrets.
@@ -1113,10 +1120,10 @@ discarded.
    "EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE" with no terminating NUL, no
    context, and length 64.
 
-   ~~~~~~~~~~~
-   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE", , 64)
-   TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE", , 64)
-   ~~~~~~~~~~~
+~~~~~~~~~~~
+TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE", , 64)
+TLS-Exporter("EXPORTER-DTLS-OVER-SCTP-SERVER-WRITE", , 64)
+~~~~~~~~~~~
 
    Keys derived with the label "EXPORTER-DTLS-OVER-SCTP-CLIENT-WRITE"
    always have an even Shared Key Identifier.  They are used by the
@@ -1285,13 +1292,14 @@ discarded.
    and additional decryption overhead due to trial decoding and will
    be left for future extension.
 
-   So, what size of SCTP receiver window this limitation corresponds to
-   is highly dependent on the SCTP user message size. If all SCTP user
-   messages are large, e.g., 1 MB, then most DTLS Records will be close
-   to maximum DTLS record size. Thus, the SCTP receiver window size
-   required before this becomes an issue becomes fairly close to 49152
-   times 16384, i.e., approximately 800 MB. While SCTP user messages of
-   100 bytes would only need a receiver window of approximately 5 MB.
+   So, what size of SCTP receiver window this limitation corresponds
+   to is highly dependent on the SCTP user message size. If all SCTP
+   user messages are large, e.g., 1 MB, then most DTLS Records will be
+   close to maximum DTLS record size. Thus, the SCTP receiver window
+   size required before this becomes an issue becomes fairly close to
+   49152 times 16384, i.e., approximately 800 MB. While SCTP user
+   messages of almost exclusively 100 bytes would only need a receiver
+   window of approximately 5 MB.
 
 ### SCTP API Limitations
 
@@ -1714,7 +1722,7 @@ given to this specification.
    with such long lifetimes there is a need to frequently
    re-authenticate both client and server. TLS Certificate lifetimes
    significantly shorter than a year are common which is shorter than
-   many expected DTLS/SCTP associations.
+   expected to be used DTLS/SCTP associations lifetimes.
 
    SCTP-AUTH re-rekeying, periodic authentication of both endpoints,
    and frequent re-run of Diffie-Hellman to force attackers to dynamic
