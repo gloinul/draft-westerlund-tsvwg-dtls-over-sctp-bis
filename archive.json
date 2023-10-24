@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-10-25T01:17:16.589851+00:00",
+  "timestamp": "2023-10-24T00:52:21.613137+00:00",
   "repo": "gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis",
   "labels": [
     {
@@ -4032,6 +4032,54 @@
       "body": "As we have been expanding the usage of the DTLS/SCTP Control Message to multiple uses and it is a general framework we have to consider if we need to define an IANA registry for this. ",
       "createdAt": "2022-10-24T12:23:15Z",
       "updatedAt": "2022-10-24T12:23:15Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 199,
+      "id": "I_kwDOEtjg5s5xv-6X",
+      "title": "Update solution properties description",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/199",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "In the work around the security issues and interaction with SCTP-AUTH the understanding of this solution's properties needs to be reviewed and updated.",
+      "createdAt": "2023-09-22T08:09:20Z",
+      "updatedAt": "2023-09-22T08:09:20Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 200,
+      "id": "I_kwDOEtjg5s5xwCDA",
+      "title": "Add text on how SCTP restart works",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/200",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "The solution should document how to perform SCTP Restart in a safe way. Based on what is written in Section 6.3 of RFC 4895 we believe a safe method for restarting is possible. \r\n\r\nThe restarting node need to have stored the SCTP-AUTH key that was in use prior to the restart. Then perform the INIT to initiate the restart per RFC 9260. Then use SCTP-AUTH with the old key in the Cookie-Echo message. That way proving to the peer that this is the same node. After that a new DTLS handshake can/must be done to re-authenticate the nodes on DTLS level, and then user messages can be sent using the new established DTLS connection and its derived SCTP-AUTH key. ",
+      "createdAt": "2023-09-22T08:14:54Z",
+      "updatedAt": "2023-09-22T08:14:54Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 201,
+      "id": "I_kwDOEtjg5s5zdRXj",
+      "title": "Overstated Security Properties",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/201",
+      "state": "OPEN",
+      "author": "teiclap",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We have overstated the security properties somewhat. For example around replay protection.\r\nWe also need to consider the description related to availability and attacks and describe some implicit assumptions.",
+      "createdAt": "2023-10-11T07:29:00Z",
+      "updatedAt": "2023-10-11T07:29:00Z",
       "closedAt": null,
       "comments": []
     }
@@ -10212,6 +10260,116 @@
           "body": "",
           "createdAt": "2022-10-24T12:43:21Z",
           "updatedAt": "2022-10-24T12:43:21Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 202,
+      "id": "PR_kwDOEtjg5s5cn09g",
+      "title": "Added some text related to the immaturity towards replay attacks",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/pull/202",
+      "state": "MERGED",
+      "author": "teiclap",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Did some work explaining why this is still not good enough",
+      "createdAt": "2023-10-12T11:19:39Z",
+      "updatedAt": "2023-10-23T09:03:18Z",
+      "baseRepository": "gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis",
+      "baseRefName": "main",
+      "baseRefOid": "d066ddec1518c62bb8fecad2e27b721b836c2590",
+      "headRepository": "gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis",
+      "headRefName": "security_props",
+      "headRefOid": "47f938e1826065450d7b03019d0ae33aee6e1778",
+      "closedAt": "2023-10-23T09:03:12Z",
+      "mergedAt": "2023-10-23T09:03:12Z",
+      "mergedBy": "gloinul",
+      "mergeCommit": {
+        "oid": "45b405a8a7740b0c01976bdd32bfe1ed53c6dbb6"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOEtjg5s5kJ95l",
+          "commit": {
+            "abbreviatedOid": "85bd93e"
+          },
+          "author": "teiclap",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "I agree to your version (and you can remove the latin if you wish)",
+          "createdAt": "2023-10-16T15:35:00Z",
+          "updatedAt": "2023-10-16T15:35:00Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOEtjg5s5k2pX0",
+          "commit": {
+            "abbreviatedOid": "47f938e"
+          },
+          "author": "gloinul",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T09:02:38Z",
+          "updatedAt": "2023-10-23T09:02:38Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 203,
+      "id": "PR_kwDOEtjg5s5djQgQ",
+      "title": "Editorial pass to align text based on the updated SCTP-AUTH mitigation and properties. ",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/pull/203",
+      "state": "MERGED",
+      "author": "gloinul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2023-10-23T16:26:51Z",
+      "updatedAt": "2023-10-23T18:12:01Z",
+      "baseRepository": "gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis",
+      "baseRefName": "main",
+      "baseRefOid": "45b405a8a7740b0c01976bdd32bfe1ed53c6dbb6",
+      "headRepository": "gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis",
+      "headRefName": "mw-edits",
+      "headRefOid": "2927f8954918fce54cfb86c5decb7e231e66d6d0",
+      "closedAt": "2023-10-23T18:12:00Z",
+      "mergedAt": "2023-10-23T18:12:00Z",
+      "mergedBy": "gloinul",
+      "mergeCommit": {
+        "oid": "7494af3c0f11ff62f69a82937c1f703ee60d4ffd"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOEtjg5s5k6cxz",
+          "commit": {
+            "abbreviatedOid": "2927f89"
+          },
+          "author": "teiclap",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T16:50:20Z",
+          "updatedAt": "2023-10-23T16:50:20Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOEtjg5s5k63_u",
+          "commit": {
+            "abbreviatedOid": "2927f89"
+          },
+          "author": "teiclap",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2023-10-23T17:47:09Z",
+          "updatedAt": "2023-10-23T17:47:09Z",
           "comments": []
         }
       ]
