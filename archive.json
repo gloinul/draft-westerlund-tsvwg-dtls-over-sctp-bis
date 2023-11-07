@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2023-10-24T00:52:21.613137+00:00",
+  "timestamp": "2023-11-07T00:53:55.584138+00:00",
   "repo": "gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis",
   "labels": [
     {
@@ -461,7 +461,7 @@
       "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/17",
       "state": "CLOSED",
       "author": "tuexen",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [
         "tuexen"
       ],
@@ -494,7 +494,7 @@
       "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/19",
       "state": "CLOSED",
       "author": "tuexen",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Why is\r\n```\r\nFor an RFC 6083 client it is likely that the preferred HMAC-ALGO indicates SHA-1.\r\n```\r\ntrue? RFC 6083 does not make a statement...",
@@ -511,7 +511,7 @@
         },
         {
           "author": "tuexen",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "You are correct, that SHA-1 is the only mandatory to implement algorithm, but SHA-256 is also defined. FreeBSD supports both and prefers SHA-256. So when using only FreeBSD machines with RFC 6083, SHA-256 will be used. Linux only implements SHA-1. So if a FreeBSD machine talks to a Linux machine, SHA-1 will be used. There is no statement in RFC 6083 or RFC 4895 that SHA-1 is preferred. The point is: RFC 6083 make no statement and leaves the choice to the SCTP stack.",
           "createdAt": "2021-02-19T18:23:24Z",
           "updatedAt": "2021-02-19T18:23:24Z"
@@ -784,7 +784,7 @@
       "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/27",
       "state": "CLOSED",
       "author": "tuexen",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "```\r\nDATA chunks that are received before DTLS handshake will be silently discarded.\r\n```\r\nNeeds to be changed.",
@@ -801,7 +801,7 @@
         },
         {
           "author": "tuexen",
-          "authorAssociation": "COLLABORATOR",
+          "authorAssociation": "CONTRIBUTOR",
           "body": "How do you handle a starttls like setup used for example in [RFC 3788](https://tools.ietf.org/html/rfc3788)? I think the point is that once an SCTP association is handled by an DTLS implementation, the DTLS implementation should terminate the SCTP association if it can't parse the record.",
           "createdAt": "2021-02-19T15:52:17Z",
           "updatedAt": "2021-02-19T15:52:17Z"
@@ -4400,7 +4400,7 @@
       "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/pull/18",
       "state": "MERGED",
       "author": "tuexen",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -4428,7 +4428,7 @@
       "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/pull/20",
       "state": "MERGED",
       "author": "tuexen",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
@@ -4532,7 +4532,7 @@
       "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/pull/26",
       "state": "MERGED",
       "author": "tuexen",
-      "authorAssociation": "COLLABORATOR",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
