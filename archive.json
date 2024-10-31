@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2024-10-29T01:11:07.496623+00:00",
+  "timestamp": "2024-10-31T01:10:41.738043+00:00",
   "repo": "gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis",
   "labels": [
     {
@@ -4080,6 +4080,22 @@
       "body": "We have overstated the security properties somewhat. For example around replay protection.\r\nWe also need to consider the description related to availability and attacks and describe some implicit assumptions.",
       "createdAt": "2023-10-11T07:29:00Z",
       "updatedAt": "2023-10-11T07:29:00Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 204,
+      "id": "I_kwDOEtjg5s6caqeK",
+      "title": "Avoid dependency on DTLS Connection ID",
+      "url": "https://github.com/gloinul/draft-westerlund-tsvwg-dtls-over-sctp-bis/issues/204",
+      "state": "OPEN",
+      "author": "gloinul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "To avoid depending on DTLS connection ID implementation which appear scarce one could instead include a corresponding DTLS connection Identifier in the message framing of the DTLS records like in DTLS chunk. ",
+      "createdAt": "2024-10-30T14:09:20Z",
+      "updatedAt": "2024-10-30T14:09:20Z",
       "closedAt": null,
       "comments": []
     }
